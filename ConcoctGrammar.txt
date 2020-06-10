@@ -1,0 +1,60 @@
+(* Grammar draft for Concoct *)
+digit = "0" - "9";
+letter = "a" - "z" | "A" - "Z";
+any_char = ?any character?;
+
+identifier = letter | "_", {letter | digit | "_"};
+
+int_expr = digit, {digit};
+float_expr = digit, {digit}, ".", digit, {digit};
+string_expr = '"', {any_char}, '"';
+char_expr = "'", any_char, "'";
+bool_expr = "true" | "false";
+
+add_expr = expr, "+", expr;
+subtract_expr = expr, "-", expr;
+multiply_expr = expr, "*", expr;
+divide_expr = expr, "/", expr;
+modulus_expr = expr, "%", expr;
+
+greater_expr = expr, ">", expr;
+less_expr = expr, "<", expr;
+equal_expr = expr, "==", expr;
+not_equal_expr = expr, "!=", expr;
+greater_equal_expr = expr, ">=", expr;
+less_equal_expr = expr, "<=", expr;
+
+bit_and_expr = expr, "&", expr;
+bit_or_expr = expr, "|", expr;
+
+not_expr = "!", expr;
+and_expr = expr, "&&", expr;
+or_expr = expr, "||", expr;
+
+logical_expr = bit_and_expr | bit_or_expr | not_expr | and_expr | or_expr;
+compare_expr = greater_expr | less_expr | greater_equal_expr | less_equal_expr | equal_expr | not_equal_expr;
+math_expr = add_expr | subtract_expr | multiply_expr | divide_expr | modulus_expr;
+access_expr = identifier, {".", identifier};
+null_expr = "null";
+parentheses_expr = "(", expr, ")";
+
+expr = float_expr | int_expr | string_expr | char_expr | bool_expr | math_expr | access_expr | compare_expr | logical_expr
+	| null_expr | parentheses_expr;
+
+compound_statement = "{", {statement}, "}";
+if_statement = "if", expr, statement, {"elif", statement}, ["else", statement];
+switch_statement = "switch", expr, "{", {"case", expr, ":", statement}, "}";
+while_statement = "while", expr, statement;
+break_statement = "break";
+continue_statement = "continue";
+do_while_statement = "do", statement, "while", expr;
+func_statement = "func", identifier, "(", [identifier, {",", identifier}], ")", compound_statement;
+return_statement = "return", expr;
+assign_statement = access_expr, "=", expr;
+member_assign_statement = identifier, "=", expr;
+class_declaration = "class", identifier, [":", access_expr], "{", {func_statement | member_assign_statement}, "}";
+namespace_declaration = "namespace", identifier, "{", {class_declaration | func_statement | member_assign_statement}, "}";
+use_declaration = "use", access_expr;
+statement = compound_statement | if_statement | while_statement | do_while_statement | func_statement
+	| return_statement | break_statement | continue_statement | assign_statement | switch_statement;
+program = {statement | class_declaration | namespace_declaration | use_declaration};
