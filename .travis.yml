@@ -1,4 +1,4 @@
-# Travis CI build config for Concoct 
+# Travis CI build config for Concoct
 
 language: c
 
