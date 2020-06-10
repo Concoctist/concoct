@@ -1,0 +1,24 @@
+# Travis CI build config for Concoct 
+
+language: c
+
+compiler:
+  - clang
+  - gcc
+
+# Below is a workaround for the "unknown CMake command: target_include_directories" error.
+# This feature was added in more recent versions of CMake.
+sudo: false
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports
+    packages:
+      - cmake
+      - cmake-data
+
+script:
+  - cmake . && make
+
+notifications:
+  email: false
