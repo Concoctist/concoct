@@ -1,0 +1,3 @@
+var myVar = 5 + 3
+myVar2 = myVar++
+myVar += 35
