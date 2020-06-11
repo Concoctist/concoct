@@ -1,3 +1,5 @@
+
+
 #include "concoct_lexer.h"
 
 struct ConcoctLexer cct_new_lexer(FILE* in_stream)
@@ -32,7 +34,7 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
         cct_next_char(lexer);
 
     }
-    
+
     if(feof(lexer->input_stream))
     {
         strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
@@ -86,7 +88,6 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
         {
             type = CCT_TOKEN_INT;
         }
-        
     }
     // If it's not an identifier, or number, it should be easier to test with a switch
     else
@@ -271,7 +272,7 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
             case ',':
                 cct_next_char(lexer);
                 type = CCT_TOKEN_COMMA;
-                break;   
+                break;
             default:
                 // This means it's some sort of unsupported character
                 // We just set the text to the original text, and set the type to Error
