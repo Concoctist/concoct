@@ -25,7 +25,9 @@
 #include <string.h>  // strerror(), strlen()
 #include "version.h" // version
 
-const int LINE_LENGTH = 256;
+#include "concoct_lexer.h"
+
+#define LINE_LENGTH 256
 
 int main(int argc, char **argv)
 {
@@ -56,11 +58,24 @@ int main(int argc, char **argv)
 
   // For now, print each line in a file with corresponding line number and character count
   // ToDo: Parse tokens from .ct source file
+  /*
   int line_number = 0;
   while(fgets (line, LINE_LENGTH, input_file) != NULL)
   {
      line_number++;
      printf("%i\t(%i)\t%s", line_number, strlen(line), line);
+  }
+  */
+  // Creates a new lexer and iterates through the tokens
+  struct ConcoctLexer lexer = cct_new_lexer(input_file);
+  struct ConcoctToken token = cct_next_token(&lexer);
+  // Continues printing until an EOF is reached
+  while(token.type != CCT_TOKEN_EOF)
+  {
+    printf("[%i] %s : %s\n", token.line_number, token.text, cct_token_type_to_string(token.type));
+    // Token.text is allocated on the heap, so it's cleaned up here
+    free(token.text);
+    token = cct_next_token(&lexer);
   }
 
   fclose(input_file);
