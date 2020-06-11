@@ -1,6 +1,10 @@
+#ifndef CONCOCT_LEXER_H
+#define CONCOCT_LEXER_H
+
+#include <ctype.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define TOKEN_TEXT_LENGTH 32
 
@@ -141,3 +145,4 @@ struct ConcoctLexer cct_new_lexer(FILE* in_stream);
 char cct_next_char(struct ConcoctLexer* lexer);
 struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer);
 
+#endif /* CONCOCT_LEXER_H */

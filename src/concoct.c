@@ -34,7 +34,7 @@ int main(int argc, char **argv)
   FILE *input_file;
   char line[LINE_LENGTH];
 
-  printf("Concoct v%s\n", version);
+  printf("Concoct v%s\n", VERSION);
 
   if(argc < 2)
   {
