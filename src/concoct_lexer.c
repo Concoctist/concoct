@@ -39,20 +39,72 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
     enum ConcoctTokenType type;
     // How far into the text we are
     int text_index = 0;
-    // Skips whitespace
-    while(isspace(lexer->next_char))
+    // Skips whitespace and comments, repeatedly
+    while(1)
     {
-        // But if it's a new line it makes it a token
-        if(lexer->next_char == '\n')
+        if(!isspace(lexer->next_char) && lexer->next_char != '#')
         {
-            cct_next_char(lexer);
-            strcpy(text, "\\n");
-            struct ConcoctToken line_token = {CCT_TOKEN_NEWLINE, text, lexer->line_number++};
-            return line_token;
+            break;
         }
-        cct_next_char(lexer);
-
+        while(isspace(lexer->next_char))
+        {
+            // But if it's a new line it makes it a token
+            if(lexer->next_char == '\n')
+            {
+                cct_next_char(lexer);
+                strcpy(text, "\\n");
+                struct ConcoctToken line_token = {CCT_TOKEN_NEWLINE, text, lexer->line_number++};
+                return line_token;
+            }
+            cct_next_char(lexer);
+        }
+        if(lexer->next_char == '#')
+        {
+            if(cct_next_char(lexer) == '#')
+            {
+                // Multi-line comment
+                while(1)
+                {
+                    while(cct_next_char(lexer) != '#' && !feof(lexer->input_stream))
+                    {
+                        cct_next_char(lexer);
+                    }
+                    if(feof(lexer->input_stream))
+                    {
+                        // Might change, but currently sends an Error token with 'EOF' as text
+                        // End of file shouldn't occur during a multiline comment
+                        strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
+                        struct ConcoctToken eof_token = {CCT_TOKEN_ERROR, text, lexer->line_number};
+                        return eof_token;
+                    }
+                    // End of comment
+                    cct_next_char(lexer);
+                    break;
+                }
+            }
+            else
+            {
+                // Single line comment
+                while(cct_next_char(lexer) != '\n' && !feof(lexer->input_stream))
+                {
+                    cct_next_char(lexer);
+                }
+                if(feof(lexer->input_stream))
+                {
+                    // End of file is perfectly fine on single-line comments
+                    strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
+                    struct ConcoctToken eof_token = {CCT_TOKEN_EOF, text, lexer->line_number};
+                    return eof_token;
+                }
+                // Return the newline that terminated the comment
+                cct_next_char(lexer);
+                strcpy(text, "\\n");
+                struct ConcoctToken line_token = {CCT_TOKEN_NEWLINE, text, lexer->line_number++};
+                return line_token;
+            }
+        }
     }
+
 
     if(feof(lexer->input_stream))
     {
@@ -288,6 +340,30 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
                 cct_next_char(lexer);
                 type = CCT_TOKEN_RIGHT_PAREN;
                 break;
+            case '{':
+                cct_next_char(lexer);
+                type = CCT_TOKEN_LEFT_BRACE;
+                break;
+            case '}':
+                cct_next_char(lexer);
+                type = CCT_TOKEN_RIGHT_BRACE;
+                break;
+            case '[':
+                cct_next_char(lexer);
+                type = CCT_TOKEN_LEFT_BRACKET;
+                break;
+            case ']':
+                cct_next_char(lexer);
+                type = CCT_TOKEN_RIGHT_BRACKET;
+                break;
+            case '"':
+                cct_next_char(lexer);
+                type = CCT_TOKEN_DOUBLE_QUOTE;
+                break;
+            case '\'':
+                cct_next_char(lexer);
+                type = CCT_TOKEN_SINGLE_QUOTE;
+                break;
             case ',':
                 cct_next_char(lexer);
                 type = CCT_TOKEN_COMMA;
@@ -390,6 +466,18 @@ const char* cct_token_type_to_string(enum ConcoctTokenType type)
             return "(";
         case CCT_TOKEN_RIGHT_PAREN:
             return ")";
+        case CCT_TOKEN_LEFT_BRACE:
+            return "{";
+        case CCT_TOKEN_RIGHT_BRACE:
+            return "}";
+        case CCT_TOKEN_LEFT_BRACKET:
+            return "[";
+        case CCT_TOKEN_RIGHT_BRACKET:
+            return "]";
+        case CCT_TOKEN_SINGLE_QUOTE:
+            return "'";
+        case CCT_TOKEN_DOUBLE_QUOTE:
+            return "\"";
         case CCT_TOKEN_BREAK:
             return "break";
         case CCT_TOKEN_CASE:
