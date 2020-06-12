@@ -292,10 +292,12 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
                         {
                             cct_next_char(lexer);
                             type = CCT_TOKEN_EXP_ASSIGN;
+                            break;
                         }
                         else
                         {
                             type = CCT_TOKEN_EXP;
+                            break;
                         }
                     default:
                         type = CCT_TOKEN_MUL;
