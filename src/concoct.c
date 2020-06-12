@@ -1,5 +1,5 @@
 /*
- * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language 
+ * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language
  * Copyright (C) 2020 BlakeTheBlock, Lloyd Dilley
  * https://github.com/FragLand/concoct
  *
@@ -32,7 +32,7 @@
 int main(int argc, char **argv)
 {
   FILE *input_file;
-  char line[LINE_LENGTH];
+  //char line[LINE_LENGTH];
 
   printf("Concoct v%s\n", VERSION);
 
