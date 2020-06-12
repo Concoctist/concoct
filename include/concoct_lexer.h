@@ -28,6 +28,7 @@
 #include <string.h>
 
 #define TOKEN_TEXT_LENGTH 32
+#define STRING_TOKEN_LENGTH 512
 
 enum ConcoctTokenType
 {
@@ -35,6 +36,7 @@ enum ConcoctTokenType
   CCT_TOKEN_INT,
   CCT_TOKEN_FLOAT,
   CCT_TOKEN_STRING,
+  CCT_TOKEN_CHAR,
   CCT_TOKEN_ASSIGN,
   CCT_TOKEN_ADD_ASSIGN,
   CCT_TOKEN_SUB_ASSIGN,
@@ -70,8 +72,6 @@ enum ConcoctTokenType
   CCT_TOKEN_RIGHT_BRACE,
   CCT_TOKEN_LEFT_BRACKET,
   CCT_TOKEN_RIGHT_BRACKET,
-  CCT_TOKEN_DOUBLE_QUOTE,
-  CCT_TOKEN_SINGLE_QUOTE,
   CCT_TOKEN_LEFT_PAREN,
   CCT_TOKEN_RIGHT_PAREN,
   CCT_TOKEN_NEWLINE,
@@ -163,11 +163,14 @@ struct ConcoctLexer
   FILE* input_stream;
   char next_char;
   int line_number;
+  const char* error;
 };
 // Helper function for getting type names
 const char* cct_token_type_to_string(enum ConcoctTokenType);
 
 struct ConcoctLexer cct_new_lexer(FILE* in_stream);
+
+void cct_set_error(struct ConcoctLexer* lexer, const char* message);
 
 char cct_next_char(struct ConcoctLexer* lexer);
 struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer);

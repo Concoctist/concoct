@@ -72,6 +72,13 @@ int main(int argc, char **argv)
   // Continues printing until an EOF is reached
   while(token.type != CCT_TOKEN_EOF)
   {
+    if(lexer.error != NULL)
+    {
+      printf("Error on line %i\n", token.line_number);
+      printf(lexer.error, token.text);
+      free(token.text);
+      break;
+    }
     printf("[%i] %s : %s\n", token.line_number, token.text, cct_token_type_to_string(token.type));
     // Token.text is allocated on the heap, so it's cleaned up here
     free(token.text);
