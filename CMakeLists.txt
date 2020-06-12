@@ -12,7 +12,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 if(MSVC)
   set(CMAKE_C_FLAGS "/W4 /WX")
 else()
-  set(CMAKE_C_FLAGS "-Wall -Wextra -pedantic -Werror")
+  set(CMAKE_C_FLAGS "-Wall -Wextra -pedantic")
 endif()
 
 add_executable(${PROJECT} ${SOURCES})
