@@ -23,7 +23,7 @@
 
 struct ConcoctLexer cct_new_lexer(FILE* in_stream)
 {
-    struct ConcoctLexer lexer = {in_stream, getc(in_stream), 1};
+    struct ConcoctLexer lexer = {in_stream, getc(in_stream), 1, NULL};
     return lexer;
 }
 // Gets the next character in the lexing stream
@@ -32,6 +32,12 @@ char cct_next_char(struct ConcoctLexer* lexer)
     lexer->next_char = getc(lexer->input_stream);
     return lexer->next_char;
 }
+
+void cct_set_error(struct ConcoctLexer* lexer, const char* message)
+{
+    lexer->error = message;
+}
+
 struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
 {
     // Allocates the text part of the token
@@ -67,12 +73,18 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
                 {
                     while(cct_next_char(lexer) != '#' && !feof(lexer->input_stream))
                     {
+                        // Registers new lines even in a comment
+                        if(lexer->next_char == '\n')
+                        {
+                            lexer->line_number++;
+                        }
                         cct_next_char(lexer);
                     }
                     if(feof(lexer->input_stream))
                     {
                         // Might change, but currently sends an Error token with 'EOF' as text
                         // End of file shouldn't occur during a multiline comment
+                        cct_set_error(lexer, "Reached %s during multi-line comment");
                         strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
                         struct ConcoctToken eof_token = {CCT_TOKEN_ERROR, text, lexer->line_number};
                         return eof_token;
@@ -160,9 +172,67 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
             type = CCT_TOKEN_INT;
         }
     }
-    // If it's not an identifier, or number, it should be easier to test with a switch
+    else if(lexer->next_char == '"')
+    {
+        // Strings are generally much larger than other tokens
+        free(text);
+        text = malloc(STRING_TOKEN_LENGTH);
+        text[text_index++] = '"';
+        while(cct_next_char(lexer) != '"')
+        {
+            if(feof(lexer->input_stream))
+            {
+                cct_set_error(lexer, "Unterminated string, got %s");
+                strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
+                struct ConcoctToken error_token = {CCT_TOKEN_ERROR, text, lexer->line_number};
+                return error_token;
+            }
+            if(lexer->next_char == '\n')
+            {
+                cct_set_error(lexer, "Unterminated string, got %s");
+                strcpy(text, cct_token_type_to_string(CCT_TOKEN_NEWLINE));
+                struct ConcoctToken error_token = {CCT_TOKEN_ERROR, text, lexer->line_number};
+                return error_token;
+            }
+            text[text_index++] = lexer->next_char;
+        }
+        text[text_index++] = '"';
+        cct_next_char(lexer);
+        type = CCT_TOKEN_STRING;
+    }
+    else if(lexer->next_char == '\'')
+    {
+        text[text_index++] = '\'';
+        cct_next_char(lexer);
+        if(feof(lexer->input_stream))
+        {
+            cct_set_error(lexer, "Unterminated character literal, got %s");
+            strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
+            struct ConcoctToken error_token = {CCT_TOKEN_ERROR, text, lexer->line_number};
+            return error_token;
+        }
+        if(lexer->next_char == '\n')
+        {
+            cct_set_error(lexer, "Unterminated character literal, got %s");
+            strcpy(text, cct_token_type_to_string(CCT_TOKEN_NEWLINE));
+            struct ConcoctToken error_token = {CCT_TOKEN_ERROR, text, lexer->line_number};
+            return error_token;
+        }
+        if(lexer->next_char == '\'')
+        {
+            cct_set_error(lexer, "Empty character literal %s");
+            strcpy(text, "''");
+            struct ConcoctToken error_token = {CCT_TOKEN_ERROR, text, lexer->line_number};
+            return error_token;
+        }
+        text[text_index++] = lexer->next_char;
+        text[text_index++] = '\'';
+        cct_next_char(lexer);
+        type = CCT_TOKEN_CHAR;
+    }
     else
     {
+        // These should be easier to test with a switch
         // Depending on the character following each operator, it may become a different operator
         switch(lexer->next_char)
         {
@@ -356,14 +426,6 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
                 cct_next_char(lexer);
                 type = CCT_TOKEN_RIGHT_BRACKET;
                 break;
-            case '"':
-                cct_next_char(lexer);
-                type = CCT_TOKEN_DOUBLE_QUOTE;
-                break;
-            case '\'':
-                cct_next_char(lexer);
-                type = CCT_TOKEN_SINGLE_QUOTE;
-                break;
             case ',':
                 cct_next_char(lexer);
                 type = CCT_TOKEN_COMMA;
@@ -371,6 +433,7 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
             default:
                 // This means it's some sort of unsupported character
                 // We just set the text to the original text, and set the type to Error
+                cct_set_error(lexer, "Unexpected character '%s'");
                 text[text_index++] = lexer->next_char;
                 text[text_index++] = '\0';
                 cct_next_char(lexer);
@@ -398,6 +461,8 @@ const char* cct_token_type_to_string(enum ConcoctTokenType type)
             return "Float";
         case CCT_TOKEN_STRING:
             return "String";
+        case CCT_TOKEN_CHAR:
+            return "Char";
         case CCT_TOKEN_NEWLINE:
             return "New line";
         case CCT_TOKEN_EOF:
@@ -474,10 +539,6 @@ const char* cct_token_type_to_string(enum ConcoctTokenType type)
             return "[";
         case CCT_TOKEN_RIGHT_BRACKET:
             return "]";
-        case CCT_TOKEN_SINGLE_QUOTE:
-            return "'";
-        case CCT_TOKEN_DOUBLE_QUOTE:
-            return "\"";
         case CCT_TOKEN_BREAK:
             return "break";
         case CCT_TOKEN_CASE:
