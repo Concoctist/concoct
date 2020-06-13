@@ -22,12 +22,52 @@
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VERSION_H
-#define VERSION_H
+#ifndef VM_H
+#define VM_H
 
-const char* const VERSION = "0.1.0";
+typedef enum cct_opcode
+{
+  OP_ADD, // add
+  OP_AND, // and
+  OP_CAL, // call
+  OP_CMP, // compare
+  OP_DEC, // decrement
+  OP_DIV, // divide
+  OP_ENT, // entry point
+  OP_EXT, // exit
+  OP_FLS, // false
+  OP_HLT, // halt
+  OP_INC, // increment
+  OP_JMC, // jump conditional
+  OP_JMP, // jump
+  OP_JMZ, // jump zero
+  OP_LNE, // loop not equal
+  OP_LNZ, // loop not zero
+  OP_LOE, // loop equal
+  OP_LOP, // loop
+  OP_LOZ, // loop zero
+  OP_MOD, // modulus
+  OP_MOV, // move
+  OP_MUL, // multiply
+  OP_NOP, // no op
+  OP_NOT, // not
+  OP_NUL, // null
+  OP_OR,  // or
+  OP_POP, // pop
+  OP_POW, // power/exponent
+  OP_PSH, // push
+  OP_RET, // return
+  OP_SHL, // bitshift left
+  OP_SHR, // bitshift right
+  OP_STR, // store
+  OP_SUB, // subtract
+  OP_SYS, // system
+  OP_TRU, // true
+  OP_TST, // test
+  OP_XOR  // exclusive or
+} cct_opcode;
 
-#endif /* VERSION_H */
+#endif /* VM_H */
