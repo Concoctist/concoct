@@ -27,22 +27,52 @@
 
 #include "concoct_lexer.h"
 
-struct ConcoctLexer cct_new_lexer(FILE* in_stream)
+struct ConcoctLexer cct_new_file_lexer(FILE* in_file)
 {
     struct ConcoctLexer lexer;
-    lexer.input_stream = in_stream;
-    lexer.next_char = (char)getc(in_stream);
+    lexer.type = CCT_LEXER_FILE;
+    lexer.input.file_input = in_file;
     lexer.line_number = 1;
     lexer.error = NULL;
+    cct_next_char(&lexer);
+    return lexer;
+}
+struct ConcoctLexer cct_new_string_lexer(const char* in_string)
+{
+    struct ConcoctLexer lexer;
+    lexer.type = CCT_LEXER_STRING;
+    lexer.input.string_input = in_string;
+    lexer.string_index = 0;
+    lexer.line_number = 1;
+    lexer.error = NULL;
+    cct_next_char(&lexer);
     return lexer;
 }
 // Gets the next character in the lexing stream
 char cct_next_char(struct ConcoctLexer* lexer)
 {
-    lexer->next_char = (char)getc(lexer->input_stream);
+    if(lexer->type == CCT_LEXER_FILE)
+    {
+        lexer->next_char = (char)getc(lexer->input.file_input);
+    }
+    else
+    {
+        if(lexer->next_char != '\0')
+        {
+            lexer->next_char = lexer->input.string_input[lexer->string_index++];
+        }
+    }
     return lexer->next_char;
 }
 
+int cct_lexer_is_eof(struct ConcoctLexer* lexer)
+{
+    if(lexer->type == CCT_LEXER_FILE)
+    {
+        return feof(lexer->input.file_input);
+    }
+    return lexer->next_char == '\0';
+}
 void cct_set_error(struct ConcoctLexer* lexer, const char* message)
 {
     lexer->error = message;
@@ -90,7 +120,7 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
                 // Multi-line comment
                 while(1)
                 {
-                    while(cct_next_char(lexer) != '#' && !feof(lexer->input_stream))
+                    while(cct_next_char(lexer) != '#' && !cct_lexer_is_eof(lexer))
                     {
                         // Registers new lines even in a comment
                         if(lexer->next_char == '\n')
@@ -98,7 +128,7 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
                             lexer->line_number++;
                         }
                     }
-                    if(feof(lexer->input_stream))
+                    if(cct_lexer_is_eof(lexer))
                     {
                         // Might change, but currently sends an Error token with 'EOF' as text
                         // End of file shouldn't occur during a multiline comment
@@ -115,11 +145,11 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
             else
             {
                 // Single line comment
-                while(lexer->next_char != '\n' && !feof(lexer->input_stream))
+                while(lexer->next_char != '\n' && !cct_lexer_is_eof(lexer))
                 {
                     cct_next_char(lexer);
                 }
-                if(feof(lexer->input_stream))
+                if(cct_lexer_is_eof(lexer))
                 {
                     // End of file is perfectly fine on single-line comments
                     strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
@@ -136,7 +166,7 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
     }
 
 
-    if(feof(lexer->input_stream))
+    if(cct_lexer_is_eof(lexer))
     {
         strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
         struct ConcoctToken eof_token = cct_new_token(CCT_TOKEN_EOF, text, lexer->line_number);
@@ -198,7 +228,7 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
         text[text_index++] = '"';
         while(cct_next_char(lexer) != '"')
         {
-            if(feof(lexer->input_stream))
+            if(cct_lexer_is_eof(lexer))
             {
                 cct_set_error(lexer, "Unterminated string, got %s");
                 strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
@@ -222,7 +252,7 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
     {
         text[text_index++] = '\'';
         cct_next_char(lexer);
-        if(feof(lexer->input_stream))
+        if(cct_lexer_is_eof(lexer))
         {
             cct_set_error(lexer, "Unterminated character literal, got %s");
             strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
