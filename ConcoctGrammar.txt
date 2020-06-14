@@ -16,6 +16,11 @@ subtract_expr = expr, "-", expr;
 multiply_expr = expr, "*", expr;
 divide_expr = expr, "/", expr;
 modulus_expr = expr, "%", expr;
+exp_expr = expr, "**", expr;
+post_inc_expr = expr, "++";
+pre_inc_expr = "++", expr;
+post_dec_expr = expr, "--";
+pre_dec_expr = "--", expr;
 
 greater_expr = expr, ">", expr;
 less_expr = expr, "<", expr;
@@ -24,37 +29,48 @@ not_equal_expr = expr, "!=", expr;
 greater_equal_expr = expr, ">=", expr;
 less_equal_expr = expr, "<=", expr;
 
-bit_and_expr = expr, "&", expr;
-bit_or_expr = expr, "|", expr;
+bin_and_expr = expr, "&", expr;
+bin_or_expr = expr, "|", expr;
+bin_xor_expr = expr, "^", expr;
+bin_lsh_expr = expr, "<<", expr;
+bin_rsh_expr = expr, ">>", expr;
 
 not_expr = "!", expr;
 and_expr = expr, "&&", expr;
 or_expr = expr, "||", expr;
 
-logical_expr = bit_and_expr | bit_or_expr | not_expr | and_expr | or_expr;
+logical_expr = not_expr | and_expr | or_expr;
+binary_expr = bin_and_expr | bin_or_expr | bin_xor_expr | bin_lsh_expr | bin_rsh_expr
 compare_expr = greater_expr | less_expr | greater_equal_expr | less_equal_expr | equal_expr | not_equal_expr;
-math_expr = add_expr | subtract_expr | multiply_expr | divide_expr | modulus_expr;
+math_expr = add_expr | subtract_expr | multiply_expr | divide_expr | modulus_expr | exp_expr
+	| post_inc_expr | pre_inc_expr | post_dec_expr | pre_dec_expr;
 access_expr = identifier, {".", identifier};
 null_expr = "null";
 parentheses_expr = "(", expr, ")";
+array_expr = "[", {expr}, "]";
 
 expr = float_expr | int_expr | string_expr | char_expr | bool_expr | math_expr | access_expr | compare_expr | logical_expr
-	| null_expr | parentheses_expr;
+	| binary_expr | null_expr | parentheses_expr | array_expr;
 
 compound_statement = "{", {statement}, "}";
 if_statement = "if", expr, statement, {"elif", statement}, ["else", statement];
-switch_statement = "switch", expr, "{", {"case", expr, ":", statement}, "}";
+switch_statement = "switch", expr, "{", {"if", expr, ":", {statement}}, ["else", ":", {statement}] "}";
 while_statement = "while", expr, statement;
 break_statement = "break";
 continue_statement = "continue";
 do_while_statement = "do", statement, "while", expr;
-func_statement = "func", identifier, "(", [identifier, {",", identifier}], ")", compound_statement;
+for_statement = "for", identifier, "in", expr, statement
+func_statement = "func", identifier, "(", [identifier, {",", identifier}], ")", [":", "(", [expr, {",", expr}], ")"], compound_statement;
 return_statement = "return", expr;
-assign_statement = access_expr, "=", expr;
+goto_statement = "goto", identifier;
+label_statement = identifier, ":";
+assign_statement = access_expr, ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "**="), expr;
 member_assign_statement = identifier, "=", expr;
+enum_declaration = "enum", identifier, "{, {identifier, ["=", int_expr]}, "}";
 class_declaration = "class", identifier, [":", access_expr], "{", {func_statement | member_assign_statement}, "}";
-namespace_declaration = "namespace", identifier, "{", {class_declaration | func_statement | member_assign_statement}, "}";
+namespace_declaration = "namespace", identifier, "{", {namespace_declaration, class_declaration | enum_declaration | func_statement | member_assign_statement}, "}";
 use_declaration = "use", access_expr;
-statement = compound_statement | if_statement | while_statement | do_while_statement | func_statement
-	| return_statement | break_statement | continue_statement | assign_statement | switch_statement;
-program = {statement | class_declaration | namespace_declaration | use_declaration};
+statement = compound_statement | if_statement | while_statement | for_statement | do_while_statement | func_statement
+	| return_statement | break_statement | continue_statement | assign_statement | switch_statement
+	| label_statement | goto_statement;
+program = {statement | class_declaration | enum_declaration | namespace_declaration | use_declaration};
