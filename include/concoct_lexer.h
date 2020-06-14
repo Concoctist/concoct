@@ -164,17 +164,30 @@ struct ConcoctToken
   int line_number;
 };
 
+enum ConcoctLexerType
+{
+  CCT_LEXER_FILE,
+  CCT_LEXER_STRING,
+};
 struct ConcoctLexer
 {
-  FILE* input_stream;
+  enum ConcoctLexerType type;
+  union
+  {
+    FILE* file_input;
+    const char* string_input;
+  } input;
   char next_char;
   int line_number;
+  int string_index;
   const char* error;
 };
 // Helper function for getting type names
 const char* cct_token_type_to_string(enum ConcoctTokenType);
 
-struct ConcoctLexer cct_new_lexer(FILE* in_stream);
+struct ConcoctLexer cct_new_file_lexer(FILE* in_file);
+struct ConcoctLexer cct_new_string_lexer(const char* in_string);
+int cct_lexer_is_eof(struct ConcoctLexer* lexer);
 
 void cct_set_error(struct ConcoctLexer* lexer, const char* message);
 
