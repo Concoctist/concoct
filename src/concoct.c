@@ -32,7 +32,6 @@
 #include "version.h" // version
 
 #include "concoct_lexer.h"
-#include "vm.h"
 
 #define LINE_LENGTH 256
 
