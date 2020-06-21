@@ -12,12 +12,27 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 
 ### Building
 #### Requirements
-* A C compiler that supports the C99 standard (Clang, GCC, MinGW, MSVC >=2015)
-* CMake (>=3.1.0)
-* make/gmake (if using Linux/Unix, Cygwin, or MinGW)
+* A C compiler that supports the [C99](http://en.wikipedia.org/wiki/C99) standard ([Clang](http://clang.llvm.org/), [GCC](http://gcc.gnu.org/), [MinGW](http://www.mingw.org/), [MSVC](http://visualstudio.microsoft.com/) >=2015)
+* [CMake](http://cmake.org/) (>=3.1.0)
+* make/[gmake](http://www.gnu.org/software/make/) (if using Linux/Unix, [Cygwin](http://www.cygwin.com/), or [MinGW](http://www.mingw.org/))
+* Optional software for debugging may include: [gdb](http://www.gnu.org/software/gdb/) (Linux), [lldb](http://lldb.llvm.org/) (Linux, FreeBSD, and macOS), [DTrace](http://dtrace.org/blogs/about/) (FreeBSD, macOS, and Solaris), ktrace (FreeBSD), ltrace (Linux), [strace](http://strace.io/) (Linux), truss (AIX, FreeBSD, and Solaris), tusc (HP-UX), and [Valgrind](http://valgrind.org/)
 
 #### Linux/Unix and Cygwin Steps
-1. Obtain the source code via git or download a zip archive:
+1. Install prerequisites:
+
+   Debian/Ubuntu:
+   ```sh
+   # apt-get install cmake gcc git make
+   ```
+   CentOS/Fedora/RHEL:
+   ```sh
+   # yum install cmake gcc git make
+   ```
+   FreeBSD:
+   ```sh
+   # pkg install clang cmake git make
+   ```
+1. Obtain the source code via `git` or download a zip archive:
    ```sh
    $ git clone https://github.com/ConcoctLang/concoct.git
    ```
