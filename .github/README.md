@@ -5,3 +5,50 @@
 Concoct 🧪
 =======
 Concoct is an imperative, dynamically-typed, interpreted, general-purpose programming language written in C.
+
+:construction: **Note:** This project is very much a work in progress. The interpreter is not yet functional. Have a look at the [roadmap](https://github.com/ConcoctLang/concoct/wiki/Roadmap).
+
+For more information about Concoct, please see the [wiki](https://github.com/ConcoctLang/concoct/wiki).
+
+### Building
+#### Requirements
+* A C compiler that supports the C99 standard (Clang, GCC, MinGW, MSVC >=2015)
+* CMake (>=3.1.0)
+* make/gmake (if using Linux/Unix, Cygwin, or MinGW)
+
+#### Linux/Unix and Cygwin Steps
+1. Obtain the source code via git or download a zip archive:
+   ```sh
+   $ git clone https://github.com/ConcoctLang/concoct.git
+   ```
+   Or:
+   ```sh
+   $ wget https://github.com/ConcoctLang/concoct/archive/master.zip && unzip master.zip
+   ```
+
+2. In the top-level directory where `CMakeLists.txt` exists, create a build directory:
+   ```sh
+   $ mkdir bld && cd bld
+   ```
+
+3. Generate the `Makefile` (you can alternatively use `ccmake` here if you prefer):
+   ```sh
+   $ cmake ..
+   ```
+
+4. Build Concoct:
+   ```sh
+   make
+   ```
+
+5. Congratulations! There should now be a `concoct` executable under the `bin` directory.
+
+#### Windows Steps
+
+:construction: This section needs to be populated.
+
+### Contributing and Support
+Feel free to [submit an issue](https://github.com/ConcoctLang/concoct/issues/new) if you require assistance or would like to
+make a feature request. You are also welcome to join our Discord server at https://discord.concoct.dev/. Concoct discussion occurs in the `#development` channel. Any contributions such as build testing, creating bug reports or feature requests, and submitting pull requests are appreciated. Please see the
+[fork and pull guide](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork)
+for direction if you are not certain how to submit a pull request.
