@@ -72,6 +72,6 @@ typedef enum opcode
 } Opcode;
 
 /* Returns opcode constant based on numeric ID */
-const char* get_mnemonic(opcode oc);
+const char* get_mnemonic(Opcode oc);
 
 #endif /* OPCODES_H */
