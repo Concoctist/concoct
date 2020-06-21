@@ -28,7 +28,7 @@
 #include "vm/opcodes.h"
 
 /* Returns opcode constant based on numeric ID */
-const char* get_mnemonic(opcode oc)
+const char* get_mnemonic(Opcode oc)
 {
   switch(oc)
   {
