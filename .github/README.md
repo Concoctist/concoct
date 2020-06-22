@@ -10,7 +10,7 @@ Concoct is an imperative, dynamically-typed, interpreted, general-purpose progra
 
 For more information about Concoct, please see the [wiki](https://github.com/ConcoctLang/concoct/wiki).
 
-### Building
+### Building :hammer_and_wrench:
 #### Requirements
 * A C compiler that supports the [C99](http://en.wikipedia.org/wiki/C99) standard ([Clang](http://clang.llvm.org/), [GCC](http://gcc.gnu.org/), [MinGW](http://www.mingw.org/), [MSVC](http://visualstudio.microsoft.com/) >=2015)
 * [CMake](http://cmake.org/) (>=3.1.0)
@@ -62,7 +62,7 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 
 :triangular_flag_on_post: This section needs to be populated.
 
-### Contributing and Support
+### Contributing and Support :octocat:
 Feel free to [submit an issue](https://github.com/ConcoctLang/concoct/issues/new) if you require assistance or would like to
 make a feature request. You are also welcome to join our Discord server at https://discord.concoct.dev/. Concoct discussion occurs in the `#development` channel. Any contributions such as build testing, creating bug reports or feature requests, and submitting pull requests are appreciated. Our code style guidelines can be found in the "Coding Convention" section of [CONTRIBUTING.md](https://github.com/ConcoctLang/concoct/blob/master/.github/CONTRIBUTING.md). Please see the
 [fork and pull guide](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork)
