@@ -27,26 +27,33 @@
 
 #include "concoct_lexer.h"
 
-struct ConcoctLexer cct_new_file_lexer(FILE* in_file)
+struct ConcoctLexer* cct_new_file_lexer(FILE* in_file)
 {
-    struct ConcoctLexer lexer;
-    lexer.type = CCT_LEXER_FILE;
-    lexer.input.file_input = in_file;
-    lexer.line_number = 1;
-    lexer.error = NULL;
-    cct_next_char(&lexer);
+    struct ConcoctLexer* lexer = malloc(sizeof(struct ConcoctLexer));
+    lexer->type = CCT_LEXER_FILE;
+    lexer->input.file_input = in_file;
+    lexer->line_number = 1;
+    lexer->error = NULL;
+    lexer->token_text = malloc(TOKEN_TEXT_LENGTH);
+    cct_next_char(lexer);
     return lexer;
 }
-struct ConcoctLexer cct_new_string_lexer(const char* in_string)
+struct ConcoctLexer* cct_new_string_lexer(const char* in_string)
 {
-    struct ConcoctLexer lexer;
-    lexer.type = CCT_LEXER_STRING;
-    lexer.input.string_input = in_string;
-    lexer.string_index = 0;
-    lexer.line_number = 1;
-    lexer.error = NULL;
-    cct_next_char(&lexer);
+    struct ConcoctLexer* lexer = malloc(sizeof(struct ConcoctLexer));
+    lexer->type = CCT_LEXER_STRING;
+    lexer->input.string_input = in_string;
+    lexer->string_index = 0;
+    lexer->line_number = 1;
+    lexer->error = NULL;
+    lexer->token_text = malloc(TOKEN_TEXT_LENGTH);
+    cct_next_char(lexer);
     return lexer;
+}
+void cct_delete_lexer(struct ConcoctLexer* lexer)
+{
+    free(lexer->token_text);
+    free(lexer);
 }
 // Gets the next character in the lexing stream
 char cct_next_char(struct ConcoctLexer* lexer)
@@ -78,22 +85,21 @@ void cct_set_error(struct ConcoctLexer* lexer, const char* message)
     lexer->error = message;
 }
 
-struct ConcoctToken cct_new_token(enum ConcoctTokenType type, char* text, int line_number)
+struct ConcoctToken cct_new_token(enum ConcoctTokenType type, int line_number)
 {
     struct ConcoctToken token;
     token.type = type;
-    token.text = text;
     token.line_number = line_number;
     return token;
 }
 struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
 {
-    // Allocates the text part of the token
-    char* text = malloc(TOKEN_TEXT_LENGTH);
     // Had to be initialized, so Error is a good default
     enum ConcoctTokenType type = CCT_TOKEN_ERROR;
     // How far into the text we are
     int text_index = 0;
+    // Default to an empty string
+    lexer->token_text[0] = '\0';
     // Skips whitespace and comments, repeatedly
     while(1)
     {
@@ -107,8 +113,7 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
             if(lexer->next_char == '\n')
             {
                 cct_next_char(lexer);
-                strcpy(text, "\\n");
-                struct ConcoctToken line_token = cct_new_token(CCT_TOKEN_NEWLINE, text, lexer->line_number++);
+                struct ConcoctToken line_token = cct_new_token(CCT_TOKEN_NEWLINE, lexer->line_number++);
                 return line_token;
             }
             cct_next_char(lexer);
@@ -130,11 +135,8 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
                     }
                     if(cct_lexer_is_eof(lexer))
                     {
-                        // Might change, but currently sends an Error token with 'EOF' as text
-                        // End of file shouldn't occur during a multiline comment
-                        cct_set_error(lexer, "Reached %s during multi-line comment");
-                        strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
-                        struct ConcoctToken eof_token = cct_new_token(CCT_TOKEN_ERROR, text, lexer->line_number);
+                        cct_set_error(lexer, "Reached EOF during multi-line comment");
+                        struct ConcoctToken eof_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
                         return eof_token;
                     }
                     // End of comment
@@ -152,14 +154,12 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
                 if(cct_lexer_is_eof(lexer))
                 {
                     // End of file is perfectly fine on single-line comments
-                    strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
-                    struct ConcoctToken eof_token = cct_new_token(CCT_TOKEN_ERROR, text, lexer->line_number);
+                    struct ConcoctToken eof_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
                     return eof_token;
                 }
                 // Return the newline that terminated the comment
                 cct_next_char(lexer);
-                strcpy(text, "\\n");
-                struct ConcoctToken line_token = cct_new_token(CCT_TOKEN_NEWLINE, text, lexer->line_number++);
+                struct ConcoctToken line_token = cct_new_token(CCT_TOKEN_NEWLINE, lexer->line_number++);
                 return line_token;
             }
         }
@@ -168,25 +168,24 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
 
     if(cct_lexer_is_eof(lexer))
     {
-        strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
-        struct ConcoctToken eof_token = cct_new_token(CCT_TOKEN_EOF, text, lexer->line_number);
+        struct ConcoctToken eof_token = cct_new_token(CCT_TOKEN_EOF, lexer->line_number);
         return eof_token;
     }
     if(isalpha(lexer->next_char) || lexer->next_char == '_')
     {
         while(isalnum(lexer->next_char) || lexer->next_char == '_')
         {
-            text[text_index++] = lexer->next_char;
+            lexer->token_text[text_index++] = lexer->next_char;
             cct_next_char(lexer);
         }
         // Null termination so strcmp works
-        text[text_index++] = '\0';
+        lexer->token_text[text_index] = '\0';
         // Goes trhough each keyword to see if this identifier is actually a keyword
         // Should be optimized to a hash map
         int is_keyword = 0;
         for(int i = 0;i < CCT_KEYWORD_COUNT;i++)
         {
-            if(strcmp(cct_keywords[i], text) == 0)
+            if(strcmp(cct_keywords[i], lexer->token_text) == 0)
             {
                 type = cct_keyword_types[i];
                 is_keyword = 1;
@@ -202,16 +201,16 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
     {
         while(isdigit(lexer->next_char))
         {
-            text[text_index++] = lexer->next_char;
+            lexer->token_text[text_index++] = lexer->next_char;
             cct_next_char(lexer);
         }
         // If it contains a '.' it is treated as a Float
         if(lexer->next_char == '.')
         {
-            text[text_index++] = lexer->next_char;
+            lexer->token_text[text_index++] = lexer->next_char;
             while(isdigit(cct_next_char(lexer)))
             {
-                text[text_index++] = lexer->next_char;
+                lexer->token_text[text_index++] = lexer->next_char;
             }
             type = CCT_TOKEN_FLOAT;
         }
@@ -222,59 +221,47 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
     }
     else if(lexer->next_char == '"')
     {
-        // Strings are generally much larger than other tokens
-        free(text);
-        text = malloc(STRING_TOKEN_LENGTH);
-        text[text_index++] = '"';
         while(cct_next_char(lexer) != '"')
         {
             if(cct_lexer_is_eof(lexer))
             {
-                cct_set_error(lexer, "Unterminated string, got %s");
-                strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
-                struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, text, lexer->line_number);
+                cct_set_error(lexer, "Unterminated string, got EOF");
+                struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
                 return error_token;
             }
             if(lexer->next_char == '\n')
             {
-                cct_set_error(lexer, "Unterminated string, got %s");
-                strcpy(text, cct_token_type_to_string(CCT_TOKEN_NEWLINE));
-                struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, text, lexer->line_number);
+                cct_set_error(lexer, "Unterminated string, got New Line");
+                struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
                 return error_token;
             }
-            text[text_index++] = lexer->next_char;
+            lexer->token_text[text_index++] = lexer->next_char;
         }
-        text[text_index++] = '"';
         cct_next_char(lexer);
         type = CCT_TOKEN_STRING;
     }
     else if(lexer->next_char == '\'')
     {
-        text[text_index++] = '\'';
         cct_next_char(lexer);
         if(cct_lexer_is_eof(lexer))
         {
-            cct_set_error(lexer, "Unterminated character literal, got %s");
-            strcpy(text, cct_token_type_to_string(CCT_TOKEN_EOF));
-            struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, text, lexer->line_number);
+            cct_set_error(lexer, "Unterminated character literal, got EOF");
+            struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
             return error_token;
         }
         if(lexer->next_char == '\n')
         {
-            cct_set_error(lexer, "Unterminated character literal, got %s");
-            strcpy(text, cct_token_type_to_string(CCT_TOKEN_NEWLINE));
-            struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, text, lexer->line_number);
+            cct_set_error(lexer, "Unterminated character literal, got New Line");
+            struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
             return error_token;
         }
         if(lexer->next_char == '\'')
         {
-            cct_set_error(lexer, "Empty character literal %s");
-            strcpy(text, "''");
-            struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, text, lexer->line_number);
+            cct_set_error(lexer, "Empty character literal");
+            struct ConcoctToken error_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
             return error_token;
         }
-        text[text_index++] = lexer->next_char;
-        text[text_index++] = '\'';
+        lexer->token_text[text_index++] = lexer->next_char;
         cct_next_char(lexer);
         type = CCT_TOKEN_CHAR;
     }
@@ -483,19 +470,17 @@ struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer)
             default:
                 // This means it's some sort of unsupported character
                 // We just set the text to the original text, and set the type to Error
-                cct_set_error(lexer, "Unexpected character '%s'");
-                text[text_index++] = lexer->next_char;
-                text[text_index++] = '\0';
+                cct_set_error(lexer, "Unexpected character");
+                lexer->token_text[text_index++] = lexer->next_char;
+                lexer->token_text[text_index] = '\0';
                 cct_next_char(lexer);
-                struct ConcoctToken token = cct_new_token(CCT_TOKEN_ERROR, text, lexer->line_number);
+                struct ConcoctToken token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
                 return token;
         }
-        strcpy(text, cct_token_type_to_string(type));
-        text_index = 5;
     }
     // Ensures null-termination
-    text[text_index] = '\0';
-    struct ConcoctToken token = cct_new_token(type, text, lexer->line_number);
+    lexer->token_text[text_index] = '\0';
+    struct ConcoctToken token = cct_new_token(type, lexer->line_number);
     return token;
 }
 
