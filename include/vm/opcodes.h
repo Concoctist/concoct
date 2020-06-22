@@ -28,50 +28,50 @@
 #ifndef OPCODES_H
 #define OPCODES_H
 
-/* Supported instruction set */
+// Supported instruction set
 typedef enum opcode
 {
-  OP_ADD, // add
-  OP_AND, // and
-  OP_CAL, // call
-  OP_CMP, // compare
-  OP_DEC, // decrement
-  OP_DIV, // divide
-  OP_ENT, // entry point
-  OP_EXT, // exit
-  OP_FLS, // false
-  OP_HLT, // halt
-  OP_INC, // increment
-  OP_JMC, // jump conditional
-  OP_JMP, // jump
-  OP_JMZ, // jump zero
-  OP_LNE, // loop not equal
-  OP_LNZ, // loop not zero
-  OP_LOE, // loop equal
-  OP_LOP, // loop
-  OP_LOZ, // loop zero
-  OP_MOD, // modulus
-  OP_MOV, // move
-  OP_MUL, // multiply
-  OP_NOP, // no op
-  OP_NOT, // not
-  OP_NUL, // null
-  OP_OR,  // or
-  OP_POP, // pop
-  OP_POW, // power/exponent
-  OP_PSH, // push
-  OP_RET, // return
-  OP_SHL, // bitshift left
-  OP_SHR, // bitshift right
-  OP_STR, // store
-  OP_SUB, // subtract
-  OP_SYS, // system
-  OP_TRU, // true
-  OP_TST, // test
-  OP_XOR  // exclusive or
+	OP_ADD, // add
+	OP_AND, // and
+	OP_CAL, // call
+	OP_CMP, // compare
+	OP_DEC, // decrement
+	OP_DIV, // divide
+	OP_ENT, // entry point
+	OP_EXT, // exit
+	OP_FLS, // false
+	OP_HLT, // halt
+	OP_INC, // increment
+	OP_JMC, // jump conditional
+	OP_JMP, // jump
+	OP_JMZ, // jump zero
+	OP_LNE, // loop not equal
+	OP_LNZ, // loop not zero
+	OP_LOE, // loop equal
+	OP_LOP, // loop
+	OP_LOZ, // loop zero
+	OP_MOD, // modulus
+	OP_MOV, // move
+	OP_MUL, // multiply
+	OP_NOP, // no op
+	OP_NOT, // not
+	OP_NUL, // null
+	OP_OR,  // or
+	OP_POP, // pop
+	OP_POW, // power/exponent
+	OP_PSH, // push
+	OP_RET, // return
+	OP_SHL, // bitshift left
+	OP_SHR, // bitshift right
+	OP_STR, // store
+	OP_SUB, // subtract
+	OP_SYS, // system
+	OP_TRU, // true
+	OP_TST, // test
+	OP_XOR  // exclusive or
 } Opcode;
 
-/* Returns opcode constant based on numeric ID */
+// Returns opcode constant based on numeric ID
 const char* get_mnemonic(Opcode oc);
 
-#endif /* OPCODES_H */
+#endif // OPCODES_H
