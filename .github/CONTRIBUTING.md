@@ -22,9 +22,9 @@ Please follow the existing styling as closely as possible for any code contribut
 
 * Multi-line `/* ... */` comments are encouraged before functions to document them.
 
-* Use spaces and not tabs to be consistent with the existing code.
+* Use tabs and not spaces to be consistent with the existing code.
 
-* Please indent with 2 spaces.
+* A single tab should represent 4 spaces.
 
 * Custom types specified with `typedef` should have the first letter of their name capitalized.
 
