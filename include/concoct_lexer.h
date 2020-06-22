@@ -33,8 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TOKEN_TEXT_LENGTH 32
-#define STRING_TOKEN_LENGTH 512
+#define TOKEN_TEXT_LENGTH 1024
 
 enum ConcoctTokenType
 {
@@ -160,7 +159,6 @@ static enum ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
 struct ConcoctToken
 {
   enum ConcoctTokenType type;
-  char* text;
   int line_number;
 };
 
@@ -180,13 +178,18 @@ struct ConcoctLexer
   char next_char;
   int line_number;
   int string_index;
+  char* token_text;
   const char* error;
 };
+struct ConcoctToken cct_new_token(enum ConcoctTokenType type, int line_number);
+
 // Helper function for getting type names
 const char* cct_token_type_to_string(enum ConcoctTokenType);
 
-struct ConcoctLexer cct_new_file_lexer(FILE* in_file);
-struct ConcoctLexer cct_new_string_lexer(const char* in_string);
+struct ConcoctLexer* cct_new_file_lexer(FILE* in_file);
+struct ConcoctLexer* cct_new_string_lexer(const char* in_string);
+void cct_delete_lexer(struct ConcoctLexer* lexer);
+
 int cct_lexer_is_eof(struct ConcoctLexer* lexer);
 
 void cct_set_error(struct ConcoctLexer* lexer, const char* message);

@@ -73,44 +73,40 @@ int main(int argc, char **argv)
   }
   */
   // Creates a new lexer and iterates through the tokens
-  struct ConcoctLexer file_lexer = cct_new_file_lexer(input_file);
-  struct ConcoctToken token = cct_next_token(&file_lexer);
+  struct ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
+  struct ConcoctToken token = cct_next_token(file_lexer);
   // Continues printing until an EOF is reached
   printf("FILE LEXING\n");
   while(token.type != CCT_TOKEN_EOF)
   {
-    if(file_lexer.error != NULL)
+    if(file_lexer->error != NULL)
     {
       printf("Error on line %i\n", token.line_number);
-      printf(file_lexer.error, token.text);
-      free(token.text);
+      printf("%s\n", file_lexer->error);
       break;
     }
-    printf("[%i] %s : %s\n", token.line_number, token.text, cct_token_type_to_string(token.type));
-    // Token.text is allocated on the heap, so it's cleaned up here
-    free(token.text);
-    token = cct_next_token(&file_lexer);
+    printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
+    token = cct_next_token(file_lexer);
   }
 
   fclose(input_file);
-
+  cct_delete_lexer(file_lexer);
   // Lexer also can be created for strings
   const char* input = "func test() { return a + b }";
-  struct ConcoctLexer string_lexer = cct_new_string_lexer(input);
-  token = cct_next_token(&string_lexer);
+  struct ConcoctLexer* string_lexer = cct_new_string_lexer(input);
+  token = cct_next_token(string_lexer);
   printf("STRING LEXING\n");
   while(token.type != CCT_TOKEN_EOF)
   {
-    if(string_lexer.error != NULL)
+    if(string_lexer->error != NULL)
     {
       printf("Error on line %i\n", token.line_number);
-      printf(string_lexer.error, token.text);
-      free(token.text);
+      printf("%s\n", string_lexer->error);
       break;
     }
-    printf("[%i] %s : %s\n", token.line_number, token.text, cct_token_type_to_string(token.type));
-    free(token.text);
-    token = cct_next_token(&string_lexer);
+    printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
+    token = cct_next_token(string_lexer);
   }
+  cct_delete_lexer(string_lexer);
   return 0;
 }
