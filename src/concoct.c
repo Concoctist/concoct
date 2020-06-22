@@ -37,76 +37,76 @@
 
 int main(int argc, char **argv)
 {
-  FILE *input_file;
-  //char line[LINE_LENGTH];
+	FILE *input_file;
+	//char line[LINE_LENGTH];
 
-  printf("Concoct v%s\n", VERSION);
+	printf("Concoct v%s\n", VERSION);
 
-  if(argc < 2)
-  {
-    puts("No input file!");
-    exit(1);
-  }
+	if(argc < 2)
+	{
+		puts("No input file!");
+		exit(1);
+	}
 
-  if(argc > 2)
-  {
-    puts("Too many arguments!");
-    exit(1);
-  }
+	if(argc > 2)
+	{
+		puts("Too many arguments!");
+		exit(1);
+	}
 
-  input_file = fopen(argv[1] , "r");
+	input_file = fopen(argv[1] , "r");
 
-  if(input_file == NULL)
-  {
-    fprintf(stderr, "Error opening %s: %s\n", argv[1], strerror(errno));
-    exit(1);
-  }
+	if(input_file == NULL)
+	{
+		fprintf(stderr, "Error opening %s: %s\n", argv[1], strerror(errno));
+		exit(1);
+	}
 
-  // For now, print each line in a file with corresponding line number and character count
-  // ToDo: Parse tokens from .ct source file
-  /*
-  int line_number = 0;
-  while(fgets (line, LINE_LENGTH, input_file) != NULL)
-  {
-     line_number++;
-     printf("%i\t(%i)\t%s", line_number, strlen(line), line);
-  }
-  */
-  // Creates a new lexer and iterates through the tokens
-  struct ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
-  struct ConcoctToken token = cct_next_token(file_lexer);
-  // Continues printing until an EOF is reached
-  printf("FILE LEXING\n");
-  while(token.type != CCT_TOKEN_EOF)
-  {
-    if(file_lexer->error != NULL)
-    {
-      printf("Error on line %i\n", token.line_number);
-      printf("%s\n", file_lexer->error);
-      break;
-    }
-    printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
-    token = cct_next_token(file_lexer);
-  }
+	// For now, print each line in a file with corresponding line number and character count
+	// ToDo: Parse tokens from .ct source file
+	/*
+	int line_number = 0;
+	while(fgets (line, LINE_LENGTH, input_file) != NULL)
+	{
+		line_number++;
+		printf("%i\t(%i)\t%s", line_number, strlen(line), line);
+	}
+	*/
+	// Creates a new lexer and iterates through the tokens
+	struct ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
+	struct ConcoctToken token = cct_next_token(file_lexer);
+	// Continues printing until an EOF is reached
+	printf("FILE LEXING\n");
+	while(token.type != CCT_TOKEN_EOF)
+	{
+		if(file_lexer->error != NULL)
+		{
+			printf("Error on line %i\n", token.line_number);
+			printf("%s\n", file_lexer->error);
+			break;
+		}
+		printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
+		token = cct_next_token(file_lexer);
+	}
 
-  fclose(input_file);
-  cct_delete_lexer(file_lexer);
-  // Lexer also can be created for strings
-  const char* input = "func test() { return a + b }";
-  struct ConcoctLexer* string_lexer = cct_new_string_lexer(input);
-  token = cct_next_token(string_lexer);
-  printf("STRING LEXING\n");
-  while(token.type != CCT_TOKEN_EOF)
-  {
-    if(string_lexer->error != NULL)
-    {
-      printf("Error on line %i\n", token.line_number);
-      printf("%s\n", string_lexer->error);
-      break;
-    }
-    printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
-    token = cct_next_token(string_lexer);
-  }
-  cct_delete_lexer(string_lexer);
-  return 0;
+	fclose(input_file);
+	cct_delete_lexer(file_lexer);
+	// Lexer also can be created for strings
+	const char* input = "func test() { return a + b }";
+	struct ConcoctLexer* string_lexer = cct_new_string_lexer(input);
+	token = cct_next_token(string_lexer);
+	printf("STRING LEXING\n");
+	while(token.type != CCT_TOKEN_EOF)
+	{
+		if(string_lexer->error != NULL)
+		{
+			printf("Error on line %i\n", token.line_number);
+			printf("%s\n", string_lexer->error);
+			break;
+		}
+		printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
+		token = cct_next_token(string_lexer);
+	}
+	cct_delete_lexer(string_lexer);
+	return 0;
 }

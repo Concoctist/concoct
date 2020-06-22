@@ -28,8 +28,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <stdint.h> /* uint8_t */
+#include <stdint.h> // uint8_t
 
-typedef uint8_t Byte; /* unsigned char */
+typedef uint8_t Byte; // unsigned char
 
-#endif /* TYPES_H */
+#endif // TYPES_H

@@ -32,13 +32,13 @@ Please follow the existing styling as closely as possible for any code contribut
    ```c
    int func()
    {
-      // ...
+       // ...
    }
    ```
    Rather than K&R style:
    ```c
    int func() {
-     // ...
+       // ...
    }
    ```
 
@@ -50,3 +50,12 @@ Please follow the existing styling as closely as possible for any code contribut
    ```
 
 * Variable and function names containing multiple words should be separated with an underscore `_` rather than using camelCase or PascalCase.
+
+* `switch` cases with only a single statement should reside on a single line. For example:
+   ```c
+   switch(oc)
+   {
+       case OP_ADD: return "OP_ADD";
+       // ...
+   }
+   ```

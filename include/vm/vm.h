@@ -28,13 +28,13 @@
 #ifndef VM_H
 #define VM_H
 
-#include "types.h" /* Byte */
+#include "types.h" // Byte
 
 typedef struct vm
 {
-  Stack stack; /* stack structure */
-  Item* sp;    /* stack pointer/top item of stack */
-  Byte* ip;    /* instruction pointer/program counter */
+	Stack stack; // stack structure
+	Item* sp;    // stack pointer/top item of stack
+	Byte* ip;    // instruction pointer/program counter
 } VM;
 
-#endif /* VM_H */
+#endif // VM_H
