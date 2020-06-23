@@ -165,7 +165,7 @@ struct ConcoctToken
 enum ConcoctLexerType
 {
 	CCT_LEXER_FILE,
-	CCT_LEXER_STRING,
+	CCT_LEXER_STRING
 };
 struct ConcoctLexer
 {
