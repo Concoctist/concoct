@@ -1,13 +1,11 @@
+# Concoct AppVeyor config
 version: 0.1.{build}
-image: Visual Studio 2017
-configuration: Debug
-platform: Win64
-before_build:
-  - mkdir build 
+build_script:
+  - mkdir build
   - cd build
-  - cmake ..
-build:
-  verbosity: minimal
+  - cmake --version
+  - cmake .. -G "Visual Studio 15 2017"
+  - cmake --build . --target concoct --config Debug
 on_success:
   - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
   - ps: ./send.ps1 success $env:WEBHOOK_URL
