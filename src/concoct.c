@@ -138,7 +138,7 @@ void interactive_mode()
 		if(input[0] == '\0')
 			continue;
 #ifdef _WIN32
-		if(stricmp(input, "quit") == 0)
+		if(_stricmp(input, "quit") == 0)
 			exit(EXIT_SUCCESS);
 #else
 		if(strcasecmp(input, "quit") == 0)
