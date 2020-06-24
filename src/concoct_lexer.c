@@ -47,6 +47,7 @@ struct ConcoctLexer* cct_new_string_lexer(const char* in_string)
 	lexer->line_number = 1;
 	lexer->error = NULL;
 	lexer->token_text = malloc(TOKEN_TEXT_LENGTH);
+	lexer->next_char = 'a'; // any non-zero value
 	cct_next_char(lexer);
 	return lexer;
 }
