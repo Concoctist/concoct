@@ -25,11 +25,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TYPES_H
-#define TYPES_H
+#include <inttypes.h> // PRId32, PRId64
+#include <stdio.h>    // printf(), puts()
+#include "types.h"
 
-#include <stdint.h> // uint8_t
+// Returns string representation of data type
+const char* get_data_type(DataType dtype)
+{
+	switch(dtype)
+	{
+		case NIL:     return "null";
+		case BOOL:    return "boolean";
+		case BYTE:    return "byte";
+		case NUMBER:  return "number";
+		case BIGNUM:  return "big number";
+		case DECIMAL:   return "decimal";
+		case STRING:  return "string";
+		default:      return "unknown";
+	}
+}
 
-typedef uint8_t Byte; // unsigned char
-
-#endif // TYPES_H
+// Displays value of object
+void print_object_value(Object* object)
+{
+	switch(object->datatype)
+	{
+		case NIL:
+			puts("null");
+			break;
+		case BOOL:
+			if(object->value.boolean == false)
+				puts("false");
+			else
+				puts("true");
+			break;
+		case BYTE:
+			printf("%u\n", object->value.boolean);
+			break;
+		case NUMBER:
+			printf("%" PRId32 "\n", object->value.number);
+			break;
+		case BIGNUM:
+			printf("%" PRId64 "\n", object->value.bignum);
+			break;
+		case DECIMAL:
+			printf("%f\n", object->value.decimal);
+			break;
+		case STRING:
+			printf("%s\n", object->value.str.str);
+			break;
+	}
+}

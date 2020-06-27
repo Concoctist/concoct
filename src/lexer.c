@@ -25,7 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "concoct_lexer.h"
+#include "lexer.h"
 
 struct ConcoctLexer* cct_new_file_lexer(FILE* in_file)
 {
