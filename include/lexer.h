@@ -25,8 +25,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CONCOCT_LEXER_H
-#define CONCOCT_LEXER_H
+#ifndef LEXER_H
+#define LEXER_H
 
 #include <ctype.h>
 #include <stdio.h>
@@ -103,7 +103,7 @@ enum ConcoctTokenType
 	CCT_TOKEN_USE,
 	CCT_TOKEN_VAR,
 	CCT_TOKEN_WHILE,
-	CCT_TOKEN_ERROR,
+	CCT_TOKEN_ERROR
 };
 
 #define CCT_KEYWORD_COUNT 22
@@ -197,4 +197,4 @@ void cct_set_error(struct ConcoctLexer* lexer, const char* message);
 char cct_next_char(struct ConcoctLexer* lexer);
 struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer);
 
-#endif // CONCOCT_LEXER_H
+#endif // LEXER_H

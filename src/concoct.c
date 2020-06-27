@@ -33,9 +33,9 @@
 #include <stdlib.h>  // exit()
 #include <string.h>  // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
 #include "concoct.h" // lex_file(), lex_string()
+#include "lexer.h"
+#include "types.h"
 #include "version.h" // VERSION
-
-#include "concoct_lexer.h"
 
 int main(int argc, char** argv)
 {
