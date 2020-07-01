@@ -179,7 +179,7 @@ void convert_type(Object* object, char* value)
 		if(bignum > INT32_MIN && bignum < INT32_MAX)
 		{
 			object->datatype = NUMBER;
-			object->value.numval = bignum;
+			object->value.numval = (int32_t)bignum;
 			return;
 		}
 	}
