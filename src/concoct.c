@@ -29,7 +29,7 @@
 #include <errno.h>   // errno
 #include <stdbool.h> // false, true
 #include <stddef.h>  // size_t
-#include <stdio.h>   // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin
+#include <stdio.h>   // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin, stderr
 #include <stdlib.h>  // exit()
 #include <string.h>  // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
 #include "concoct.h" // lex_file(), lex_string()
