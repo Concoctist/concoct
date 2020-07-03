@@ -56,7 +56,7 @@ void free_string(String* strobj)
 }
 
 // Populate Object struct
-Object* new_object(char *value)
+Object* new_object(char* value)
 {
 	Object *object = (Object *)malloc(sizeof(Object));
 	if(object == NULL)
