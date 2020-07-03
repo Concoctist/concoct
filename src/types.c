@@ -36,7 +36,7 @@
 // Populate String struct
 void new_string(String* strobj, char* str)
 {
-	strobj->strval = (char *)malloc(strlen(str));
+	strobj->strval = (char *)malloc(strlen(str) + 1);
 	if(strobj->strval == NULL)
 	{
 		fprintf(stderr, "Error allocating memory for string %s: %s\n", str, strerror(errno));
@@ -55,10 +55,32 @@ void free_string(String* strobj)
 	return;
 }
 
-// Returns string representation of data type
-const char* get_data_type(DataType dtype)
+// Populate Object struct
+Object* new_object(char *value)
 {
-	switch(dtype)
+	Object *object = (Object *)malloc(sizeof(Object));
+	if(object == NULL)
+	{
+		fprintf(stderr, "Error allocating memory for object: %s\n", strerror(errno));
+		return NULL;
+	}
+	convert_type(object, value);
+	return object;
+}
+
+// Free object
+void free_object(Object* object)
+{
+	if(object->datatype == STRING)
+		free_string(&object->value.strobj);
+	free(object);
+	return;
+}
+
+// Returns string representation of data type
+const char* get_data_type(Object* object)
+{
+	switch(object->datatype)
 	{
 		case NIL:     return "null";
 		case BOOL:    return "boolean";
@@ -173,7 +195,7 @@ void convert_type(Object* object, char* value)
 	// Handle integers
 	char *end = NULL;
 	errno = 0;
-	int64_t bignum = strtol(value, &end, 10);
+	BigNum bignum = strtol(value, &end, 10);
 	if(*end == '\0' && errno != ERANGE && errno != EINVAL)
 	{
 		if(bignum > INT32_MIN && bignum < INT32_MAX)
@@ -198,7 +220,7 @@ void convert_type(Object* object, char* value)
 	// Handle floats
 	end = NULL;
 	errno = 0;
-	double dec = strtod(value, &end);
+	Decimal dec = strtod(value, &end);
 	if(*end == '\0' && errno != ERANGE && errno != EINVAL)
 	{
 		object->datatype = DECIMAL;
@@ -209,6 +231,5 @@ void convert_type(Object* object, char* value)
 	// Default to string otherwise
 	object->datatype = STRING;
 	new_string(&object->value.strobj, value);
-
 	return;
 }

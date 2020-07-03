@@ -77,8 +77,14 @@ void new_string(String* strobj, char* str);
 // Free string
 void free_string(String* strobj);
 
+// Populate Object struct
+Object* new_object(char* value);
+
+// Free object
+void free_object(Object* object);
+
 // Returns string representation of data type
-const char* get_data_type(DataType dtype);
+const char* get_data_type(Object* object);
 
 // Returns value of object
 void* get_object_value(Object* object);
