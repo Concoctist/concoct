@@ -66,7 +66,7 @@ void parse_file(const char* file_name)
 	}
 
 	// Creates a new lexer and iterates through the tokens
-	struct ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
+	ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
 	ConcoctParser* parser = cct_new_parser(file_lexer);
 	ConcoctNode* root_node = cct_parse_program(parser);
 	if(parser->error == NULL)
@@ -91,8 +91,8 @@ void lex_file(const char* file_name)
 	}
 
 	// Creates a new lexer and iterates through the tokens
-	struct ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
-	struct ConcoctToken token = cct_next_token(file_lexer);
+	ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
+	ConcoctToken token = cct_next_token(file_lexer);
 	// Continues printing until an EOF is reached
 	printf("Lexing %s:\n", file_name);
 	while(token.type != CCT_TOKEN_EOF)
@@ -115,8 +115,8 @@ void lex_string(const char* input_string)
 {
 	// Lexer also can be created for strings
 	//const char* input = "func test() { return a + b }";
-	struct ConcoctLexer* string_lexer = cct_new_string_lexer(input_string);
-	struct ConcoctToken token = cct_next_token(string_lexer);
+	ConcoctLexer* string_lexer = cct_new_string_lexer(input_string);
+	ConcoctToken token = cct_next_token(string_lexer);
 
 	//printf("Lexing string...\n");
 	while(token.type != CCT_TOKEN_EOF)

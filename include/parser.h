@@ -31,7 +31,7 @@
 
 typedef struct ConcoctNode
 {
-    struct ConcoctToken token;
+    ConcoctToken token;
     char* text;
     struct ConcoctNode* parent;
     int child_count;
@@ -40,16 +40,16 @@ typedef struct ConcoctNode
 
 typedef struct concoct_parser
 {
-    struct ConcoctLexer* lexer;
-    struct ConcoctToken current_token;
+    ConcoctLexer* lexer;
+    ConcoctToken current_token;
     int error_line;
     const char* error;
 } ConcoctParser;
 
-ConcoctNode* cct_new_node(struct ConcoctToken token, const char* text);
+ConcoctNode* cct_new_node(ConcoctToken token, const char* text);
 void cct_delete_node(ConcoctNode* node);
 
-ConcoctParser* cct_new_parser(struct ConcoctLexer* lexer);
+ConcoctParser* cct_new_parser(ConcoctLexer* lexer);
 ConcoctParser* cct_new_parser_str(const char* str);
 void cct_delete_parser(ConcoctParser* parser);
 
@@ -57,7 +57,7 @@ ConcoctNode* cct_node_add_child(ConcoctNode* node, ConcoctNode* child);
 
 ConcoctNode* cct_parse_program(ConcoctParser* parser);
 ConcoctNode* cct_parse_stat(ConcoctParser* parser);
-struct ConcoctToken cct_next_parser_token(ConcoctParser* parser);
+ConcoctToken cct_next_parser_token(ConcoctParser* parser);
 
 void cct_print_node(ConcoctNode* node, int tab_level);
 #endif /* CONCOCT_PARSER_H */

@@ -32,7 +32,7 @@ ConcoctParser* cct_new_parser_str(const char* str)
     return cct_new_parser(cct_new_string_lexer(str));
 }
 
-ConcoctParser* cct_new_parser(struct ConcoctLexer* lexer)
+ConcoctParser* cct_new_parser(ConcoctLexer* lexer)
 {
     ConcoctParser* parser = malloc(sizeof(ConcoctParser));
     parser->lexer = lexer;
@@ -434,7 +434,7 @@ ConcoctNode* cct_parse_stat(ConcoctParser* parser)
 /*
 Advances to the next token
 */
-struct ConcoctToken cct_next_parser_token(ConcoctParser* parser)
+ConcoctToken cct_next_parser_token(ConcoctParser* parser)
 {
     parser->current_token = cct_next_token(parser->lexer);
     return parser->current_token;
@@ -443,7 +443,7 @@ struct ConcoctToken cct_next_parser_token(ConcoctParser* parser)
 /*
 ConcoctNode constructor
 */
-ConcoctNode* cct_new_node(struct ConcoctToken token, const char* text)
+ConcoctNode* cct_new_node(ConcoctToken token, const char* text)
 {
     ConcoctNode* node = malloc(sizeof(ConcoctNode));
     node->child_count = 0;
