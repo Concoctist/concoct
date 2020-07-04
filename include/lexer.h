@@ -35,7 +35,7 @@
 
 #define TOKEN_TEXT_LENGTH 1024
 
-enum ConcoctTokenType
+typedef enum concoct_token_type
 {
 	CCT_TOKEN_IDENTIFIER,
 	CCT_TOKEN_INT,
@@ -105,7 +105,7 @@ enum ConcoctTokenType
 	CCT_TOKEN_WHILE,
 	CCT_TOKEN_IN,
 	CCT_TOKEN_ERROR,
-};
+} ConcoctTokenType;
 
 #define CCT_KEYWORD_COUNT 23
 static const char* cct_keywords[CCT_KEYWORD_COUNT] = {
@@ -134,7 +134,7 @@ static const char* cct_keywords[CCT_KEYWORD_COUNT] = {
 	"in"
 };
 
-static enum ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
+static ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
 	CCT_TOKEN_BREAK,
 	CCT_TOKEN_CONTINUE,
 	CCT_TOKEN_CASE,
@@ -159,20 +159,22 @@ static enum ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
 	CCT_TOKEN_WHILE,
 	CCT_TOKEN_IN
 };
-struct ConcoctToken
-{
-	enum ConcoctTokenType type;
-	int line_number;
-};
 
-enum ConcoctLexerType
+typedef struct concoct_token
+{
+	ConcoctTokenType type;
+	int line_number;
+} ConcoctToken;
+
+typedef enum concoct_lexer_type
 {
 	CCT_LEXER_FILE,
 	CCT_LEXER_STRING
-};
-struct ConcoctLexer
+} ConcoctLexerType;
+
+typedef struct concoct_lexer
 {
-	enum ConcoctLexerType type;
+	ConcoctLexerType type;
 	union
 	{
 		FILE* file_input;
@@ -183,21 +185,22 @@ struct ConcoctLexer
 	int string_index;
 	char* token_text;
 	const char* error;
-};
-struct ConcoctToken cct_new_token(enum ConcoctTokenType type, int line_number);
+} ConcoctLexer;
+
+ConcoctToken cct_new_token( ConcoctTokenType type, int line_number);
 
 // Helper function for getting type names
-const char* cct_token_type_to_string(enum ConcoctTokenType);
+const char* cct_token_type_to_string(ConcoctTokenType type);
 
-struct ConcoctLexer* cct_new_file_lexer(FILE* in_file);
-struct ConcoctLexer* cct_new_string_lexer(const char* in_string);
-void cct_delete_lexer(struct ConcoctLexer* lexer);
+ConcoctLexer* cct_new_file_lexer(FILE* in_file);
+ConcoctLexer* cct_new_string_lexer(const char* in_string);
+void cct_delete_lexer(ConcoctLexer* lexer);
 
-int cct_lexer_is_eof(struct ConcoctLexer* lexer);
+int cct_lexer_is_eof(ConcoctLexer* lexer);
 
-void cct_set_error(struct ConcoctLexer* lexer, const char* message);
+void cct_set_error(ConcoctLexer* lexer, const char* message);
 
-char cct_next_char(struct ConcoctLexer* lexer);
-struct ConcoctToken cct_next_token(struct ConcoctLexer* lexer);
+char cct_next_char(ConcoctLexer* lexer);
+ConcoctToken cct_next_token(ConcoctLexer* lexer);
 
 #endif // LEXER_H
