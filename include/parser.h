@@ -24,13 +24,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef CONCOCT_PARSER_H
+#define CONCOCT_PARSER_H
 
-#ifndef CONCOCT_H
-#define CONCOCT_H
+#include "lexer.h"
 
-void lex_file(const char* file_name);
-void lex_string(const char* input_string);
-void interactive_mode();
+typedef struct ConcoctNode
+{
+    struct ConcoctToken token;
+    char* text;
+    struct ConcoctNode* parent;
+    int child_count;
+    struct ConcoctNode** children;
+} ConcoctNode;
 
-void parse_file(const char* file_name);
-#endif // CONCOCT_H
+typedef struct concoct_parser
+{
+    struct ConcoctLexer* lexer;
+    struct ConcoctToken current_token;
+    int error_line;
+    const char* error;
+} ConcoctParser;
+
+ConcoctNode* cct_new_node(struct ConcoctToken token, const char* text);
+void cct_delete_node(ConcoctNode* node);
+
+ConcoctParser* cct_new_parser(struct ConcoctLexer* lexer);
+ConcoctParser* cct_new_parser_str(const char* str);
+void cct_delete_parser(ConcoctParser* parser);
+
+ConcoctNode* cct_node_add_child(ConcoctNode* node, ConcoctNode* child);
+
+ConcoctNode* cct_parse_program(ConcoctParser* parser);
+ConcoctNode* cct_parse_stat(ConcoctParser* parser);
+struct ConcoctToken cct_next_parser_token(ConcoctParser* parser);
+
+void cct_print_node(ConcoctNode* node, int tab_level);
+#endif /* CONCOCT_PARSER_H */

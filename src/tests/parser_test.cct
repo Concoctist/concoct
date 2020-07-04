@@ -1,0 +1,12 @@
+do {
+    if "Hello" {
+        for test in tests {
+            if test {
+                x = 5
+            }
+        }
+        msg = "Hello"
+    }
+    y = 3
+}
+while 5

@@ -103,10 +103,11 @@ enum ConcoctTokenType
 	CCT_TOKEN_USE,
 	CCT_TOKEN_VAR,
 	CCT_TOKEN_WHILE,
-	CCT_TOKEN_ERROR
+	CCT_TOKEN_IN,
+	CCT_TOKEN_ERROR,
 };
 
-#define CCT_KEYWORD_COUNT 22
+#define CCT_KEYWORD_COUNT 23
 static const char* cct_keywords[CCT_KEYWORD_COUNT] = {
 	"break",
 	"continue",
@@ -129,7 +130,8 @@ static const char* cct_keywords[CCT_KEYWORD_COUNT] = {
 	"true",
 	"use",
 	"var",
-	"while"
+	"while",
+	"in"
 };
 
 static enum ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
@@ -154,7 +156,8 @@ static enum ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
 	CCT_TOKEN_TRUE,
 	CCT_TOKEN_USE,
 	CCT_TOKEN_VAR,
-	CCT_TOKEN_WHILE
+	CCT_TOKEN_WHILE,
+	CCT_TOKEN_IN
 };
 struct ConcoctToken
 {

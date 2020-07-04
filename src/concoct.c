@@ -34,6 +34,7 @@
 #include <string.h>  // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
 #include "concoct.h" // lex_file(), lex_string()
 #include "lexer.h"
+#include "parser.h"
 #include "types.h"
 #include "version.h" // VERSION
 
@@ -49,12 +50,37 @@ int main(int argc, char** argv)
 		puts("Too many arguments!");
 		exit(EXIT_FAILURE);
 	}
-
 	lex_file(argv[1]);
+	parse_file(argv[1]);
 
 	return 0;
 }
 
+void parse_file(const char* file_name)
+{
+	FILE* input_file = fopen(file_name, "r");
+	if(input_file == NULL)
+	{
+		fprintf(stderr, "Error opening %s: %s\n", file_name, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
+	// Creates a new lexer and iterates through the tokens
+	struct ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
+	ConcoctParser* parser = cct_new_parser(file_lexer);
+	ConcoctNode* root_node = cct_parse_program(parser);
+	if(parser->error == NULL)
+	{
+		cct_print_node(root_node, 0);
+	}
+	else
+	{
+		printf("PARSING ERROR\n[%i] %s, got %s", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
+	}
+	fclose(input_file);
+	cct_delete_parser(parser);
+	return;
+}
 void lex_file(const char* file_name)
 {
 	FILE* input_file = fopen(file_name, "r");
