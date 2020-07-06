@@ -65,6 +65,6 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 
 ### Contributing and Support :octocat:
 Feel free to [submit an issue](https://github.com/ConcoctLang/concoct/issues/new) if you require assistance or would like to
-make a feature request. You are also welcome to join our Discord server at https://discord.concoct.dev/. Concoct discussion occurs in the `#development` channel. Any contributions such as build testing, creating bug reports or feature requests, and submitting pull requests are appreciated. Our code style guidelines can be found in the "Coding Convention" section of [CONTRIBUTING.md](https://github.com/ConcoctLang/concoct/blob/master/.github/CONTRIBUTING.md). Please see the
+make a feature request. You are also welcome to join our Discord server at https://discord.concoct.dev/. Any contributions such as build testing, creating bug reports or feature requests, and submitting pull requests are appreciated. Our code style guidelines can be found in the "Coding Convention" section of [CONTRIBUTING.md](https://github.com/ConcoctLang/concoct/blob/master/.github/CONTRIBUTING.md). Please see the
 [fork and pull guide](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork)
 for direction if you are not certain how to submit a pull request.
