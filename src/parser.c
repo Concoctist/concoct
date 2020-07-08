@@ -44,8 +44,8 @@ ConcoctParser* cct_new_parser(ConcoctLexer* lexer)
 
 void cct_delete_parser(ConcoctParser* parser)
 {
-    free(parser);
     cct_delete_lexer(parser->lexer);
+    free(parser);
 }
 
 void cct_set_parser_error(ConcoctParser* parser, const char* text)
@@ -464,10 +464,14 @@ Frees the node and all it's children from memory
 */
 void cct_delete_node(ConcoctNode* node)
 {
-    // Frees this node and it's children from memory
-    for(int i = 0;i < node->child_count;i++)
+    if(node->children != NULL)
     {
-        cct_delete_node(node->children[i]);
+        // Frees this node and it's children from memory
+        for(int i = 0;i < node->child_count;i++)
+        {
+            cct_delete_node(node->children[i]);
+        }
+        free(node->children);
     }
     if(node->text != NULL)
     {

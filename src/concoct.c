@@ -72,6 +72,7 @@ void parse_file(const char* file_name)
 	if(parser->error == NULL)
 	{
 		cct_print_node(root_node, 0);
+		cct_delete_node(root_node);
 	}
 	else
 	{
