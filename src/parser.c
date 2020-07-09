@@ -64,12 +64,12 @@ void cct_print_node(ConcoctNode* node, int tab_level)
     {
         text = node->text;
     }
-    for(int i = 0;i < tab_level;i++)
+    for(int i = 0; i < tab_level; i++)
     {
         printf("  ");
     }
     printf("%s (%s)\n", cct_token_type_to_string(node->token.type), text);
-    for(int i =0;i < node->child_count;i++)
+    for(int i =0; i < node->child_count; i++)
     {
         cct_print_node(node->children[i], tab_level + 1);
     }
@@ -323,7 +323,7 @@ ConcoctNode* cct_parse_compound_stat(ConcoctParser* parser)
         if(stat == NULL)
         {
             cct_delete_node(compound_stat);
-            return NULL; 
+            return NULL;
         }
         cct_node_add_child(compound_stat, stat);
         cct_parser_skip_new_lines(parser);
@@ -467,7 +467,7 @@ void cct_delete_node(ConcoctNode* node)
     if(node->children != NULL)
     {
         // Frees this node and it's children from memory
-        for(int i = 0;i < node->child_count;i++)
+        for(int i = 0; i < node->child_count; i++)
         {
             cct_delete_node(node->children[i]);
         }

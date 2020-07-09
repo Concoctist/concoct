@@ -30,7 +30,8 @@
 
 void lex_file(const char* file_name);
 void lex_string(const char* input_string);
+void parse_file(const char* file_name);
+void parse_string(const char* input_string);
 void interactive_mode();
 
-void parse_file(const char* file_name);
 #endif // CONCOCT_H
