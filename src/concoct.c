@@ -50,6 +50,7 @@ int main(int argc, char** argv)
 		puts("Too many arguments!");
 		exit(EXIT_FAILURE);
 	}
+
 	lex_file(argv[1]);
 	parse_file(argv[1]);
 
@@ -82,6 +83,25 @@ void parse_file(const char* file_name)
 	cct_delete_parser(parser);
 	return;
 }
+
+void parse_string(const char* input_string)
+{
+	ConcoctLexer* string_lexer = cct_new_string_lexer(input_string);
+	ConcoctParser* parser = cct_new_parser(string_lexer);
+	ConcoctNode* root_node = cct_parse_program(parser);
+	if(parser->error == NULL)
+	{
+		cct_print_node(root_node, 0);
+		cct_delete_node(root_node);
+	}
+	else
+	{
+		printf("PARSING ERROR\n[%i] %s, got %s", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
+	}
+	cct_delete_parser(parser);
+	return;
+}
+
 void lex_file(const char* file_name)
 {
 	FILE* input_file = fopen(file_name, "r");
@@ -138,7 +158,7 @@ void lex_string(const char* input_string)
 void interactive_mode()
 {
 	char input[1024];
-	puts("Note: Only lexing is currently supported.");
+	puts("Note: Only lexing and partial parsing is currently supported.");
 	while(true)
 	{
 		memset(input, 0, sizeof(input)); // reset input every iteration
@@ -172,6 +192,7 @@ void interactive_mode()
 			exit(EXIT_SUCCESS);
 #endif
 		lex_string(input);
+		parse_string(input);
 	}
 	return;
 }

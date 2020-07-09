@@ -24,8 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef CONCOCT_PARSER_H
-#define CONCOCT_PARSER_H
+
+#ifndef PARSER_H
+#define PARSER_H
 
 #include "lexer.h"
 
@@ -60,4 +61,5 @@ ConcoctNode* cct_parse_stat(ConcoctParser* parser);
 ConcoctToken cct_next_parser_token(ConcoctParser* parser);
 
 void cct_print_node(ConcoctNode* node, int tab_level);
-#endif /* CONCOCT_PARSER_H */
+
+#endif // PARSER_H
