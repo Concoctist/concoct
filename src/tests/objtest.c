@@ -27,10 +27,26 @@
 
 #include <inttypes.h>
 #include <stdio.h>
+#include "memory.h"
 #include "types.h"
 
 int main()
 {
+	init_store();
+	Object* objects[512];
+	for(size_t i = 0; i < 512; i++)
+	{
+		printf("Object store free/size: %zu/%zu\n\n", get_store_free_slots(), get_store_size());
+		objects[i] = new_object("7");
+	}
+
+	for(size_t i = 0; i < 512; i++)
+	{
+		printf("%s\n", get_data_type(object_store.objects[i]));
+		free_object(object_store.objects[i]);
+	}
+	puts("");
+
 	Object* object = new_object("null");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
@@ -65,7 +81,19 @@ int main()
 	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object), object->value.strobj.strval, object->value.strobj.length);
 	print_object_value(object);
 	printf("%s\n", (char *)get_object_value(object));
+
+	puts("\nAfter realloc_string():");
+	realloc_string(&object->value.strobj, "Farewell, Concocter!");
+	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object), object->value.strobj.strval, object->value.strobj.length);
+	print_object_value(object);
+	printf("%s\n", (char *)get_object_value(object));
+	Object *object2 = clone_object(object);
+
+	puts("\nCloned object:");
+	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object2), object2->value.strobj.strval, object2->value.strobj.length);
 	free_object(object);
+	free_object(object2);
+	free_store();
 
 	return 0;
 }
