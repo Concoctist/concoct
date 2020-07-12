@@ -28,54 +28,11 @@
 #include <errno.h>    // errno, EINVAL, ERANGE
 #include <inttypes.h> // PRId32, PRId64
 #include <limits.h>   // INT32_MIN, INT32_MAX
-#include <stdio.h>    // fprintf(), printf(), puts(), stderr
-#include <stdlib.h>   // free(), malloc(), strtod(), strtol(), strtoll()
-#include <string.h>   // strcmp(), strcpy(), strlen()
+#include <stdio.h>    // printf(), puts()
+#include <stdlib.h>   // strtod(), strtol(), strtoll()
+#include <string.h>   // strcasecmp()
+#include "memory.h"
 #include "types.h"
-
-// Populate String struct
-void new_string(String* strobj, char* str)
-{
-	strobj->strval = (char *)malloc(strlen(str) + 1);
-	if(strobj->strval == NULL)
-	{
-		fprintf(stderr, "Error allocating memory for string %s: %s\n", str, strerror(errno));
-		return;
-	}
-	strcpy(strobj->strval, str);
-	strobj->length = strlen(str);
-	return;
-}
-
-// Free string
-void free_string(String* strobj)
-{
-	free(strobj->strval);
-	strobj->length = 0;
-	return;
-}
-
-// Populate Object struct
-Object* new_object(char* value)
-{
-	Object *object = (Object *)malloc(sizeof(Object));
-	if(object == NULL)
-	{
-		fprintf(stderr, "Error allocating memory for object: %s\n", strerror(errno));
-		return NULL;
-	}
-	convert_type(object, value);
-	return object;
-}
-
-// Free object
-void free_object(Object* object)
-{
-	if(object->datatype == STRING)
-		free_string(&object->value.strobj);
-	free(object);
-	return;
-}
 
 // Returns string representation of data type
 const char* get_data_type(Object* object)

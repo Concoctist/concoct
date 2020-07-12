@@ -25,63 +25,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef MEMORY_H
+#define MEMORY_H
 
-#include <stdbool.h> // bool
-#include <stddef.h>  // NULL, size_t
-#include <stdint.h>  // uint8_t, int32_t, int64_t
+#include "types.h"
 
-// Concoct data types
-typedef bool Bool;         // true/false
-typedef uint8_t Byte;      // unsigned char
-typedef int32_t Number;    // signed long integer
-typedef int64_t BigNum;    // signed long long integer
-typedef double Decimal;    // decimal
-typedef struct cct_string  // string
+static const size_t INITIAL_STORE_SIZE = 128;
+static const float STORE_GROWTH_FACTOR = 0.5f;
+static const size_t STORE_GROWTH_THRESHOLD = 8;
+
+// Object store
+typedef struct objstore
 {
 	size_t length;
-	char *strval;
-} String;
+	Object** objects;
+} ObjectStore;
+ObjectStore object_store;
 
-typedef enum data_type
-{
-	NIL,
-	BOOL,
-	BYTE,
-	NUMBER,
-	BIGNUM,
-	DECIMAL,
-	STRING
-} DataType;
+// Initialize object store
+void init_store();
 
-// Concoct object
-typedef struct object
-{
-	DataType datatype;
-	Bool marked;       // flagged for garbage collection
-	union
-	{
-		char* nullval;
-		Bool boolval;
-		Byte byteval;
-		Number numval;
-		BigNum bignumval;
-		Decimal decimalval;
-		String strobj; // strval is contained in String struct
-	} value;
-} Object;
+// Reallocate memory for object store
+void realloc_store(size_t new_size);
 
-// Returns string representation of data type
-const char* get_data_type(Object* object);
+// Free object store
+void free_store();
 
-// Returns value of object
-void* get_object_value(Object* object);
+// Return size of object store
+static inline size_t get_store_size() { return object_store.length; }
 
-// Displays value of object
-void print_object_value(Object* object);
+// Return free slots of object store
+size_t get_store_free_slots();
 
-// Converts string to applicable type
-void convert_type(Object* object, char* value);
+// Add object to store
+void add_store_object(Object* object);
 
-#endif // TYPES_H
+// Populate String struct
+void new_string(String* strobj, char* str);
+
+// Reallocate memory for string
+void realloc_string(String* strobj, const char* new_string);
+
+// Free string
+void free_string(String* strobj);
+
+// Populate Object struct
+Object* new_object(char* value);
+
+// Free object
+void free_object(Object* object);
+
+// Clone object
+Object* clone_object(Object* object);
+
+#endif // MEMORY_H
