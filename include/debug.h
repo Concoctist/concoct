@@ -25,57 +25,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MEMORY_H
-#define MEMORY_H
+#ifndef DEBUG_H
+#define DEBUG_H
 
-#include "types.h"
+#include <stdbool.h> // bool
 
-static const size_t INITIAL_STORE_SIZE = 128;
-static const float STORE_GROWTH_FACTOR = 0.5f;
-static const size_t STORE_GROWTH_THRESHOLD = 8;
+extern bool debug_mode;
 
-// Object store
-typedef struct objstore
-{
-	size_t length;
-	Object** objects;
-} ObjectStore;
-extern ObjectStore object_store;
+void debug_print(const char* message, ...);
 
-// Initializes object store
-void init_store();
-
-// Reallocates memory for object store
-void realloc_store(size_t new_size);
-
-// Frees object store
-void free_store();
-
-// Returns size of object store
-static inline size_t get_store_size() { return object_store.length; }
-
-// Returns free slots of object store
-size_t get_store_free_slots();
-
-// Adds object to store
-void add_store_object(Object* object);
-
-// Populates String struct
-void new_string(String* strobj, char* str);
-
-// Reallocates memory for string
-void realloc_string(String* strobj, const char* new_string);
-
-// Frees string
-void free_string(String* strobj);
-
-// Populates Object struct
-Object* new_object(char* value);
-
-// Frees object
-void free_object(Object* object);
-
-// Clones object
-Object* clone_object(Object* object);
-
-#endif // MEMORY_H
+#endif // DEBUG_H

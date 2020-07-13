@@ -25,57 +25,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MEMORY_H
-#define MEMORY_H
+#include <stdarg.h> // va_end, va_list, va_start, vprintf()
+#include <stdio.h>  // printf()
+#include <time.h>   // strftime(), time(), time_t, tm
+#include "debug.h"  // debug_print(), debug_mode
 
-#include "types.h"
+bool debug_mode = false;
 
-static const size_t INITIAL_STORE_SIZE = 128;
-static const float STORE_GROWTH_FACTOR = 0.5f;
-static const size_t STORE_GROWTH_THRESHOLD = 8;
-
-// Object store
-typedef struct objstore
+// Prints debug messages
+void debug_print(const char* message, ...)
 {
-	size_t length;
-	Object** objects;
-} ObjectStore;
-extern ObjectStore object_store;
+	char timestamp[64];
+	time_t rawtime;
+	struct tm *timedata;
+	time(&rawtime);
+	timedata = localtime(&rawtime);
 
-// Initializes object store
-void init_store();
-
-// Reallocates memory for object store
-void realloc_store(size_t new_size);
-
-// Frees object store
-void free_store();
-
-// Returns size of object store
-static inline size_t get_store_size() { return object_store.length; }
-
-// Returns free slots of object store
-size_t get_store_free_slots();
-
-// Adds object to store
-void add_store_object(Object* object);
-
-// Populates String struct
-void new_string(String* strobj, char* str);
-
-// Reallocates memory for string
-void realloc_string(String* strobj, const char* new_string);
-
-// Frees string
-void free_string(String* strobj);
-
-// Populates Object struct
-Object* new_object(char* value);
-
-// Frees object
-void free_object(Object* object);
-
-// Clones object
-Object* clone_object(Object* object);
-
-#endif // MEMORY_H
+	va_list args;
+	va_start(args, message);
+	strftime(timestamp, 64, "[%d/%m/%Y %H:%M:%S %Z] -", timedata);
+	printf("Debug: %s ", timestamp);
+	vprintf(message, args);
+	va_end(args);
+	printf("\n");
+	return;
+}

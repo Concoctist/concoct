@@ -29,10 +29,11 @@
 #include <errno.h>   // errno
 #include <stdbool.h> // false, true
 #include <stddef.h>  // size_t
-#include <stdio.h>   // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin, stderr
-#include <stdlib.h>  // exit()
+#include <stdio.h>   // FILE, fclose(), fgets(), fprintf(), printf(), puts(), sprintf(), stdin, stderr
+#include <stdlib.h>  // exit(), EXIT_FAILURE, EXIT_SUCCESS
 #include <string.h>  // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
-#include "concoct.h" // lex_file(), lex_string()
+#include "concoct.h"
+#include "debug.h"
 #include "lexer.h"
 #include "parser.h"
 #include "types.h"
@@ -40,23 +41,56 @@
 
 int main(int argc, char** argv)
 {
-	printf("Concoct v%s\n", VERSION);
+	char *input_file = NULL;
+	if(argc > 1)
+	{
+		for(int i = 1; i < argc; i++)
+		{
+			// Check for command-line options
+			if(argv[i][0] == ARG_PREFIX)
+			{
+				handle_options(argc, argv);
+			}
+			else
+			{
+				input_file = argv[i];
+			}
+		}
+	}
+
+	print_version();
+
+	if(debug_mode)
+	{
+		debug_print("argc: %d", argc);
+		for(int i = 0; i < argc; i++)
+			debug_print("argv[%d]: %s", i, argv[i]);
+	}
 
 	if(argc == 1)
 		interactive_mode();
 
-	if(argc > 2)
+	if(argc > 3)
 	{
-		puts("Too many arguments!");
+		fprintf(stderr, "Too many arguments!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	lex_file(argv[1]);
-	parse_file(argv[1]);
+	if(input_file)
+	{
+		lex_file(input_file);
+		parse_file(input_file);
+	}
+	else
+	{
+		fprintf(stderr, "No input file!\n");
+		exit(EXIT_FAILURE);
+	}
 
 	return 0;
 }
 
+// Parses file
 void parse_file(const char* file_name)
 {
 	FILE* input_file = fopen(file_name, "r");
@@ -77,13 +111,14 @@ void parse_file(const char* file_name)
 	}
 	else
 	{
-		printf("PARSING ERROR\n[%i] %s, got %s", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
+		fprintf(stderr, "Parsing error: [%i] %s, got %s", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
 	}
 	fclose(input_file);
 	cct_delete_parser(parser);
 	return;
 }
 
+// Parses string
 void parse_string(const char* input_string)
 {
 	ConcoctLexer* string_lexer = cct_new_string_lexer(input_string);
@@ -96,12 +131,13 @@ void parse_string(const char* input_string)
 	}
 	else
 	{
-		printf("PARSING ERROR\n[%i] %s, got %s", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
+		fprintf(stderr, "Parsing error: [%i] %s, got %s", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
 	}
 	cct_delete_parser(parser);
 	return;
 }
 
+// Lexes file
 void lex_file(const char* file_name)
 {
 	FILE* input_file = fopen(file_name, "r");
@@ -120,8 +156,8 @@ void lex_file(const char* file_name)
 	{
 		if(file_lexer->error != NULL)
 		{
-			printf("Error on line %i.\n", token.line_number);
-			printf("%s\n", file_lexer->error);
+			fprintf(stderr, "Error on line %i:\n", token.line_number);
+			fprintf(stderr, "%s\n", file_lexer->error);
 			break;
 		}
 		printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
@@ -132,6 +168,7 @@ void lex_file(const char* file_name)
 	return;
 }
 
+// Lexes string
 void lex_string(const char* input_string)
 {
 	// Lexer also can be created for strings
@@ -144,8 +181,8 @@ void lex_string(const char* input_string)
 	{
 		if(string_lexer->error != NULL)
 		{
-			printf("Error on line %i\n", token.line_number);
-			printf("%s\n", string_lexer->error);
+			fprintf(stderr, "Error on line %i:\n", token.line_number);
+			fprintf(stderr, "%s\n", string_lexer->error);
 			break;
 		}
 		printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
@@ -155,6 +192,51 @@ void lex_string(const char* input_string)
 	return;
 }
 
+// Handle command-line options
+void handle_options(int argc, char *argv[])
+{
+	for(int i = 1; i < argc && argv[i][0] == ARG_PREFIX && strlen(argv[i]) == 2; i++)
+	{
+		switch(argv[i][1])
+		{
+			case 'd':
+				debug_mode = true;
+				break;
+			case 'h':
+				print_usage();
+				exit(EXIT_SUCCESS);
+				break;
+			case 'v':
+				print_version();
+				exit(EXIT_SUCCESS);
+				break;
+			default:
+				print_usage();
+				exit(EXIT_FAILURE);
+				break;
+		}
+	}
+	return;
+}
+
+void print_usage()
+{
+	print_version();
+	printf("Usage: concoct [%c<option>] [file]\n", ARG_PREFIX);
+	puts("Options:");
+	printf("%cd: debug mode\n", ARG_PREFIX);
+	printf("%ch: print usage\n", ARG_PREFIX);
+	printf("%cv: print version\n", ARG_PREFIX);
+	return;
+}
+
+void print_version()
+{
+	printf("Concoct v%s\n", VERSION);
+	return;
+}
+
+// Interactive mode
 void interactive_mode()
 {
 	char input[1024];

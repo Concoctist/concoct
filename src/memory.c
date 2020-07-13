@@ -28,10 +28,13 @@
 #include <errno.h>  // errno
 #include <stdio.h>  // fprintf(), stderr
 #include <stdlib.h> // calloc(), free(), malloc(), realloc(), EXIT_FAILURE
-#include <string.h> // memcpy(), strcmp(), strcpy(), strlen()
+#include <string.h> // memcpy(), strcpy(), strlen()
+#include "debug.h"  // debug_print(), debug_mode
 #include "memory.h"
 
-// Initialize object store
+ObjectStore object_store;
+
+// Initializes object store
 void init_store()
 {
 	object_store.objects = (Object **)calloc(INITIAL_STORE_SIZE, sizeof(Object *));
@@ -41,10 +44,12 @@ void init_store()
 		return;
 	}
 	object_store.length = INITIAL_STORE_SIZE;
+	if(debug_mode)
+		debug_print("Object store initialized with %zu slots.", INITIAL_STORE_SIZE);
 	return;
 }
 
-// Reallocate memory for object store
+// Reallocates memory for object store
 void realloc_store(size_t new_size)
 {
 	Object** new_store = (Object **)realloc(object_store.objects, new_size * sizeof(Object *));
@@ -58,17 +63,21 @@ void realloc_store(size_t new_size)
 	for(size_t slot = get_store_size(); slot < new_size; slot++)
 		new_store[slot] = NULL;
 	object_store.objects = new_store;
+	if(debug_mode)
+		debug_print("Object store resized from %zu to %zu slots.", object_store.length, new_size);
 	object_store.length = new_size;
 	return;
 }
 
-// Free object store
+// Frees object store
 void free_store()
 {
 	free(object_store.objects);
+	if(debug_mode)
+		debug_print("Object store freed.");
 }
 
-// Return free slots of object store
+// Returns free slots of object store
 size_t get_store_free_slots()
 {
 	size_t free_slots = 0;
@@ -80,7 +89,7 @@ size_t get_store_free_slots()
 	return free_slots;
 }
 
-// Add object to store
+// Adds object to store
 void add_store_object(Object* object)
 {
 	for(size_t slot = 0; slot < get_store_size(); slot++)
@@ -90,50 +99,60 @@ void add_store_object(Object* object)
 		if(object_store.objects[slot] == NULL)
 		{
 			object_store.objects[slot] = object;
+			if(debug_mode)
+				debug_print("Object of type %s added to object store at slot %zu.", get_data_type(object), slot);
 			return;
 		}
 	}
 	return;
 }
 
-// Populate String struct
+// Populates String struct
 void new_string(String* strobj, char* str)
 {
 	strobj->strval = (char *)malloc(strlen(str) + 1);
 	if(strobj->strval == NULL)
 	{
-		fprintf(stderr, "Error allocating memory for string %s: %s\n", str, strerror(errno));
+		fprintf(stderr, "Error allocating memory for string (\"%s\"): %s\n", str, strerror(errno));
 		return;
 	}
 	strcpy(strobj->strval, str);
 	strobj->length = strlen(str);
+	if(debug_mode)
+		debug_print("Memory allocated for string with length of %zu characters: %s", strobj->length, str);
 	return;
 }
 
-// Reallocate memory for string
+// Reallocates memory for string
 void realloc_string(String* strobj, const char* new_string)
 {
+	if(debug_mode)
+		debug_print("Reallocation attempt for original string containing %zu characters: %s", strobj->length, strobj->strval);
 	char* newstr = (char *)realloc(strobj->strval, strlen(new_string) + 1);
 	if(newstr == NULL)
 	{
-		fprintf(stderr, "Error reallocating memory for string %s: %s\n", new_string, strerror(errno));
+		fprintf(stderr, "Error reallocating memory for string (\"%s\"): %s\n", new_string, strerror(errno));
 		return;
 	}
 	strcpy(newstr, new_string);
+	if(debug_mode)
+		debug_print("Memory successfully reallocated for string with length of %zu characters: %s", strlen(new_string), new_string);
 	strobj->strval = newstr;
 	strobj->length = strlen(new_string);
 	return;
 }
 
-// Free string
+// Frees string
 void free_string(String* strobj)
 {
 	free(strobj->strval);
+	if(debug_mode)
+		debug_print("String freed.");
 	strobj->length = 0;
 	return;
 }
 
-// Populate Object struct
+// Populates Object struct
 Object* new_object(char* value)
 {
 	Object* object = (Object *)malloc(sizeof(Object));
@@ -144,20 +163,24 @@ Object* new_object(char* value)
 	}
 	convert_type(object, value);
 	object->marked = false;
+	if(debug_mode)
+		debug_print("Object of type %s created with value: %s", get_data_type(object), value);
 	add_store_object(object);
 	return object;
 }
 
-// Free object
+// Frees object
 void free_object(Object* object)
 {
 	if(object->datatype == STRING)
 		free_string(&object->value.strobj);
 	free(object);
+	if(debug_mode)
+		debug_print("Object freed.");
 	return;
 }
 
-// Clone object
+// Clones object
 Object* clone_object(Object* object)
 {
 	Object* new_object = (Object *)malloc(sizeof(Object));
@@ -177,6 +200,8 @@ Object* clone_object(Object* object)
 			return NULL;
 		}
 	}
+	if(debug_mode)
+		debug_print("Object of type %s cloned.", get_data_type(object));
 	add_store_object(new_object);
 
 	return new_object;

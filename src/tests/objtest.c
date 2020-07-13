@@ -27,11 +27,13 @@
 
 #include <inttypes.h>
 #include <stdio.h>
+#include "debug.h"
 #include "memory.h"
 #include "types.h"
 
 int main()
 {
+	debug_mode = true;
 	init_store();
 	Object* objects[512];
 	for(size_t i = 0; i < 512; i++)
