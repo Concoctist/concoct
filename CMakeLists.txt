@@ -8,7 +8,7 @@ file(GLOB SOURCES src/*.c src/vm/*.c)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(TEST_SOURCES src/memory.c src/types.c src/tests/objtest.c)
+set(TEST_SOURCES src/debug.c src/memory.c src/types.c src/tests/objtest.c)
 
 if(MSVC)
 	set(CMAKE_C_FLAGS "/W4 /WX /D_CRT_SECURE_NO_WARNINGS")
