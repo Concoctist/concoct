@@ -42,6 +42,7 @@
 int main(int argc, char** argv)
 {
 	char *input_file = NULL;
+	int nonopt_count = 0;
 	if(argc > 1)
 	{
 		for(int i = 1; i < argc; i++)
@@ -53,6 +54,7 @@ int main(int argc, char** argv)
 			}
 			else
 			{
+				nonopt_count++;
 				input_file = argv[i];
 			}
 		}
@@ -65,6 +67,12 @@ int main(int argc, char** argv)
 		debug_print("argc: %d", argc);
 		for(int i = 0; i < argc; i++)
 			debug_print("argv[%d]: %s", i, argv[i]);
+	}
+
+	if(nonopt_count > 1)
+	{
+		fprintf(stderr, "Ambiguous input!\n");
+		exit(EXIT_FAILURE);
 	}
 
 	if(argc == 1)
@@ -195,25 +203,35 @@ void lex_string(const char* input_string)
 // Handle command-line options
 void handle_options(int argc, char *argv[])
 {
-	for(int i = 1; i < argc && argv[i][0] == ARG_PREFIX && strlen(argv[i]) == 2; i++)
+	for(int i = 1; i < argc; i++)
 	{
-		switch(argv[i][1])
+		if(argv[i][0] == ARG_PREFIX && strlen(argv[i]) == 2)
 		{
-			case 'd':
-				debug_mode = true;
-				break;
-			case 'h':
-				print_usage();
-				exit(EXIT_SUCCESS);
-				break;
-			case 'v':
-				print_version();
-				exit(EXIT_SUCCESS);
-				break;
-			default:
-				print_usage();
-				exit(EXIT_FAILURE);
-				break;
+			switch(argv[i][1])
+			{
+				case 'd':
+					debug_mode = true;
+					break;
+				case 'h':
+					print_usage();
+					exit(EXIT_SUCCESS);
+					break;
+				case 'v':
+					print_version();
+					exit(EXIT_SUCCESS);
+					break;
+				default:
+					fprintf(stderr, "Invalid option!\n");
+					print_usage();
+					exit(EXIT_FAILURE);
+					break;
+			}
+		}
+		if(argv[i][0] == ARG_PREFIX && strlen(argv[i]) != 2)
+		{
+			fprintf(stderr, "Invalid option!\n");
+			print_usage();
+			exit(EXIT_FAILURE);
 		}
 	}
 	return;
