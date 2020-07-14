@@ -26,10 +26,11 @@
  */
 
 #include <errno.h>  // errno
+#include <math.h>   // round()
 #include <stdio.h>  // fprintf(), stderr
 #include <stdlib.h> // calloc(), free(), malloc(), realloc(), EXIT_FAILURE
 #include <string.h> // memcpy(), strcpy(), strlen()
-#include "debug.h"  // debug_print(), debug_mode
+#include "debug.h"
 #include "memory.h"
 
 ObjectStore object_store;
@@ -94,8 +95,8 @@ void add_store_object(Object* object)
 {
 	for(size_t slot = 0; slot < get_store_size(); slot++)
 	{
-		if(slot >= get_store_size() - STORE_GROWTH_THRESHOLD)
-			realloc_store(get_store_size() + (size_t)(get_store_size() * STORE_GROWTH_FACTOR));
+		if(slot >= (size_t)round(get_store_size() - ((STORE_GROWTH_THRESHOLD / 100.0) * get_store_size())))
+			realloc_store((size_t)round(get_store_size() + (get_store_size() * (STORE_GROWTH_FACTOR / 100.0))));
 		if(object_store.objects[slot] == NULL)
 		{
 			object_store.objects[slot] = object;

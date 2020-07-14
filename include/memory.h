@@ -30,9 +30,12 @@
 
 #include "types.h"
 
+// Initial free store capacity
 static const size_t INITIAL_STORE_SIZE = 128;
-static const float STORE_GROWTH_FACTOR = 0.5f;
-static const size_t STORE_GROWTH_THRESHOLD = 8;
+// Percentage to increase object store by during expansion
+static const size_t STORE_GROWTH_FACTOR = 50;
+// Percentage of free slots remaining in object store before triggering an expansion
+static const size_t STORE_GROWTH_THRESHOLD = 10;
 
 // Object store
 typedef struct objstore
