@@ -44,7 +44,7 @@ void init_store()
 		fprintf(stderr, "Error allocating memory for object store: %s\n", strerror(errno));
 		return;
 	}
-	object_store.length = INITIAL_STORE_SIZE;
+	object_store.capacity = INITIAL_STORE_SIZE;
 	if(debug_mode)
 		debug_print("Object store initialized with %zu slots.", INITIAL_STORE_SIZE);
 	return;
@@ -61,12 +61,12 @@ void realloc_store(size_t new_size)
 		return;
 	}
 	// Initialize new space
-	for(size_t slot = get_store_size(); slot < new_size; slot++)
+	for(size_t slot = get_store_capacity(); slot < new_size; slot++)
 		new_store[slot] = NULL;
 	object_store.objects = new_store;
 	if(debug_mode)
-		debug_print("Object store resized from %zu to %zu slots.", object_store.length, new_size);
-	object_store.length = new_size;
+		debug_print("Object store resized from %zu to %zu slots.", object_store.capacity, new_size);
+	object_store.capacity = new_size;
 	return;
 }
 
@@ -82,7 +82,7 @@ void free_store()
 size_t get_store_free_slots()
 {
 	size_t free_slots = 0;
-	for(size_t slot = 0; slot < get_store_size(); slot++)
+	for(size_t slot = 0; slot < get_store_capacity(); slot++)
 	{
 		if(object_store.objects[slot] == NULL)
 			free_slots += 1;
@@ -90,13 +90,105 @@ size_t get_store_free_slots()
 	return free_slots;
 }
 
+// Returns used slots of object store
+size_t get_store_used_slots()
+{
+	size_t used_slots = 0;
+	for(size_t slot = 0; slot < get_store_capacity(); slot++)
+	{
+		if(object_store.objects[slot] != NULL)
+		used_slots += 1;
+	}
+	return used_slots;
+}
+
+// Returns size of object in bytes
+size_t get_object_size(Object* object)
+{
+	size_t obj_size = sizeof(Object);
+	if(object->datatype == STRING)
+	{
+		obj_size += sizeof(object->value.strobj);
+		obj_size += object->value.strobj.length + 1; // +1 for null terminator
+	}
+	return obj_size;
+}
+
+// Returns total size of objects in object store in bytes
+size_t get_store_objects_size()
+{
+	size_t total_size = 0;
+	for(size_t slot = 0; slot < get_store_capacity(); slot++)
+	{
+		if(object_store.objects[slot] != NULL)
+			total_size += get_object_size(object_store.objects[slot]);
+	}
+	return total_size;
+}
+
+// Returns total size of object store in bytes
+size_t get_store_total_size()
+{
+	return get_store_objects_size() + sizeof(ObjectStore) + sizeof(Object *) * get_store_capacity();
+}
+
+// Prints total size of objects in object store
+void print_store_objects_size()
+{
+	size_t total_size = get_store_objects_size();
+	printf("Total objects size in store: ");
+	if(total_size < KILOBYTE_BOUNDARY)
+		printf("%zu bytes\n", total_size);
+	else if(total_size > KILOBYTE_BOUNDARY && total_size < MEGABYTE_BOUNDARY)
+		printf("%.3fKB\n", total_size / 1024.0);
+	else if(total_size > MEGABYTE_BOUNDARY && total_size < GIGABYTE_BOUNDARY)
+		printf("%.3fMB\n", total_size / 1024.0 / 1024.0);
+	else if(total_size > GIGABYTE_BOUNDARY)
+		printf("%.3fGB\n", total_size / 1024.0 / 1024.0 / 1024.0);
+	return;
+}
+
+// Prints total size of object store
+void print_store_total_size()
+{
+	size_t total_size = get_store_total_size();
+	printf("Object store total size: ");
+	if(total_size < KILOBYTE_BOUNDARY)
+		printf("%zu bytes\n", total_size);
+	else if(total_size > KILOBYTE_BOUNDARY && total_size < MEGABYTE_BOUNDARY)
+		printf("%.3fKB\n", total_size / 1024.0);
+	else if(total_size > MEGABYTE_BOUNDARY && total_size < GIGABYTE_BOUNDARY)
+		printf("%.3fMB\n", total_size / 1024.0 / 1024.0);
+	else if(total_size > GIGABYTE_BOUNDARY)
+		printf("%.3fGB\n", total_size / 1024.0 / 1024.0 / 1024.0);
+	return;
+}
+
+// Converts bytes to kilobytes
+size_t convert_kilobytes(size_t bytes)
+{
+	return (size_t)round(bytes / 1024.0);
+}
+
+// Converts bytes to megabytes
+size_t convert_megabytes(size_t bytes)
+{
+	return (size_t)round(convert_kilobytes(bytes) / 1024.0);
+}
+
+// Converts bytes to gigabytes
+size_t convert_gigabytes(size_t bytes)
+{
+	return (size_t)round(convert_megabytes(bytes) / 1024.0);
+}
+
 // Adds object to store
 void add_store_object(Object* object)
 {
-	for(size_t slot = 0; slot < get_store_size(); slot++)
+	for(size_t slot = 0; slot < get_store_capacity(); slot++)
 	{
-		if(slot >= (size_t)round(get_store_size() - ((STORE_GROWTH_THRESHOLD / 100.0) * get_store_size())))
-			realloc_store((size_t)round(get_store_size() + (get_store_size() * (STORE_GROWTH_FACTOR / 100.0))));
+		if(slot >= (size_t)round(get_store_capacity() - ((STORE_GROWTH_THRESHOLD / 100.0) * get_store_capacity())))
+			realloc_store((size_t)round(get_store_capacity() + (get_store_capacity() * (STORE_GROWTH_FACTOR / 100.0))));
 		if(object_store.objects[slot] == NULL)
 		{
 			object_store.objects[slot] = object;
@@ -171,11 +263,12 @@ Object* new_object(char* value)
 }
 
 // Frees object
-void free_object(Object* object)
+void free_object(Object** object)
 {
-	if(object->datatype == STRING)
-		free_string(&object->value.strobj);
-	free(object);
+	if((*object)->datatype == STRING)
+		free_string(&(*object)->value.strobj);
+	free(*object);
+	*object = NULL;
 	if(debug_mode)
 		debug_print("Object freed.");
 	return;

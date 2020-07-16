@@ -35,17 +35,23 @@ int main()
 {
 	debug_mode = true;
 	init_store();
-	Object* objects[512];
-	for(size_t i = 0; i < 512; i++)
+	Object* objects[1024];
+	for(size_t i = 0; i < 1024; i++)
 	{
-		printf("Object store free/size: %zu/%zu\n\n", get_store_free_slots(), get_store_size());
+		printf("Object store free/capacity: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
+		printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
+		print_store_total_size();
 		objects[i] = new_object("7");
 	}
 
-	for(size_t i = 0; i < 512; i++)
+	for(size_t i = 0; i < 1024; i++)
 	{
-		printf("%s\n", get_data_type(object_store.objects[i]));
-		free_object(object_store.objects[i]);
+		printf("Object store free/size: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
+		printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
+		printf("Data type at slot #%zu: %s\n", i, get_data_type(object_store.objects[i]));
+		printf("Object size: %zu bytes\n", get_object_size(object_store.objects[i]));
+		free_object(&object_store.objects[i]);
+		print_store_total_size();
 	}
 	puts("");
 
@@ -53,35 +59,36 @@ int main()
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%s\n\n", (char *)get_object_value(object));
-	free_object(object);
+	free_object(&object);
 
 	object = new_object("true");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%d\n\n", *(Bool *)get_object_value(object));
-	free_object(object);
+	free_object(&object);
 
 	object = new_object("100");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%" PRId32 "\n\n", *(Number *)get_object_value(object));
-	free_object(object);
+	free_object(&object);
 
 	object = new_object("5721452096347253");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%" PRId64 "\n\n", *(BigNum *)get_object_value(object));
-	free_object(object);
+	free_object(&object);
 
 	object = new_object("77.715");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%f\n\n", *(Decimal *)get_object_value(object));
-	free_object(object);
+	free_object(&object);
 
 	object = new_object("Greetings, Concocter!");
 	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object), object->value.strobj.strval, object->value.strobj.length);
 	print_object_value(object);
+	printf("Object size: %zu bytes\n", get_object_size(object));
 	printf("%s\n", (char *)get_object_value(object));
 
 	puts("\nAfter realloc_string():");
@@ -93,8 +100,8 @@ int main()
 
 	puts("\nCloned object:");
 	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object2), object2->value.strobj.strval, object2->value.strobj.length);
-	free_object(object);
-	free_object(object2);
+	free_object(&object);
+	free_object(&object2);
 	free_store();
 
 	return 0;
