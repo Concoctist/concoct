@@ -37,10 +37,15 @@ static const size_t STORE_GROWTH_FACTOR = 50;
 // Percentage of free slots remaining in object store before triggering an expansion
 static const size_t STORE_GROWTH_THRESHOLD = 10;
 
+// Byte size limits for conversions
+static const size_t KILOBYTE_BOUNDARY = 1024;
+static const size_t MEGABYTE_BOUNDARY = 1048576;
+static const size_t GIGABYTE_BOUNDARY = 1073741824;
+
 // Object store
 typedef struct objstore
 {
-	size_t length;
+	size_t capacity;
 	Object** objects;
 } ObjectStore;
 extern ObjectStore object_store;
@@ -55,10 +60,37 @@ void realloc_store(size_t new_size);
 void free_store();
 
 // Returns size of object store
-static inline size_t get_store_size() { return object_store.length; }
+static inline size_t get_store_capacity() { return object_store.capacity; }
 
 // Returns free slots of object store
 size_t get_store_free_slots();
+
+// Returns used slots of object store
+size_t get_store_used_slots();
+
+// Returns size of object in bytes
+size_t get_object_size(Object* object);
+
+// Returns total size of objects in object store in bytes
+size_t get_store_objects_size();
+
+// Returns total size of object store in bytes
+size_t get_store_total_size();
+
+// Prints total size of objects in object store
+void print_store_objects_size();
+
+// Prints total size of object store
+void print_store_total_size();
+
+// Converts bytes to kilobytes
+size_t convert_kilobytes(size_t bytes);
+
+// Converts bytes to megabytes
+size_t convert_megabytes(size_t bytes);
+
+// Converts bytes to gigabytes
+size_t convert_gigabytes(size_t bytes);
 
 // Adds object to store
 void add_store_object(Object* object);
@@ -76,7 +108,7 @@ void free_string(String* strobj);
 Object* new_object(char* value);
 
 // Frees object
-void free_object(Object* object);
+void free_object(Object** object);
 
 // Clones object
 Object* clone_object(Object* object);
