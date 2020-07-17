@@ -75,7 +75,7 @@ size_t get_object_size(Object* object);
 size_t get_store_objects_size();
 
 // Returns total size of object store in bytes
-size_t get_store_total_size();
+static inline size_t get_store_total_size() { return get_store_objects_size() + sizeof(ObjectStore) + sizeof(Object *) * get_store_capacity(); }
 
 // Prints total size of objects in object store
 void print_store_objects_size();
@@ -112,5 +112,8 @@ void free_object(Object** object);
 
 // Clones object
 Object* clone_object(Object* object);
+
+// Collects garbage and returns number of objects collected
+size_t collect_garbage();
 
 #endif // MEMORY_H

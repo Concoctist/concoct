@@ -27,9 +27,32 @@
 
 #include <inttypes.h>
 #include <stdio.h>
+#include <stdlib.h> // rand(), srand()
+#include <time.h>   // time()
 #include "debug.h"
 #include "memory.h"
 #include "types.h"
+
+// Proof of concept to demonstrate garbage collection
+void mark_objects()
+{
+	srand(time(0));
+	size_t mark_count = 0;
+	if(debug_mode)
+	{
+		debug_print("Marking objects...");
+	}
+	for(size_t slot = 0; slot < get_store_capacity(); slot++)
+	{
+		if(object_store.objects[slot] != NULL && rand() % 2) // each object has a 50% chance of being marked
+		{
+			object_store.objects[slot]->marked = true;
+			mark_count++;
+		}
+	}
+	if(debug_mode)
+		debug_print("%zu objects marked.", mark_count);
+}
 
 int main()
 {
@@ -46,44 +69,37 @@ int main()
 
 	for(size_t i = 0; i < 1024; i++)
 	{
-		printf("Object store free/size: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
-		printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
-		printf("Data type at slot #%zu: %s\n", i, get_data_type(object_store.objects[i]));
-		printf("Object size: %zu bytes\n", get_object_size(object_store.objects[i]));
-		free_object(&object_store.objects[i]);
-		print_store_total_size();
+		printf("Object of data type %s at slot #%zu is %zu bytes.\n", get_data_type(object_store.objects[i]), i, get_object_size(object_store.objects[i]));
 	}
-	puts("");
+	mark_objects();
+	collect_garbage(); // free only marked objects
+	printf("Object store free/capacity: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
+	printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
 
 	Object* object = new_object("null");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%s\n\n", (char *)get_object_value(object));
-	free_object(&object);
 
 	object = new_object("true");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%d\n\n", *(Bool *)get_object_value(object));
-	free_object(&object);
 
 	object = new_object("100");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%" PRId32 "\n\n", *(Number *)get_object_value(object));
-	free_object(&object);
 
 	object = new_object("5721452096347253");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%" PRId64 "\n\n", *(BigNum *)get_object_value(object));
-	free_object(&object);
 
 	object = new_object("77.715");
 	printf("Data type: %s\n", get_data_type(object));
 	print_object_value(object);
 	printf("%f\n\n", *(Decimal *)get_object_value(object));
-	free_object(&object);
 
 	object = new_object("Greetings, Concocter!");
 	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object), object->value.strobj.strval, object->value.strobj.length);
@@ -100,8 +116,6 @@ int main()
 
 	puts("\nCloned object:");
 	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object2), object2->value.strobj.strval, object2->value.strobj.length);
-	free_object(&object);
-	free_object(&object2);
 	free_store();
 
 	return 0;
