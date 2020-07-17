@@ -31,11 +31,15 @@
 #include "types.h"
 
 // Initial free store capacity
-static const size_t INITIAL_STORE_SIZE = 128;
+static const size_t INITIAL_STORE_CAPACITY = 128;
 // Percentage to increase object store by during expansion
 static const size_t STORE_GROWTH_FACTOR = 50;
-// Percentage of free slots remaining in object store before triggering an expansion
+// Percentage of free slots remaining in object store before triggering expansion
 static const size_t STORE_GROWTH_THRESHOLD = 10;
+// Percentage to decrease object store by during compaction
+static const size_t STORE_SHRINK_FACTOR = 25;
+// Percentage of free slots remaining in object store before triggering compaction
+static const size_t STORE_SHRINK_THRESHOLD = 75;
 
 // Byte size limits for conversions
 static const size_t KILOBYTE_BOUNDARY = 1024;
