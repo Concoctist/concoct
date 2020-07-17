@@ -38,15 +38,16 @@ ObjectStore object_store;
 // Initializes object store
 void init_store()
 {
-	object_store.objects = (Object **)calloc(INITIAL_STORE_SIZE, sizeof(Object *));
+	// Ensure initial store capacity is >0 when using user input.
+	object_store.objects = (Object **)calloc(INITIAL_STORE_CAPACITY, sizeof(Object *));
 	if(object_store.objects == NULL)
 	{
 		fprintf(stderr, "Error allocating memory for object store: %s\n", strerror(errno));
 		return;
 	}
-	object_store.capacity = INITIAL_STORE_SIZE;
+	object_store.capacity = INITIAL_STORE_CAPACITY;
 	if(debug_mode)
-		debug_print("Object store initialized with %zu slots.", INITIAL_STORE_SIZE);
+		debug_print("Object store initialized with %zu slots.", INITIAL_STORE_CAPACITY);
 	return;
 }
 
@@ -316,5 +317,11 @@ size_t collect_garbage()
 	}
 	if(debug_mode)
 		debug_print("%zu objects collected.", collect_count);
+	if(get_store_used_slots() != 0 && (size_t)round(get_store_capacity() / get_store_used_slots() * 100.0) >= STORE_SHRINK_THRESHOLD)
+	{
+		size_t new_size = (size_t)round(get_store_capacity() - (get_store_capacity() * (STORE_SHRINK_FACTOR / 100.0)));
+		if(new_size >= INITIAL_STORE_CAPACITY)
+			realloc_store(new_size);
+	}
 	return collect_count;
 }

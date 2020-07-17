@@ -34,14 +34,12 @@
 #include "types.h"
 
 // Proof of concept to demonstrate garbage collection
-void mark_objects()
+size_t mark_objects()
 {
 	srand(time(0));
 	size_t mark_count = 0;
 	if(debug_mode)
-	{
 		debug_print("Marking objects...");
-	}
 	for(size_t slot = 0; slot < get_store_capacity(); slot++)
 	{
 		if(object_store.objects[slot] != NULL && rand() % 2) // each object has a 50% chance of being marked
@@ -52,6 +50,7 @@ void mark_objects()
 	}
 	if(debug_mode)
 		debug_print("%zu objects marked.", mark_count);
+	return mark_count;
 }
 
 int main()
