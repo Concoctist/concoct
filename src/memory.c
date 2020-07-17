@@ -73,6 +73,11 @@ void realloc_store(size_t new_size)
 // Frees object store
 void free_store()
 {
+	for(size_t slot = 0; slot < get_store_capacity(); slot++)
+	{
+		if(object_store.objects[slot] != NULL)
+			free_object(&object_store.objects[slot]);
+	}
 	free(object_store.objects);
 	if(debug_mode)
 		debug_print("Object store freed.");
@@ -97,7 +102,7 @@ size_t get_store_used_slots()
 	for(size_t slot = 0; slot < get_store_capacity(); slot++)
 	{
 		if(object_store.objects[slot] != NULL)
-		used_slots += 1;
+			used_slots += 1;
 	}
 	return used_slots;
 }
@@ -124,12 +129,6 @@ size_t get_store_objects_size()
 			total_size += get_object_size(object_store.objects[slot]);
 	}
 	return total_size;
-}
-
-// Returns total size of object store in bytes
-size_t get_store_total_size()
-{
-	return get_store_objects_size() + sizeof(ObjectStore) + sizeof(Object *) * get_store_capacity();
 }
 
 // Prints total size of objects in object store
@@ -299,4 +298,23 @@ Object* clone_object(Object* object)
 	add_store_object(new_object);
 
 	return new_object;
+}
+
+// Collects garbage and returns number of objects collected
+size_t collect_garbage()
+{
+	size_t collect_count = 0;
+	if(debug_mode)
+		debug_print("Collecting garbage...");
+	for(size_t slot = 0; slot < get_store_capacity(); slot++)
+	{
+		if(object_store.objects[slot] != NULL && object_store.objects[slot]->marked)
+		{
+			free_object(&object_store.objects[slot]);
+			collect_count++;
+		}
+	}
+	if(debug_mode)
+		debug_print("%zu objects collected.", collect_count);
+	return collect_count;
 }
