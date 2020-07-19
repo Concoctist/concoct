@@ -38,11 +38,13 @@
 #include "parser.h"
 #include "types.h"
 #include "version.h" // VERSION
+#include "vm/vm.h"
 
 int main(int argc, char** argv)
 {
 	char *input_file = NULL;
 	int nonopt_count = 0;
+
 	if(argc > 1)
 	{
 		for(int i = 1; i < argc; i++)
@@ -61,6 +63,7 @@ int main(int argc, char** argv)
 	}
 
 	print_version();
+	init_vm();
 
 	if(debug_mode)
 	{
@@ -72,16 +75,16 @@ int main(int argc, char** argv)
 	if(nonopt_count > 1)
 	{
 		fprintf(stderr, "Ambiguous input!\n");
-		exit(EXIT_FAILURE);
+		clean_exit(EXIT_FAILURE);
 	}
 
-	if(argc == 1)
+	if(nonopt_count == 0)
 		interactive_mode();
 
 	if(argc > 3)
 	{
 		fprintf(stderr, "Too many arguments!\n");
-		exit(EXIT_FAILURE);
+		clean_exit(EXIT_FAILURE);
 	}
 
 	if(input_file)
@@ -92,10 +95,22 @@ int main(int argc, char** argv)
 	else
 	{
 		fprintf(stderr, "No input file!\n");
-		exit(EXIT_FAILURE);
+		clean_exit(EXIT_FAILURE);
 	}
 
+	clean_exit(EXIT_SUCCESS);
 	return 0;
+}
+
+// Exits gracefully
+void clean_exit(int status)
+{
+	stop_vm();
+	if(status == EXIT_SUCCESS)
+		exit(EXIT_SUCCESS);
+	else
+		exit(EXIT_FAILURE);
+	return;
 }
 
 // Parses file
@@ -105,7 +120,7 @@ void parse_file(const char* file_name)
 	if(input_file == NULL)
 	{
 		fprintf(stderr, "Error opening %s: %s\n", file_name, strerror(errno));
-		exit(EXIT_FAILURE);
+		clean_exit(EXIT_FAILURE);
 	}
 
 	// Creates a new lexer and iterates through the tokens
@@ -152,7 +167,7 @@ void lex_file(const char* file_name)
 	if(input_file == NULL)
 	{
 		fprintf(stderr, "Error opening %s: %s\n", file_name, strerror(errno));
-		exit(EXIT_FAILURE);
+		clean_exit(EXIT_FAILURE);
 	}
 
 	// Creates a new lexer and iterates through the tokens
@@ -286,10 +301,10 @@ void interactive_mode()
 			continue;
 #ifdef _WIN32
 		if(_stricmp(input, "quit") == 0)
-			exit(EXIT_SUCCESS);
+			clean_exit(EXIT_SUCCESS);
 #else
 		if(strcasecmp(input, "quit") == 0)
-			exit(EXIT_SUCCESS);
+			clean_exit(EXIT_SUCCESS);
 #endif
 		lex_string(input);
 		parse_string(input);

@@ -25,32 +25,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef STACK_H
-#define STACK_H
+#include "debug.h"
+#include "memory.h"
+#include "vm/opcodes.h"
+#include "vm/vm.h"
 
-#include <stddef.h> // NULL
-#include "types.h"
+VM vm;
 
-#define MAX_STACK_CAPACITY ((size_t)64)
-//static const size_t MAX_STACK_CAPACITY = 64;
-
-typedef struct vm_stack
+// Initializes virtual machine
+void init_vm()
 {
-	int top;
-	size_t count;
-	Object* objects[MAX_STACK_CAPACITY];
-} Stack;
+	Stack* stack = &vm.stack;
+	init_stack(stack);
+	init_store();
+	if(debug_mode)
+		debug_print("VM initialized.");
+	return;
+}
 
-// Initializes stack
-void init_stack(Stack* stack);
-
-// Returns object at top of stack without removal
-Object* peek(Stack* stack);
-
-// Returns and removes object at top of stack
-Object* pop(Stack* stack);
-
-// Pushes new object on top of stack
-void push(Stack* stack, Object* object);
-
-#endif // STACK_H
+// Stops virtual machine
+void stop_vm()
+{
+	free_store();
+	if(debug_mode)
+		debug_print("VM stopped.");
+	return;
+}

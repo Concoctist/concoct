@@ -28,13 +28,21 @@
 #ifndef VM_H
 #define VM_H
 
-#include "types.h" // Byte
+#include "types.h"    // Byte
+#include "vm/stack.h" // Stack
 
 typedef struct vm
 {
 	Stack stack; // stack structure
-	Item* sp;    // stack pointer/top item of stack
+	Object* sp;  // stack pointer/top item of stack
 	Byte* ip;    // instruction pointer/program counter
 } VM;
+extern VM vm;
+
+// Initializes virtual machine
+void init_vm();
+
+// Stops virtual machine
+void stop_vm();
 
 #endif // VM_H
