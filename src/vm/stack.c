@@ -30,56 +30,54 @@
 #include "debug.h"
 #include "vm/stack.h"
 
-Stack stack;
-
-void init_stack()
+void init_stack(Stack* stack)
 {
-	stack.count = 0;
-	stack.top = -1;
+	stack->count = 0;
+	stack->top = -1;
 	if(debug_mode)
 		debug_print("Stack initialized with %zu slots.", MAX_STACK_CAPACITY);
 	return;
 }
 
-// Returns object at top of stack without popping
-Object* peek()
+// Returns object at top of stack without removal
+Object* peek(Stack* stack)
 {
-	if(stack.top == -1)
+	if(stack->top == -1)
 	{
 		if(debug_mode)
 			debug_print("peek() called on empty stack!");
 		return NULL;
 	}
 	if(debug_mode)
-		debug_print("peek() called on stack for object of type %s. Stack currently contains %zu objects.", get_data_type(stack.objects[stack.top]), stack.count);
-	return stack.objects[stack.top];
+		debug_print("peek() called on stack for object of type %s. Stack currently contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
+	return stack->objects[stack->top];
 }
 
 // Returns and removes object at top of stack
-Object* pop()
+Object* pop(Stack* stack)
 {
-	if(stack.top == -1)
+	if(stack->top == -1)
 	{
 		fprintf(stderr, "Stack underflow occurred!\n");
-		exit(EXIT_FAILURE);
+		return NULL;
 	}
-	stack.count--;
+	stack->count--;
 	if(debug_mode)
-		debug_print("pop() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack.objects[stack.top]), stack.count);
-	return stack.objects[stack.top--];
+		debug_print("pop() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
+	return stack->objects[stack->top--];
 }
 
 // Pushes new object on top of stack
-void push(Object* object)
+void push(Stack* stack, Object* object)
 {
-	if(stack.top >= ((int)MAX_STACK_CAPACITY - 1))
+	if(stack->top >= ((int)MAX_STACK_CAPACITY - 1))
 	{
 		fprintf(stderr, "Stack overflow occurred!\n");
-		exit(EXIT_FAILURE);
+		return;
 	}
-	stack.count++;
-	stack.objects[++stack.top] = object;
+	stack->count++;
+	stack->objects[++stack->top] = object;
 	if(debug_mode)
-		debug_print("push() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack.objects[stack.top]), stack.count);
+		debug_print("push() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
 	return;
 }

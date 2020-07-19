@@ -30,6 +30,7 @@
 #include <stdio.h>  // fprintf(), stderr
 #include <stdlib.h> // calloc(), free(), malloc(), realloc(), EXIT_FAILURE
 #include <string.h> // memcpy(), strcpy(), strlen()
+#include "concoct.h"
 #include "debug.h"
 #include "memory.h"
 
@@ -58,7 +59,7 @@ void realloc_store(size_t new_size)
 	if(new_store == NULL)
 	{
 		fprintf(stderr, "Error reallocating memory for object store: %s\n", strerror(errno));
-		//exit(EXIT_FAILURE);
+		//clean_exit(EXIT_FAILURE);
 		return;
 	}
 	// Initialize new space

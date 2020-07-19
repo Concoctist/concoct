@@ -29,11 +29,12 @@
 #define CONCOCT_H
 
 #ifdef _WIN32
-	const char ARG_PREFIX = '/';
+	static const char ARG_PREFIX = '/';
 #else
-	const char ARG_PREFIX = '-';
+	static const char ARG_PREFIX = '-';
 #endif
 
+void clean_exit(int status);
 void lex_file(const char* file_name);
 void lex_string(const char* input_string);
 void parse_file(const char* file_name);

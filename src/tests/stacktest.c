@@ -34,42 +34,44 @@
 int main()
 {
 	debug_mode = true;
-	init_stack();
+	Stack stack;
+	Stack* pstack = &stack;
+	init_stack(pstack);
 	init_store();
 
 	Object* object = new_object("null");
-	push(object);
-	printf("Data type: %s\n", get_data_type(peek()));
-	print_object_value(peek());
+	push(pstack, object);
+	printf("Data type: %s\n", get_data_type(peek(pstack)));
+	print_object_value(peek(pstack));
 
 	object = new_object("true");
-	push(object);
-	printf("Data type: %s\n", get_data_type(peek()));
-	print_object_value(peek());
+	push(pstack, object);
+	printf("Data type: %s\n", get_data_type(peek(pstack)));
+	print_object_value(peek(pstack));
 
 	object = new_object("100");
-	push(object);
-	printf("Data type: %s\n", get_data_type(peek()));
-	print_object_value(peek());
+	push(pstack, object);
+	printf("Data type: %s\n", get_data_type(peek(pstack)));
+	print_object_value(peek(pstack));
 
 	object = new_object("5721452096347253");
-	push(object);
-	printf("Data type: %s\n", get_data_type(peek()));
-	print_object_value(peek());
+	push(pstack, object);
+	printf("Data type: %s\n", get_data_type(peek(pstack)));
+	print_object_value(peek(pstack));
 
 	object = new_object("77.715");
-	push(object);
-	printf("Data type: %s\n", get_data_type(peek()));
-	print_object_value(peek());
+	push(pstack, object);
+	printf("Data type: %s\n", get_data_type(peek(pstack)));
+	print_object_value(peek(pstack));
 
 	object = new_object("Greetings, Concocter!");
-	push(object);
-	printf("Data type: %s\n", get_data_type(peek()));
-	print_object_value(peek());
+	push(pstack, object);
+	printf("Data type: %s\n", get_data_type(peek(pstack)));
+	print_object_value(peek(pstack));
 
 	puts("\nValue of each stack item after pop():");
-	for(size_t i = stack.count; i > 0; i--)
-		print_object_value(pop());
+	for(size_t i = pstack->count; i > 0; i--)
+		print_object_value(pop(pstack));
 
 	free_store();
 
