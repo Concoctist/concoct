@@ -2,7 +2,7 @@ do {
     if "Hello" {
         for test in tests {
             if test {
-                x = 5
+                x = (-5 * +3) / space.cls.obj
             }
         }
         msg = "Hello"
