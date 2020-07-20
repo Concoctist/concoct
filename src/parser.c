@@ -121,6 +121,7 @@ Parses an expression consisting of one token
 */
 ConcoctNode* cct_parse_single_expr(ConcoctParser* parser)
 {
+    ConcoctNode* node;
     switch (parser->current_token.type)
     {
         case CCT_TOKEN_INT:
@@ -130,7 +131,7 @@ ConcoctNode* cct_parse_single_expr(ConcoctParser* parser)
         case CCT_TOKEN_TRUE:
         case CCT_TOKEN_FALSE:
         case CCT_TOKEN_IDENTIFIER:
-            ConcoctNode* node = cct_new_node(parser->current_token, parser->lexer->token_text);
+            node = cct_new_node(parser->current_token, parser->lexer->token_text);
             cct_next_parser_token(parser);
             return node;
         case CCT_TOKEN_LEFT_PAREN:
@@ -159,10 +160,11 @@ ConcoctNode* cct_parse_primary_expr(ConcoctParser* parser)
     int parsing = 1;
     while(parsing)
     {
+        ConcoctNode* op_node;
         switch (parser->current_token.type)
         {
             case CCT_TOKEN_DOT:
-                ConcoctNode* op_node = cct_new_node(parser->current_token, NULL);
+                op_node = cct_new_node(parser->current_token, NULL);
                 cct_node_add_child(op_node, current_node);
                 cct_next_parser_token(parser);
                 ConcoctNode* second_expr = cct_parse_single_expr(parser);
@@ -183,6 +185,7 @@ ConcoctNode* cct_parse_primary_expr(ConcoctParser* parser)
 }
 ConcoctNode* cct_parse_unary_expr(ConcoctParser* parser)
 {
+    ConcoctNode* op_node;
     switch (parser->current_token.type)
     {
         case CCT_TOKEN_ADD:
@@ -190,7 +193,7 @@ ConcoctNode* cct_parse_unary_expr(ConcoctParser* parser)
         case CCT_TOKEN_NOT:
         case CCT_TOKEN_INC:
         case CCT_TOKEN_DEC:
-            ConcoctNode* op_node = cct_new_node(parser->current_token, NULL);
+            op_node = cct_new_node(parser->current_token, NULL);
             cct_next_parser_token(parser);
             ConcoctNode* expr = cct_parse_primary_expr(parser);
             if(expr == NULL)
@@ -210,12 +213,13 @@ ConcoctNode* cct_parse_mult_expr(ConcoctParser* parser)
     int parsing = 1;
     while(parsing)
     {
+        ConcoctNode* op_node;
         switch (parser->current_token.type)
         {
             case CCT_TOKEN_MUL:
             case CCT_TOKEN_DIV:
             case CCT_TOKEN_MOD:
-                ConcoctNode* op_node = cct_new_node(parser->current_token, NULL);
+                op_node = cct_new_node(parser->current_token, NULL);
                 cct_node_add_child(op_node, current_node);
                 cct_next_parser_token(parser);
                 ConcoctNode* second_expr = cct_parse_unary_expr(parser);
@@ -241,11 +245,12 @@ ConcoctNode* cct_parse_additive_expr(ConcoctParser* parser)
     int parsing = 1;
     while(parsing)
     {
+        ConcoctNode* op_node;
         switch (parser->current_token.type)
         {
             case CCT_TOKEN_ADD:
             case CCT_TOKEN_SUB:
-                ConcoctNode* op_node = cct_new_node(parser->current_token, NULL);
+                op_node = cct_new_node(parser->current_token, NULL);
                 cct_node_add_child(op_node, current_node);
                 cct_next_parser_token(parser);
                 ConcoctNode* second_expr = cct_parse_mult_expr(parser);
