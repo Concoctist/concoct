@@ -36,7 +36,7 @@
 // Proof of concept to demonstrate garbage collection
 size_t mark_objects()
 {
-	srand(time(0));
+	srand((unsigned int)time(0));
 	size_t mark_count = 0;
 	if(debug_mode)
 		debug_print("Marking objects...");
