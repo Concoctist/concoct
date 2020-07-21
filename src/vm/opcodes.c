@@ -51,7 +51,7 @@ const char* get_mnemonic(Opcode oc)
 		case OP_LOE: return "OP_LOE";    // loop equal
 		case OP_LOP: return "OP_LOP";    // loop
 		case OP_LOZ: return "OP_LOZ";    // loop zero
-		case OP_MOD: return "OP_MOD";    // modulus
+		case OP_MOD: return "OP_MOD";    // modulo
 		case OP_MOV: return "OP_MOV";    // move
 		case OP_MUL: return "OP_MUL";    // multiply
 		case OP_NOP: return "OP_NOP";    // no op

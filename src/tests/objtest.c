@@ -117,5 +117,18 @@ int main()
 	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object2), object2->value.strobj.strval, object2->value.strobj.length);
 	free_store();
 
+	puts("\nStringify tests...");
+	char* str = NULL;
+	Number numval = 42;
+	void* vptr = &numval;
+	stringify(&str, vptr, NUMBER);
+	printf("%s\n", str);
+	free(str);
+	Decimal decimalval = 57.05;
+	vptr = &decimalval;
+	stringify(&str, vptr, DECIMAL);
+	printf("%s\n", str);
+	free(str);
+
 	return 0;
 }

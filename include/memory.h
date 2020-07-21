@@ -111,11 +111,17 @@ void free_string(String* strobj);
 // Populates Object struct
 Object* new_object(char* value);
 
+// Populates Object struct based on datatype
+Object* new_object_by_type(void* data, DataType datatype);
+
 // Frees object
 void free_object(Object** object);
 
 // Clones object
 Object* clone_object(Object* object);
+
+// Converts numeric data to string
+void stringify(char** str, void* data, DataType datatype);
 
 // Collects garbage and returns number of objects collected
 size_t collect_garbage();

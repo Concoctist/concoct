@@ -25,11 +25,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <errno.h>  // errno
-#include <math.h>   // round()
-#include <stdio.h>  // fprintf(), stderr
-#include <stdlib.h> // calloc(), free(), malloc(), realloc(), EXIT_FAILURE
-#include <string.h> // memcpy(), strcpy(), strlen()
+#include <errno.h>    // errno
+#include <inttypes.h> // PRId32, PRId64
+#include <math.h>     // round()
+#include <stdio.h>    // fprintf(), stderr
+#include <stdlib.h>   // calloc(), free(), malloc(), realloc(), EXIT_FAILURE
+#include <string.h>   // memcpy(), snprintf(), strcpy(), strlen()
 #include "concoct.h"
 #include "debug.h"
 #include "memory.h"
@@ -263,6 +264,63 @@ Object* new_object(char* value)
 	return object;
 }
 
+// Populates Object struct based on datatype
+Object* new_object_by_type(void* data, DataType datatype)
+{
+	Object* object = (Object *)malloc(sizeof(Object));
+	if(object == NULL)
+	{
+		fprintf(stderr, "Error allocating memory for object: %s\n", strerror(errno));
+		return NULL;
+	}
+	switch(datatype)
+	{
+		case NIL:
+		case BOOL:
+		case STRING:
+			fprintf(stderr, "Unsupported data type: %s\n", get_type(datatype));
+			free(object);
+			object = NULL;
+			return NULL;
+			break;
+		case BYTE:
+			object->datatype = datatype;
+			object->value.byteval = *(Byte *)data;
+			if(debug_mode)
+				debug_print("Object of type %s created with value: %u", get_type(datatype), *(Byte *)data);
+			break;
+		case NUMBER:
+			object->datatype = datatype;
+			object->value.numval = *(Number *)data;
+			if(debug_mode)
+				debug_print("Object of type %s created with value: %" PRId32, get_type(datatype), *(Number *)data);
+			break;
+		case BIGNUM:
+			object->datatype = datatype;
+			object->value.bignumval = *(BigNum *)data;
+			if(debug_mode)
+				debug_print("Object of type %s created with value: %" PRId64, get_type(datatype), *(BigNum *)data);
+			break;
+		case DECIMAL:
+			object->datatype = datatype;
+			object->value.decimalval = *(Decimal *)data;
+			if(debug_mode)
+				debug_print("Object of type %s created with value: %f", get_type(datatype), *(Decimal *)data);
+			break;
+		default:
+			fprintf(stderr, "Unsupported data type: %s\n", get_type(datatype));
+			free(object);
+			object = NULL;
+			return NULL;
+			break;
+	}
+	object->marked = false;
+	if(debug_mode)
+		debug_print("Object of type %s created with value: %s", get_type(datatype), data);
+	add_store_object(object);
+	return object;
+}
+
 // Frees object
 void free_object(Object** object)
 {
@@ -300,6 +358,69 @@ Object* clone_object(Object* object)
 	add_store_object(new_object);
 
 	return new_object;
+}
+
+// Converts numeric data to string
+void stringify(char** str, void* data, DataType datatype)
+{
+	int length = 0;
+	switch(datatype)
+	{
+		case NIL:
+		case BOOL:
+		case STRING:
+			fprintf(stderr, "Unsupported data type in stringify(): %s\n", get_type(datatype));
+			*str = NULL;
+			break;
+		case BYTE:
+			length = snprintf(NULL, 0, "%u", *(Byte *)data);
+			*str = (char *)malloc(length + 1);
+			if(*str == NULL)
+			{
+				fprintf(stderr, "Error allocating memory for string in stringify(): %s\n", strerror(errno));
+				*str = NULL;
+				return;
+			}
+			snprintf(*str, length + 1, "%u", *(Byte *)data);
+			break;
+		case NUMBER:
+			length = snprintf(NULL, 0, "%" PRId32, *(Number *)data);
+			*str = (char *)malloc(length + 1);
+			if(*str == NULL)
+			{
+				fprintf(stderr, "Error allocating memory for string in stringify(): %s\n", strerror(errno));
+				*str = NULL;
+				return;
+			}
+			snprintf(*str, length + 1, "%" PRId32, *(Number *)data);
+			break;
+		case BIGNUM:
+			length = snprintf(NULL, 0, "%" PRId64, *(BigNum *)data);
+			*str = (char *)malloc(length + 1);
+			if(*str == NULL)
+			{
+				fprintf(stderr, "Error allocating memory for string in stringify(): %s\n", strerror(errno));
+				*str = NULL;
+				return;
+			}
+			snprintf(*str, length + 1, "%" PRId64, *(BigNum *)data);
+			break;
+		case DECIMAL:
+			length = snprintf(NULL, 0, "%f", *(Decimal *)data);
+			*str = (char *)malloc(length + 1);
+			if(*str == NULL)
+			{
+				fprintf(stderr, "Error allocating memory for string in stringify(): %s\n", strerror(errno));
+				*str = NULL;
+				return;
+			}
+			snprintf(*str, length + 1, "%f", *(Decimal *)data);
+			break;
+		default:
+			*str = NULL;
+			break;
+	}
+	return;
 }
 
 // Collects garbage and returns number of objects collected

@@ -25,66 +25,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef INSTRUCTIONS_H
+#define INSTRUCTIONS_H
 
-#include <stdbool.h> // bool
-#include <stddef.h>  // NULL, size_t
-#include <stdint.h>  // uint8_t, int32_t, int64_t
+#include "vm/stack.h"
+#include "vm/vm.h"
 
-// Concoct data types
-typedef bool Bool;         // true/false
-typedef uint8_t Byte;      // unsigned char
-typedef int32_t Number;    // signed long integer
-typedef int64_t BigNum;    // signed long long integer
-typedef double Decimal;    // decimal
-typedef struct cct_string  // string
-{
-	size_t length;
-	char *strval;
-} String;
+RunCode binary_math_check(Object* operand1, Object* operand2, char operator);
+RunCode op_add(Stack* stack);
+RunCode op_sub(Stack* stack);
+RunCode op_div(Stack* stack);
+RunCode op_mul(Stack* stack);
+RunCode op_mod(Stack* stack);
 
-typedef enum data_type
-{
-	NIL,
-	BOOL,
-	BYTE,
-	NUMBER,
-	BIGNUM,
-	DECIMAL,
-	STRING
-} DataType;
-
-// Concoct object
-typedef struct object
-{
-	DataType datatype;
-	Bool marked;       // flagged for garbage collection
-	union
-	{
-		char* nullval;
-		Bool boolval;
-		Byte byteval;
-		Number numval;
-		BigNum bignumval;
-		Decimal decimalval;
-		String strobj; // strval is contained in String struct
-	} value;
-} Object;
-
-// Returns string representation of data type
-const char* get_type(DataType datatype);
-
-// Returns string representation of data type from object
-const char* get_data_type(Object* object);
-
-// Returns value of object
-void* get_object_value(Object* object);
-
-// Displays value of object
-void print_object_value(Object* object);
-
-// Converts string to applicable type
-void convert_type(Object* object, char* value);
-
-#endif // TYPES_H
+#endif // INSTRUCTIONS_H
