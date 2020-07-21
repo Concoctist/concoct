@@ -196,6 +196,8 @@ RunCode op_add(Stack* stack)
 // Subtraction
 RunCode op_sub(Stack* stack)
 {
+	Object* operand2 = pop(stack);
+	Object* operand1 = pop(stack);
 	//push(stack, pop(stack) - pop(stack));
 	return RUN_SUCCESS;
 }
@@ -204,6 +206,8 @@ RunCode op_sub(Stack* stack)
 RunCode op_div(Stack* stack)
 {
 	// Note: Handle divide by zero!
+	Object* operand2 = pop(stack);
+	Object* operand1 = pop(stack);
 	//push(stack, pop(stack) / pop(stack));
 	return RUN_SUCCESS;
 }
@@ -211,6 +215,8 @@ RunCode op_div(Stack* stack)
 // Multiplication
 RunCode op_mul(Stack* stack)
 {
+	Object* operand2 = pop(stack);
+	Object* operand1 = pop(stack);
 	//push(stack, pop(stack) * pop(stack));
 	return RUN_SUCCESS;
 }
@@ -218,6 +224,8 @@ RunCode op_mul(Stack* stack)
 // Modulo
 RunCode op_mod(Stack* stack)
 {
+	Object* operand2 = pop(stack);
+	Object* operand1 = pop(stack);
 	//push(stack, pop(stack) % pop(stack));
 	return RUN_SUCCESS;
 }
