@@ -50,7 +50,7 @@ typedef enum opcode
 	OP_LOE, // loop equal
 	OP_LOP, // loop
 	OP_LOZ, // loop zero
-	OP_MOD, // modulus
+	OP_MOD, // modulo
 	OP_MOV, // move
 	OP_MUL, // multiply
 	OP_NOP, // no op

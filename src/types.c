@@ -35,6 +35,22 @@
 #include "types.h"
 
 // Returns string representation of data type
+const char* get_type(DataType datatype)
+{
+	switch(datatype)
+	{
+		case NIL:     return "null";
+		case BOOL:    return "boolean";
+		case BYTE:    return "byte";
+		case NUMBER:  return "number";
+		case BIGNUM:  return "big number";
+		case DECIMAL: return "decimal";
+		case STRING:  return "string";
+		default:      return "unknown";
+	}
+}
+
+// Returns string representation of data type from object
 const char* get_data_type(Object* object)
 {
 	switch(object->datatype)

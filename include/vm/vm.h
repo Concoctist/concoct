@@ -39,6 +39,12 @@ typedef struct vm
 } VM;
 extern VM vm;
 
+typedef enum
+{
+	RUN_SUCCESS,
+	RUN_ERROR
+} RunCode;
+
 // Initializes virtual machine
 void init_vm();
 

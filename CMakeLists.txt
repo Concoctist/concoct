@@ -8,7 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(OBJTEST_SOURCES src/debug.c src/memory.c src/types.c src/tests/objtest.c)
-set(STACKTEST_SOURCES src/debug.c src/memory.c src/types.c src/vm/stack.c src/tests/stacktest.c)
+set(STACKTEST_SOURCES src/debug.c src/memory.c src/types.c src/vm/instructions.c src/vm/stack.c src/tests/stacktest.c)
 
 if(MSVC)
 	set(CMAKE_C_FLAGS "/W4 /WX /D_CRT_SECURE_NO_WARNINGS")

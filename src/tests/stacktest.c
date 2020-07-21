@@ -29,6 +29,7 @@
 #include "debug.h"
 #include "memory.h"
 #include "types.h"
+#include "vm/instructions.h"
 #include "vm/stack.h"
 
 int main()
@@ -72,6 +73,26 @@ int main()
 	puts("\nValue of each stack item after pop():");
 	for(size_t i = pstack->count; i > 0; i--)
 		print_object_value(pop(pstack));
+
+	puts("\nAdding 3 to stack...");
+	object = new_object("3");
+	push(pstack, object);
+	puts("Adding 7 to stack...");
+	object = new_object("7");
+	push(pstack, object);
+	puts("Adding stack values...");
+	op_add(pstack);
+	puts("Value after adding stack contents:");
+	print_object_value(pop(pstack));
+
+	puts("\nTesting string object addition of: \"Greetings, \" + \"Concocter!\"");
+	object = new_object("Greetings, ");
+	push(pstack, object);
+	object = new_object("Concocter!");
+	push(pstack, object);
+	op_add(pstack);
+	puts("Result:");
+	print_object_value(pop(pstack));
 
 	free_store();
 
