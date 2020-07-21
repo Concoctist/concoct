@@ -193,6 +193,7 @@ RunCode op_add(Stack* stack)
 	return RUN_SUCCESS;
 }
 
+/*
 // Subtraction
 RunCode op_sub(Stack* stack)
 {
@@ -229,3 +230,4 @@ RunCode op_mod(Stack* stack)
 	//push(stack, pop(stack) % pop(stack));
 	return RUN_SUCCESS;
 }
+*/
