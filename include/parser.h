@@ -30,6 +30,8 @@
 
 #include "lexer.h"
 
+static const int CCT_NODE_COUNT_PER_BLOCK = 256;
+
 typedef struct ConcoctNode
 {
     ConcoctToken token;
@@ -39,24 +41,36 @@ typedef struct ConcoctNode
     struct ConcoctNode** children;
 } ConcoctNode;
 
+typedef struct concoct_node_tree
+{
+    ConcoctNode** nodes;
+    int node_count;
+    int node_max;
+    ConcoctNode* root;
+} ConcoctNodeTree;
+
 typedef struct concoct_parser
 {
     ConcoctLexer* lexer;
+    ConcoctNodeTree* tree;
     ConcoctToken current_token;
     int error_line;
     const char* error;
 } ConcoctParser;
 
-ConcoctNode* cct_new_node(ConcoctToken token, const char* text);
-void cct_delete_node(ConcoctNode* node);
+
+
+ConcoctNode* cct_new_node(ConcoctNodeTree* tree, ConcoctToken token, const char* text);
 
 ConcoctParser* cct_new_parser(ConcoctLexer* lexer);
 ConcoctParser* cct_new_parser_str(const char* str);
 void cct_delete_parser(ConcoctParser* parser);
+void cct_delete_node_tree(ConcoctNodeTree* tree);
+
 
 ConcoctNode* cct_node_add_child(ConcoctNode* node, ConcoctNode* child);
 
-ConcoctNode* cct_parse_program(ConcoctParser* parser);
+ConcoctNodeTree* cct_parse_program(ConcoctParser* parser);
 ConcoctNode* cct_parse_stat(ConcoctParser* parser);
 ConcoctNode* cct_parse_expr(ConcoctParser* parser);
 ConcoctToken cct_next_parser_token(ConcoctParser* parser);
