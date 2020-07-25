@@ -126,11 +126,10 @@ void parse_file(const char* file_name)
 	// Creates a new lexer and iterates through the tokens
 	ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
 	ConcoctParser* parser = cct_new_parser(file_lexer);
-	ConcoctNode* root_node = cct_parse_program(parser);
+	ConcoctNodeTree* node_tree = cct_parse_program(parser);
 	if(parser->error == NULL)
 	{
-		cct_print_node(root_node, 0);
-		cct_delete_node(root_node);
+		cct_print_node(node_tree->root, 0);
 	}
 	else
 	{
@@ -138,6 +137,7 @@ void parse_file(const char* file_name)
 	}
 	fclose(input_file);
 	cct_delete_parser(parser);
+	cct_delete_node_tree(node_tree);
 	return;
 }
 
@@ -146,17 +146,19 @@ void parse_string(const char* input_string)
 {
 	ConcoctLexer* string_lexer = cct_new_string_lexer(input_string);
 	ConcoctParser* parser = cct_new_parser(string_lexer);
-	ConcoctNode* root_node = cct_parse_program(parser);
+	ConcoctNodeTree* node_tree = cct_parse_program(parser);
 	if(parser->error == NULL)
 	{
-		cct_print_node(root_node, 0);
-		cct_delete_node(root_node);
+		cct_print_node(node_tree->root, 0);
 	}
 	else
 	{
 		fprintf(stderr, "Parsing error: [%i] %s, got %s", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
 	}
 	cct_delete_parser(parser);
+	printf("Freed parser\n");
+	cct_delete_node_tree(node_tree);
+	printf("Freed node tree\n");
 	return;
 }
 

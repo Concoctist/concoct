@@ -84,22 +84,27 @@ Parses the program
     ..
     -statN
 */
-ConcoctNode* cct_parse_program(ConcoctParser* parser)
+ConcoctNodeTree* cct_parse_program(ConcoctParser* parser)
 {
+    ConcoctNodeTree* tree = malloc(sizeof(ConcoctNodeTree));
+    tree->node_count = 0;
+    tree->node_max = 256;
+    tree->nodes = malloc(tree->node_max * sizeof(ConcoctNode*));
     // For the root of the tree, a NewLine token is used, but it can be whatever
-    ConcoctNode* root = cct_new_node(cct_new_token(CCT_TOKEN_NEWLINE, 0), NULL);
+    tree->root = cct_new_node(tree, cct_new_token(CCT_TOKEN_NEWLINE, 0), NULL);
+    parser->tree = tree;
+
     ConcoctNode* stat;
     while(parser->current_token.type != CCT_TOKEN_EOF)
     {
         stat = cct_parse_stat(parser);
         if(stat == NULL)
         {
-            cct_delete_node(root);
-            return NULL;
+            return tree;
         }
-        cct_node_add_child(root, stat);
+        cct_node_add_child(tree->root, stat);
     }
-    return root;
+    return tree;
 }
 
 /*
@@ -131,7 +136,7 @@ ConcoctNode* cct_parse_single_expr(ConcoctParser* parser)
         case CCT_TOKEN_TRUE:
         case CCT_TOKEN_FALSE:
         case CCT_TOKEN_IDENTIFIER:
-            node = cct_new_node(parser->current_token, parser->lexer->token_text);
+            node = cct_new_node(parser->tree, parser->current_token, parser->lexer->token_text);
             cct_next_parser_token(parser);
             return node;
         case CCT_TOKEN_LEFT_PAREN:
@@ -144,7 +149,6 @@ ConcoctNode* cct_parse_single_expr(ConcoctParser* parser)
             if(parser->current_token.type != CCT_TOKEN_RIGHT_PAREN)
             {
                 cct_set_parser_error(parser, "Expected ')'");
-                cct_delete_node(inside_expr);
                 return NULL;
             }
             cct_next_parser_token(parser);
@@ -164,13 +168,12 @@ ConcoctNode* cct_parse_primary_expr(ConcoctParser* parser)
         switch (parser->current_token.type)
         {
             case CCT_TOKEN_DOT:
-                op_node = cct_new_node(parser->current_token, NULL);
+                op_node = cct_new_node(parser->tree, parser->current_token, NULL);
                 cct_node_add_child(op_node, current_node);
                 cct_next_parser_token(parser);
                 ConcoctNode* second_expr = cct_parse_single_expr(parser);
                 if(!second_expr)
                 {
-                    cct_delete_node(op_node);
                     return NULL;
                 }
                 cct_node_add_child(op_node, second_expr);
@@ -193,12 +196,11 @@ ConcoctNode* cct_parse_unary_expr(ConcoctParser* parser)
         case CCT_TOKEN_NOT:
         case CCT_TOKEN_INC:
         case CCT_TOKEN_DEC:
-            op_node = cct_new_node(parser->current_token, NULL);
+            op_node = cct_new_node(parser->tree, parser->current_token, NULL);
             cct_next_parser_token(parser);
             ConcoctNode* expr = cct_parse_primary_expr(parser);
             if(expr == NULL)
             {
-                cct_delete_node(op_node);
                 return NULL;
             }
             cct_node_add_child(op_node, expr);
@@ -219,13 +221,12 @@ ConcoctNode* cct_parse_mult_expr(ConcoctParser* parser)
             case CCT_TOKEN_MUL:
             case CCT_TOKEN_DIV:
             case CCT_TOKEN_MOD:
-                op_node = cct_new_node(parser->current_token, NULL);
+                op_node = cct_new_node(parser->tree, parser->current_token, NULL);
                 cct_node_add_child(op_node, current_node);
                 cct_next_parser_token(parser);
                 ConcoctNode* second_expr = cct_parse_unary_expr(parser);
                 if(!second_expr)
                 {
-                    cct_delete_node(op_node);
                     return NULL;
                 }
                 cct_node_add_child(op_node, second_expr);
@@ -250,13 +251,12 @@ ConcoctNode* cct_parse_additive_expr(ConcoctParser* parser)
         {
             case CCT_TOKEN_ADD:
             case CCT_TOKEN_SUB:
-                op_node = cct_new_node(parser->current_token, NULL);
+                op_node = cct_new_node(parser->tree, parser->current_token, NULL);
                 cct_node_add_child(op_node, current_node);
                 cct_next_parser_token(parser);
                 ConcoctNode* second_expr = cct_parse_mult_expr(parser);
                 if(!second_expr)
                 {
-                    cct_delete_node(op_node);
                     return NULL;
                 }
                 cct_node_add_child(op_node, second_expr);
@@ -287,13 +287,12 @@ ConcoctNode* cct_parse_expr(ConcoctParser* parser)
 */
 ConcoctNode* cct_parse_if_stat(ConcoctParser* parser)
 {
-    ConcoctNode* if_stat = cct_new_node(parser->current_token, NULL);
+    ConcoctNode* if_stat = cct_new_node(parser->tree, parser->current_token, NULL);
     cct_next_parser_token(parser);
 
     ConcoctNode* expr = cct_parse_expr(parser);
     if(expr == NULL)
     {
-        cct_delete_node(if_stat);
         return NULL;
     }
     cct_node_add_child(if_stat, expr);
@@ -301,7 +300,6 @@ ConcoctNode* cct_parse_if_stat(ConcoctParser* parser)
     ConcoctNode* stat = cct_parse_stat(parser);
     if(stat == NULL)
     {
-        cct_delete_node(if_stat);
         return NULL;
     }
     cct_node_add_child(if_stat, stat);
@@ -318,13 +316,12 @@ Parses a while statement
 */
 ConcoctNode* cct_parse_while_stat(ConcoctParser* parser)
 {
-    ConcoctNode* while_stat = cct_new_node(parser->current_token, NULL);
+    ConcoctNode* while_stat = cct_new_node(parser->tree, parser->current_token, NULL);
     cct_next_parser_token(parser);
 
     ConcoctNode* expr = cct_parse_expr(parser);
     if(expr == NULL)
     {
-        cct_delete_node(while_stat);
         return NULL;
     }
     cct_node_add_child(while_stat, expr);
@@ -332,7 +329,6 @@ ConcoctNode* cct_parse_while_stat(ConcoctParser* parser)
     ConcoctNode* stat = cct_parse_stat(parser);
     if(stat == NULL)
     {
-        cct_delete_node(while_stat);
         return NULL;
     }
     cct_node_add_child(while_stat, stat);
@@ -349,13 +345,12 @@ Parses a do-while statement
 */
 ConcoctNode* cct_parse_do_while_stat(ConcoctParser* parser)
 {
-    ConcoctNode* while_stat = cct_new_node(parser->current_token, NULL);
+    ConcoctNode* while_stat = cct_new_node(parser->tree, parser->current_token, NULL);
     cct_next_parser_token(parser);
 
     ConcoctNode* stat = cct_parse_stat(parser);
     if(stat == NULL)
     {
-        cct_delete_node(while_stat);
         return NULL;
     }
     cct_node_add_child(while_stat, stat);
@@ -363,7 +358,6 @@ ConcoctNode* cct_parse_do_while_stat(ConcoctParser* parser)
     cct_parser_skip_new_lines(parser);
     if(parser->current_token.type != CCT_TOKEN_WHILE)
     {
-        cct_delete_node(while_stat);
         cct_set_parser_error(parser, "Expected 'while' keyword");
         return NULL;
     }
@@ -372,7 +366,6 @@ ConcoctNode* cct_parse_do_while_stat(ConcoctParser* parser)
     ConcoctNode* expr = cct_parse_expr(parser);
     if(expr == NULL)
     {
-        cct_delete_node(while_stat);
         return NULL;
     }
     cct_node_add_child(while_stat, expr);
@@ -390,23 +383,21 @@ Parses a for statement
 */
 ConcoctNode* cct_parse_for_stat(ConcoctParser* parser)
 {
-    ConcoctNode* for_stat = cct_new_node(parser->current_token, NULL);
+    ConcoctNode* for_stat = cct_new_node(parser->tree, parser->current_token, NULL);
     cct_next_parser_token(parser);
 
     if(parser->current_token.type != CCT_TOKEN_IDENTIFIER)
     {
-        cct_delete_node(for_stat);
         cct_set_parser_error(parser, "Expected an identifier");
         return NULL;
     }
 
-    ConcoctNode* identifier = cct_new_node(parser->current_token, parser->lexer->token_text);
+    ConcoctNode* identifier = cct_new_node(parser->tree, parser->current_token, parser->lexer->token_text);
     cct_node_add_child(for_stat, identifier);
     cct_next_parser_token(parser);
 
     if(parser->current_token.type != CCT_TOKEN_IN)
     {
-        cct_delete_node(for_stat);
         cct_set_parser_error(parser, "Expected the 'in' keyword");
         return NULL;
     }
@@ -415,7 +406,6 @@ ConcoctNode* cct_parse_for_stat(ConcoctParser* parser)
     ConcoctNode* expr = cct_parse_expr(parser);
     if(expr == NULL)
     {
-        cct_delete_node(for_stat);
         return NULL;
     }
     cct_node_add_child(for_stat, expr);
@@ -423,7 +413,6 @@ ConcoctNode* cct_parse_for_stat(ConcoctParser* parser)
     ConcoctNode* stat = cct_parse_stat(parser);
     if(stat == NULL)
     {
-        cct_delete_node(for_stat);
         return NULL;
     }
     cct_node_add_child(for_stat, stat);
@@ -442,7 +431,7 @@ Parses a compound statement
 */
 ConcoctNode* cct_parse_compound_stat(ConcoctParser* parser)
 {
-    ConcoctNode* compound_stat = cct_new_node(parser->current_token, NULL);
+    ConcoctNode* compound_stat = cct_new_node(parser->tree, parser->current_token, NULL);
     cct_next_parser_token(parser);
     cct_parser_skip_new_lines(parser);
     while(parser->current_token.type != CCT_TOKEN_RIGHT_BRACE)
@@ -450,7 +439,6 @@ ConcoctNode* cct_parse_compound_stat(ConcoctParser* parser)
         ConcoctNode* stat = cct_parse_stat(parser);
         if(stat == NULL)
         {
-            cct_delete_node(compound_stat);
             return NULL;
         }
         cct_node_add_child(compound_stat, stat);
@@ -467,7 +455,7 @@ Parses 'break' or 'continue'
 */
 ConcoctNode* cct_parse_one_word_stat(ConcoctParser* parser)
 {
-    ConcoctNode* stat = cct_new_node(parser->current_token, NULL);
+    ConcoctNode* stat = cct_new_node(parser->tree, parser->current_token, NULL);
     cct_next_parser_token(parser);
     return stat;
 }
@@ -480,12 +468,11 @@ Parses a return statement
 */
 ConcoctNode* cct_parse_return(ConcoctParser* parser)
 {
-    ConcoctNode* stat = cct_new_node(parser->current_token, NULL);
+    ConcoctNode* stat = cct_new_node(parser->tree, parser->current_token, NULL);
     cct_next_parser_token(parser);
     ConcoctNode* expr = cct_parse_expr(parser);
     if(expr == NULL)
     {
-        cct_delete_node(stat);
         return NULL;
     }
     cct_node_add_child(stat, expr);
@@ -502,7 +489,7 @@ with the identifier and expression as children
 */
 ConcoctNode* cct_parse_assign(ConcoctParser* parser)
 {
-    ConcoctNode* id_node = cct_new_node(parser->current_token, parser->lexer->token_text);
+    ConcoctNode* id_node = cct_new_node(parser->tree, parser->current_token, parser->lexer->token_text);
     cct_next_parser_token(parser);
     ConcoctNode* assign_op_node;
 
@@ -515,10 +502,9 @@ ConcoctNode* cct_parse_assign(ConcoctParser* parser)
         case CCT_TOKEN_DIV_ASSIGN:
         case CCT_TOKEN_MOD_ASSIGN:
         case CCT_TOKEN_EXP_ASSIGN:
-            assign_op_node = cct_new_node(parser->current_token, NULL);
+            assign_op_node = cct_new_node(parser->tree, parser->current_token, NULL);
             break;
         default:
-            cct_delete_node(id_node);
             cct_set_parser_error(parser, "Expected an assignment");
             return NULL;
     }
@@ -528,7 +514,6 @@ ConcoctNode* cct_parse_assign(ConcoctParser* parser)
     ConcoctNode* expr = cct_parse_expr(parser);
     if(expr == NULL)
     {
-        cct_delete_node(assign_op_node);
         return NULL;
     }
     cct_node_add_child(assign_op_node, expr);
@@ -571,8 +556,14 @@ ConcoctToken cct_next_parser_token(ConcoctParser* parser)
 /*
 ConcoctNode constructor
 */
-ConcoctNode* cct_new_node(ConcoctToken token, const char* text)
+ConcoctNode* cct_new_node(ConcoctNodeTree* tree, ConcoctToken token, const char* text)
 {
+    // Constructs a new node and registers it with the tree
+    if(tree->node_count == tree->node_max)
+    {
+        tree->node_max *= 2;
+        tree->nodes = realloc(tree->nodes, tree->node_max * sizeof(ConcoctNode*));
+    }
     ConcoctNode* node = malloc(sizeof(ConcoctNode));
     node->child_count = 0;
     node->children = NULL;
@@ -584,45 +575,30 @@ ConcoctNode* cct_new_node(ConcoctToken token, const char* text)
         node->text = malloc(strlen(text)+1);
         strcpy(node->text, text);
     }
+    tree->nodes[tree->node_count] = node;
+    tree->node_count += 1;
     return node;
 }
-
-/*
-Frees the node and all it's children from memory
-*/
-void cct_delete_node(ConcoctNode* node)
+void cct_delete_node_tree(ConcoctNodeTree* tree)
 {
-    if(node->children != NULL)
+    for(int i = 0;i < tree->node_count;i++)
     {
-        // Frees this node and it's children from memory
-        for(int i = 0; i < node->child_count; i++)
-        {
-            cct_delete_node(node->children[i]);
-        }
-        free(node->children);
-    }
-    if(node->text != NULL)
-    {
+        ConcoctNode* node = tree->nodes[i];
         free(node->text);
+        free(node->children);
+        free(node);
     }
-    free(node);
+    free(tree->nodes);
+    free(tree);
 }
-
 /*
 Adds a child to a node, also setting the child's parent
 */
 ConcoctNode* cct_node_add_child(ConcoctNode* node, ConcoctNode* child)
 {
     node->child_count++;
-    ConcoctNode** new_children_mem = malloc(sizeof(ConcoctNode*) * node->child_count);
-    if(node->children != NULL)
-    {
-        memcpy(new_children_mem, node->children, sizeof(ConcoctNode*) * (node->child_count - 1));
-        free(node->children);
-    }
-    node->children = new_children_mem;
+    node->children = realloc(node->children, sizeof(ConcoctNode*) * node->child_count);
     child->parent = node;
-    ConcoctNode** new_child_mem = node->children + (node->child_count - 1);
-    *new_child_mem = child;
+    node->children[node->child_count - 1] = child;
     return child;
 }
