@@ -13,9 +13,9 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 
 ### Building :hammer_and_wrench:
 #### Requirements
-* A C compiler that supports the [C99](http://en.wikipedia.org/wiki/C99) standard ([Clang](http://clang.llvm.org/), [GCC](http://gcc.gnu.org/), [MinGW](http://www.mingw.org/), [MSVC](http://visualstudio.microsoft.com/) >=2015)
+* A C compiler that supports the [C99](http://en.wikipedia.org/wiki/C99) standard ([Clang](http://clang.llvm.org/), [GCC](http://gcc.gnu.org/), [MinGW](https://osdn.net/projects/mingw), [MSVC](http://visualstudio.microsoft.com/) >=2015)
 * [CMake](http://cmake.org/) (>=3.1.0)
-* make/[gmake](http://www.gnu.org/software/make/) (if using Linux/Unix, [Cygwin](http://www.cygwin.com/), or [MinGW](http://www.mingw.org/))
+* make/[gmake](http://www.gnu.org/software/make/) (if using Linux/Unix, [Cygwin](http://www.cygwin.com/), or [MinGW](https://osdn.net/projects/mingw))
 * Optional software for debugging may include: [gdb](http://www.gnu.org/software/gdb/) (Linux), [lldb](http://lldb.llvm.org/) (Linux, FreeBSD, and macOS), [DTrace](http://dtrace.org/blogs/about/) (FreeBSD, macOS, and Solaris), ktrace (FreeBSD), ltrace (Linux), [strace](http://strace.io/) (Linux), truss (AIX, FreeBSD, and Solaris), tusc (HP-UX), and [Valgrind](http://valgrind.org/)
 
 #### Linux/Unix and Cygwin Steps
