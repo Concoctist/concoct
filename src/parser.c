@@ -86,25 +86,25 @@ Parses the program
 */
 ConcoctNodeTree* cct_parse_program(ConcoctParser* parser)
 {
-    ConcoctNodeTree* tree = malloc(sizeof(ConcoctNodeTree));
-    tree->node_count = 0;
-    tree->node_max = 256;
-    tree->nodes = malloc(tree->node_max * sizeof(ConcoctNode*));
-    // For the root of the tree, a NewLine token is used, but it can be whatever
-    tree->root = cct_new_node(tree, cct_new_token(CCT_TOKEN_NEWLINE, 0), NULL);
-    parser->tree = tree;
+	ConcoctNodeTree* tree = malloc(sizeof(ConcoctNodeTree));
+	tree->node_count = 0;
+	tree->node_max = 256;
+	tree->nodes = malloc(tree->node_max * sizeof(ConcoctNode*));
+	// For the root of the tree, a NewLine token is used, but it can be whatever
+	tree->root = cct_new_node(tree, cct_new_token(CCT_TOKEN_NEWLINE, 0), NULL);
+	parser->tree = tree;
 
-    ConcoctNode* stat;
-    while(parser->current_token.type != CCT_TOKEN_EOF)
-    {
-        stat = cct_parse_stat(parser);
-        if(stat == NULL)
-        {
-            return tree;
-        }
-        cct_node_add_child(tree->root, stat);
-    }
-    return tree;
+	ConcoctNode* stat;
+	while(parser->current_token.type != CCT_TOKEN_EOF)
+	{
+		stat = cct_parse_stat(parser);
+		if(stat == NULL)
+		{
+        	return tree;
+		}
+		cct_node_add_child(tree->root, stat);
+	}
+	return tree;
 }
 
 /*
@@ -126,65 +126,66 @@ Parses an expression consisting of one token
 */
 ConcoctNode* cct_parse_single_expr(ConcoctParser* parser)
 {
-    ConcoctNode* node;
-    switch (parser->current_token.type)
-    {
-        case CCT_TOKEN_INT:
-        case CCT_TOKEN_FLOAT:
-        case CCT_TOKEN_CHAR:
-        case CCT_TOKEN_STRING:
-        case CCT_TOKEN_TRUE:
-        case CCT_TOKEN_FALSE:
-        case CCT_TOKEN_IDENTIFIER:
-            node = cct_new_node(parser->tree, parser->current_token, parser->lexer->token_text);
-            cct_next_parser_token(parser);
-            return node;
-        case CCT_TOKEN_LEFT_PAREN:
-            cct_next_parser_token(parser);
-            ConcoctNode* inside_expr = cct_parse_expr(parser);
-            if(!inside_expr)
-            {
-                return NULL;
-            }
-            if(parser->current_token.type != CCT_TOKEN_RIGHT_PAREN)
-            {
-                cct_set_parser_error(parser, "Expected ')'");
-                return NULL;
-            }
-            cct_next_parser_token(parser);
-            return inside_expr;
-        default:
-            cct_set_parser_error(parser, "Expected an expression");
-            return NULL;
-    }
+	ConcoctNode* node;
+	switch (parser->current_token.type)
+	{
+		case CCT_TOKEN_INT:
+		case CCT_TOKEN_FLOAT:
+		case CCT_TOKEN_CHAR:
+		case CCT_TOKEN_STRING:
+		case CCT_TOKEN_TRUE:
+		case CCT_TOKEN_FALSE:
+		case CCT_TOKEN_IDENTIFIER:
+			node = cct_new_node(parser->tree, parser->current_token, parser->lexer->token_text);
+			cct_next_parser_token(parser);
+			return node;
+		case CCT_TOKEN_LEFT_PAREN:
+			cct_next_parser_token(parser);
+			ConcoctNode* inside_expr = cct_parse_expr(parser);
+			if(!inside_expr)
+			{
+				return NULL;
+			}
+			if(parser->current_token.type != CCT_TOKEN_RIGHT_PAREN)
+			{
+				cct_set_parser_error(parser, "Expected ')'");
+				return NULL;
+			}
+			cct_next_parser_token(parser);
+			return inside_expr;
+		default:
+			cct_set_parser_error(parser, "Expected an expression");
+			return NULL;
+	}
 }
+
 ConcoctNode* cct_parse_primary_expr(ConcoctParser* parser)
 {
-    ConcoctNode* current_node = cct_parse_single_expr(parser);
-    int parsing = 1;
-    while(parsing)
-    {
-        ConcoctNode* op_node;
-        switch (parser->current_token.type)
-        {
-            case CCT_TOKEN_DOT:
-                op_node = cct_new_node(parser->tree, parser->current_token, NULL);
-                cct_node_add_child(op_node, current_node);
-                cct_next_parser_token(parser);
-                ConcoctNode* second_expr = cct_parse_single_expr(parser);
-                if(!second_expr)
-                {
-                    return NULL;
-                }
-                cct_node_add_child(op_node, second_expr);
-                current_node = op_node;
-                break;
-            default:
-                parsing = 0;
-                break;
-        }
-    }
-    return current_node;
+	ConcoctNode* current_node = cct_parse_single_expr(parser);
+	int parsing = 1;
+	while(parsing)
+	{
+		ConcoctNode* op_node;
+		switch (parser->current_token.type)
+		{
+			case CCT_TOKEN_DOT:
+				op_node = cct_new_node(parser->tree, parser->current_token, NULL);
+				cct_node_add_child(op_node, current_node);
+				cct_next_parser_token(parser);
+				ConcoctNode* second_expr = cct_parse_single_expr(parser);
+				if(!second_expr)
+				{
+					return NULL;
+				}
+				cct_node_add_child(op_node, second_expr);
+				current_node = op_node;
+				break;
+			default:
+				parsing = 0;
+				break;
+		}
+	}
+	return current_node;
 }
 ConcoctNode* cct_parse_unary_expr(ConcoctParser* parser)
 {

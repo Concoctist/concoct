@@ -20,6 +20,17 @@ add_executable(${PROJECT} ${SOURCES})
 add_executable(objtest ${OBJTEST_SOURCES})
 add_executable(stacktest ${STACKTEST_SOURCES})
 
+# Populate git revision, git hash, build time, build date, and build type variables for improved version information
+find_package(Git)
+execute_process(COMMAND "${GIT_EXECUTABLE}" rev-list --count HEAD WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+				OUTPUT_VARIABLE GIT_REV ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND "${GIT_EXECUTABLE}" rev-parse --short HEAD WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+				OUTPUT_VARIABLE GIT_HASH ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+string(TIMESTAMP BUILD_TIME "%H:%M")
+string(TIMESTAMP BUILD_DATE "%m-%d-%Y")
+set(BUILD_TYPE "${CMAKE_BUILD_TYPE}")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/version.h.in" "${CMAKE_CURRENT_SOURCE_DIR}/include/version.h" @ONLY)
+
 # Check for math library availability
 include(CheckFunctionExists)
 if(NOT ROUND_FUNCTION_EXISTS AND NOT NEED_LINKING_AGAINST_LIBM)
