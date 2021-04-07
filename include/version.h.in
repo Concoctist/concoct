@@ -1,0 +1,81 @@
+/*
+ * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language
+ * Copyright (c) 2020 BlakeTheBlock and Lloyd Dilley
+ * http://concoct.dev/
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#ifndef VERSION_H
+#define VERSION_H
+
+const char* const VERSION = "0.1.0";
+const char* const GIT_REV = "@GIT_REV@";
+const char* const GIT_HASH = "@GIT_HASH@";
+const char* const BUILD_TIME = "@BUILD_TIME@";
+const char* const BUILD_DATE = "@BUILD_DATE@";
+const char* const BUILD_TYPE = "@BUILD_TYPE@";
+
+#if defined(_WIN64) || defined(x64) || defined(__amd64) || defined(__amd64__) || defined(__x86_64) || defined(__x86_64__) || \
+    defined(__aarch64__) || defined(__ppc64__) || defined(__powerpc64__) || defined(__sparcv9) || defined(__sparc_v9__) || \
+    defined(_PA_RISC2_0) || defined(__RISC2_0__) || defined(__HPPA20__) || defined(__PA8000__) || defined(__alpha) || \
+    defined(__alpha__) || defined(__ia64) || defined(__ia64__)
+  #define BITNESS "64-bit"
+#else
+  #define BITNESS "32-bit"
+#endif
+
+#if defined(_AIX)
+  #define PLATFORM "AIX"
+#elif defined(__ANDROID__)
+  #define PLATFORM "Android"
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
+  #define PLATFORM "Windows"
+#elif defined(__DragonFly__)
+  #define PLATFORM "DragonFlyBSD"
+#elif defined(__FreeBSD__)
+  #define PLATFORM "FreeBSD"
+#elif defined(hpux) || defined(_hpux) || defined(__hpux)
+  #define PLATFORM "HP-UX"
+#elif defined(__linux__)
+  #define PLATFORM "Linux"
+#elif defined(__APPLE__) && defined(__MACH__)
+  #define PLATFORM "macOS"
+#elif defined(__minix)
+  #define PLATFORM "Minix"
+#elif defined(__NetBSD__)
+  #define PLATFORM "NetBSD"
+#elif defined(__OpenBSD__)
+  #define PLATFORM "OpenBSD"
+#elif defined(sun) || defined(__sun)
+  #if defined(__SVR4) || defined(__svr4__)
+    #define PLATFORM "Solaris"
+  #else
+    #define PLATFORM "SunOS"
+  #endif
+#elif defined(__unix) || defined(__unix__)
+  #define PLATFORM "Unix"
+#else
+  #define PLATFORM "Unknown"
+#endif
+
+#endif // VERSION_H
