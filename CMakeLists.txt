@@ -1,6 +1,8 @@
 # Concoct CMake Configuration
 cmake_minimum_required(VERSION 3.1.0)
 set(PROJECT concoct)
+set(OBJTEST objtest)
+set(STACKTEST stacktest)
 project(${PROJECT})
 include_directories(include)
 file(GLOB SOURCES src/*.c src/vm/*.c)
@@ -17,8 +19,16 @@ else()
 endif()
 
 add_executable(${PROJECT} ${SOURCES})
-add_executable(objtest ${OBJTEST_SOURCES})
-add_executable(stacktest ${STACKTEST_SOURCES})
+add_executable(${OBJTEST} ${OBJTEST_SOURCES})
+add_executable(${STACKTEST} ${STACKTEST_SOURCES})
+
+# Set default build type
+if(NOT CMAKE_BUILD_TYPE)
+	message("Setting default build type to: Debug")
+	set(CMAKE_BUILD_TYPE "Debug" CACHE STRING
+	"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+	FORCE)
+endif()
 
 # Populate git revision, git hash, build time, build date, and build type variables for improved version information
 find_package(Git)
@@ -48,7 +58,15 @@ if(NOT ROUND_FUNCTION_EXISTS AND NOT NEED_LINKING_AGAINST_LIBM)
 endif()
 if(NEED_LINKING_AGAINST_LIBM)
 	target_link_libraries(${PROJECT} m)
-	target_link_libraries(objtest m)
-	target_link_libraries(stacktest m)
+	target_link_libraries(${OBJTEST} m)
+	target_link_libraries(${STACKTEST} m)
 endif()
+
+# Strip binary for release builds
+if(CMAKE_BUILD_TYPE STREQUAL Release)
+	add_custom_command(TARGET ${PROJECT} POST_BUILD COMMAND ${CMAKE_STRIP} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT})
+	add_custom_command(TARGET ${OBJTEST} POST_BUILD COMMAND ${CMAKE_STRIP} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${OBJTEST})
+	add_custom_command(TARGET ${STACKTEST} POST_BUILD COMMAND ${CMAKE_STRIP} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${STACKTEST})
+endif()
+
 message("Thank you for using Concoct!")
