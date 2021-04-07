@@ -17,6 +17,7 @@ script:
   - cd bld
   - cmake ..
   - make
+  - bin/concoct -v
 
 notifications:
   email: false
