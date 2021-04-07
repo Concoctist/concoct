@@ -16,6 +16,7 @@
 *.dylib
 build/
 bld/
+include/version.h
 logs/
 doxygen/
 cmake_install.cmake
