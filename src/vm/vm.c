@@ -35,19 +35,19 @@ VM vm;
 // Initializes virtual machine
 void init_vm()
 {
-	Stack* stack = &vm.stack;
-	init_stack(stack);
-	init_store();
-	if(debug_mode)
-		debug_print("VM initialized.");
-	return;
+  Stack* stack = &vm.stack;
+  init_stack(stack);
+  init_store();
+  if(debug_mode)
+    debug_print("VM initialized.");
+  return;
 }
 
 // Stops virtual machine
 void stop_vm()
 {
-	free_store();
-	if(debug_mode)
-		debug_print("VM stopped.");
-	return;
+  free_store();
+  if(debug_mode)
+    debug_print("VM stopped.");
+  return;
 }

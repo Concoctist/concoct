@@ -34,67 +34,67 @@
 
 int main()
 {
-	debug_mode = true;
-	Stack stack;
-	Stack* pstack = &stack;
-	init_stack(pstack);
-	init_store();
+  debug_mode = true;
+  Stack stack;
+  Stack* pstack = &stack;
+  init_stack(pstack);
+  init_store();
 
-	Object* object = new_object("null");
-	push(pstack, object);
-	printf("Data type: %s\n", get_data_type(peek(pstack)));
-	print_object_value(peek(pstack));
+  Object* object = new_object("null");
+  push(pstack, object);
+  printf("Data type: %s\n", get_data_type(peek(pstack)));
+  print_object_value(peek(pstack));
 
-	object = new_object("true");
-	push(pstack, object);
-	printf("Data type: %s\n", get_data_type(peek(pstack)));
-	print_object_value(peek(pstack));
+  object = new_object("true");
+  push(pstack, object);
+  printf("Data type: %s\n", get_data_type(peek(pstack)));
+  print_object_value(peek(pstack));
 
-	object = new_object("100");
-	push(pstack, object);
-	printf("Data type: %s\n", get_data_type(peek(pstack)));
-	print_object_value(peek(pstack));
+  object = new_object("100");
+  push(pstack, object);
+  printf("Data type: %s\n", get_data_type(peek(pstack)));
+  print_object_value(peek(pstack));
 
-	object = new_object("5721452096347253");
-	push(pstack, object);
-	printf("Data type: %s\n", get_data_type(peek(pstack)));
-	print_object_value(peek(pstack));
+  object = new_object("5721452096347253");
+  push(pstack, object);
+  printf("Data type: %s\n", get_data_type(peek(pstack)));
+  print_object_value(peek(pstack));
 
-	object = new_object("77.715");
-	push(pstack, object);
-	printf("Data type: %s\n", get_data_type(peek(pstack)));
-	print_object_value(peek(pstack));
+  object = new_object("77.715");
+  push(pstack, object);
+  printf("Data type: %s\n", get_data_type(peek(pstack)));
+  print_object_value(peek(pstack));
 
-	object = new_object("Greetings, Concocter!");
-	push(pstack, object);
-	printf("Data type: %s\n", get_data_type(peek(pstack)));
-	print_object_value(peek(pstack));
+  object = new_object("Greetings, Concocter!");
+  push(pstack, object);
+  printf("Data type: %s\n", get_data_type(peek(pstack)));
+  print_object_value(peek(pstack));
 
-	puts("\nValue of each stack item after pop():");
-	for(size_t i = pstack->count; i > 0; i--)
-		print_object_value(pop(pstack));
+  puts("\nValue of each stack item after pop():");
+  for(size_t i = pstack->count; i > 0; i--)
+    print_object_value(pop(pstack));
 
-	puts("\nAdding 3 to stack...");
-	object = new_object("3");
-	push(pstack, object);
-	puts("Adding 7 to stack...");
-	object = new_object("7");
-	push(pstack, object);
-	puts("Adding stack values...");
-	op_add(pstack);
-	puts("Value after adding stack contents:");
-	print_object_value(pop(pstack));
+  puts("\nAdding 3 to stack...");
+  object = new_object("3");
+  push(pstack, object);
+  puts("Adding 7 to stack...");
+  object = new_object("7");
+  push(pstack, object);
+  puts("Adding stack values...");
+  op_add(pstack);
+  puts("Value after adding stack contents:");
+  print_object_value(pop(pstack));
 
-	puts("\nTesting string object addition of: \"Greetings, \" + \"Concocter!\"");
-	object = new_object("Greetings, ");
-	push(pstack, object);
-	object = new_object("Concocter!");
-	push(pstack, object);
-	op_add(pstack);
-	puts("Result:");
-	print_object_value(pop(pstack));
+  puts("\nTesting string object addition of: \"Greetings, \" + \"Concocter!\"");
+  object = new_object("Greetings, ");
+  push(pstack, object);
+  object = new_object("Concocter!");
+  push(pstack, object);
+  op_add(pstack);
+  puts("Result:");
+  print_object_value(pop(pstack));
 
-	free_store();
+  free_store();
 
-	return 0;
+  return 0;
 }

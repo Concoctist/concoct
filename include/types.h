@@ -40,36 +40,36 @@ typedef int64_t BigNum;    // signed long long integer
 typedef double Decimal;    // decimal
 typedef struct cct_string  // string
 {
-	size_t length;
-	char *strval;
+  size_t length;
+  char *strval;
 } String;
 
 typedef enum data_type
 {
-	NIL,
-	BOOL,
-	BYTE,
-	NUMBER,
-	BIGNUM,
-	DECIMAL,
-	STRING
+  NIL,
+  BOOL,
+  BYTE,
+  NUMBER,
+  BIGNUM,
+  DECIMAL,
+  STRING
 } DataType;
 
 // Concoct object
 typedef struct object
 {
-	DataType datatype;
-	Bool marked;       // flagged for garbage collection
-	union
-	{
-		char* nullval;
-		Bool boolval;
-		Byte byteval;
-		Number numval;
-		BigNum bignumval;
-		Decimal decimalval;
-		String strobj; // strval is contained in String struct
-	} value;
+  DataType datatype;
+  Bool marked;       // flagged for garbage collection
+  union
+  {
+    char* nullval;
+    Bool boolval;
+    Byte byteval;
+    Number numval;
+    BigNum bignumval;
+    Decimal decimalval;
+    String strobj; // strval is contained in String struct
+  } value;
 } Object;
 
 // Returns string representation of data type

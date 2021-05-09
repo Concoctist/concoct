@@ -37,172 +37,172 @@
 // Returns string representation of data type
 const char* get_type(DataType datatype)
 {
-	switch(datatype)
-	{
-		case NIL:     return "null";
-		case BOOL:    return "boolean";
-		case BYTE:    return "byte";
-		case NUMBER:  return "number";
-		case BIGNUM:  return "big number";
-		case DECIMAL: return "decimal";
-		case STRING:  return "string";
-		default:      return "unknown";
-	}
+  switch(datatype)
+  {
+    case NIL:     return "null";
+    case BOOL:    return "boolean";
+    case BYTE:    return "byte";
+    case NUMBER:  return "number";
+    case BIGNUM:  return "big number";
+    case DECIMAL: return "decimal";
+    case STRING:  return "string";
+    default:      return "unknown";
+  }
 }
 
 // Returns string representation of data type from object
 const char* get_data_type(Object* object)
 {
-	switch(object->datatype)
-	{
-		case NIL:     return "null";
-		case BOOL:    return "boolean";
-		case BYTE:    return "byte";
-		case NUMBER:  return "number";
-		case BIGNUM:  return "big number";
-		case DECIMAL: return "decimal";
-		case STRING:  return "string";
-		default:      return "unknown";
-	}
+  switch(object->datatype)
+  {
+    case NIL:     return "null";
+    case BOOL:    return "boolean";
+    case BYTE:    return "byte";
+    case NUMBER:  return "number";
+    case BIGNUM:  return "big number";
+    case DECIMAL: return "decimal";
+    case STRING:  return "string";
+    default:      return "unknown";
+  }
 }
 
 // Returns value of object
 void* get_object_value(Object* object)
 {
-	switch(object->datatype)
-	{
-		case NIL:
-			return NULL;
-			break;
-		case BOOL:
-			return &object->value.boolval;
-			break;
-		case BYTE:
-			return &object->value.byteval;
-			break;
-		case NUMBER:
-			return &object->value.numval;
-			break;
-		case BIGNUM:
-			return &object->value.bignumval;
-			break;
-		case DECIMAL:
-			return &object->value.decimalval;
-			break;
-		case STRING:
-			return object->value.strobj.strval;
-			break;
-	}
-	return NULL;
+  switch(object->datatype)
+  {
+    case NIL:
+      return NULL;
+      break;
+    case BOOL:
+      return &object->value.boolval;
+      break;
+    case BYTE:
+      return &object->value.byteval;
+      break;
+    case NUMBER:
+      return &object->value.numval;
+      break;
+    case BIGNUM:
+      return &object->value.bignumval;
+      break;
+    case DECIMAL:
+      return &object->value.decimalval;
+      break;
+    case STRING:
+      return object->value.strobj.strval;
+      break;
+  }
+  return NULL;
 }
 
 // Displays value of object
 void print_object_value(Object* object)
 {
-	switch(object->datatype)
-	{
-		case NIL:
-			puts("null");
-			break;
-		case BOOL:
-			if(object->value.boolval == false)
-				puts("false");
-			else
-				puts("true");
-			break;
-		case BYTE:
-			printf("%u\n", (Byte)object->value.byteval);
-			break;
-		case NUMBER:
-			printf("%" PRId32 "\n", object->value.numval);
-			break;
-		case BIGNUM:
-			printf("%" PRId64 "\n", object->value.bignumval);
-			break;
-		case DECIMAL:
-			printf("%f\n", object->value.decimalval);
-			break;
-		case STRING:
-			printf("%s\n", object->value.strobj.strval);
-			break;
-	}
+  switch(object->datatype)
+  {
+    case NIL:
+      puts("null");
+      break;
+    case BOOL:
+      if(object->value.boolval == false)
+        puts("false");
+      else
+        puts("true");
+      break;
+    case BYTE:
+      printf("%u\n", (Byte)object->value.byteval);
+      break;
+    case NUMBER:
+      printf("%" PRId32 "\n", object->value.numval);
+      break;
+    case BIGNUM:
+      printf("%" PRId64 "\n", object->value.bignumval);
+      break;
+    case DECIMAL:
+      printf("%f\n", object->value.decimalval);
+      break;
+    case STRING:
+      printf("%s\n", object->value.strobj.strval);
+      break;
+  }
 }
 
 // Converts string to applicable type
 void convert_type(Object* object, char* value)
 {
-	// Handle null
+  // Handle null
 #ifdef _WIN32
-	if(_stricmp(value, "null") == 0)
+  if(_stricmp(value, "null") == 0)
 #else
-	if(strcasecmp(value, "null") == 0)
+  if(strcasecmp(value, "null") == 0)
 #endif
-	{
-		object->datatype = NIL;
-		object->value.nullval = NULL;
-		return;
-	}
+  {
+    object->datatype = NIL;
+    object->value.nullval = NULL;
+    return;
+  }
 
-	// Handle booleans
+  // Handle booleans
 #ifdef _WIN32
-	if(_stricmp(value, "true") == 0)
+  if(_stricmp(value, "true") == 0)
 #else
-	if(strcasecmp(value, "true") == 0)
+  if(strcasecmp(value, "true") == 0)
 #endif
-	{
-		object->datatype = BOOL;
-		object->value.boolval = true;
-		return;
-	}
+  {
+    object->datatype = BOOL;
+    object->value.boolval = true;
+    return;
+  }
 #ifdef _WIN32
-	if(_stricmp(value, "false") == 0)
+  if(_stricmp(value, "false") == 0)
 #else
-	if(strcasecmp(value, "false") == 0)
+  if(strcasecmp(value, "false") == 0)
 #endif
-	{
-		object->datatype = BOOL;
-		object->value.boolval = false;
-		return;
-	}
+  {
+    object->datatype = BOOL;
+    object->value.boolval = false;
+    return;
+  }
 
-	// Handle integers
-	char *end = NULL;
-	errno = 0;
-	BigNum bignum = strtol(value, &end, 10);
-	if(*end == '\0' && errno != ERANGE && errno != EINVAL)
-	{
-		if(bignum > INT32_MIN && bignum < INT32_MAX)
-		{
-			object->datatype = NUMBER;
-			object->value.numval = (Number)bignum;
-			return;
-		}
-	}
+  // Handle integers
+  char *end = NULL;
+  errno = 0;
+  BigNum bignum = strtol(value, &end, 10);
+  if(*end == '\0' && errno != ERANGE && errno != EINVAL)
+  {
+    if(bignum > INT32_MIN && bignum < INT32_MAX)
+    {
+      object->datatype = NUMBER;
+      object->value.numval = (Number)bignum;
+      return;
+    }
+  }
 
-	// Handle big integers
-	end = NULL;
-	errno = 0;
-	bignum = strtoll(value, &end, 10);
-	if(*end == '\0' && errno != ERANGE && errno != EINVAL)
-	{
-		object->datatype = BIGNUM;
-		object->value.bignumval = bignum;
-		return;
-	}
+  // Handle big integers
+  end = NULL;
+  errno = 0;
+  bignum = strtoll(value, &end, 10);
+  if(*end == '\0' && errno != ERANGE && errno != EINVAL)
+  {
+    object->datatype = BIGNUM;
+    object->value.bignumval = bignum;
+    return;
+  }
 
-	// Handle floats
-	end = NULL;
-	errno = 0;
-	Decimal dec = strtod(value, &end);
-	if(*end == '\0' && errno != ERANGE && errno != EINVAL)
-	{
-		object->datatype = DECIMAL;
-		object->value.decimalval = dec;
-		return;
-	}
+  // Handle floats
+  end = NULL;
+  errno = 0;
+  Decimal dec = strtod(value, &end);
+  if(*end == '\0' && errno != ERANGE && errno != EINVAL)
+  {
+    object->datatype = DECIMAL;
+    object->value.decimalval = dec;
+    return;
+  }
 
-	// Default to string otherwise
-	object->datatype = STRING;
-	new_string(&object->value.strobj, value);
-	return;
+  // Default to string otherwise
+  object->datatype = STRING;
+  new_string(&object->value.strobj, value);
+  return;
 }

@@ -49,8 +49,8 @@ static const size_t GIGABYTE_BOUNDARY = 1073741824;
 // Object store
 typedef struct objstore
 {
-	size_t capacity;
-	Object** objects;
+  size_t capacity;
+  Object** objects;
 } ObjectStore;
 extern ObjectStore object_store;
 

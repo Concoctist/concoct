@@ -36,9 +36,9 @@
 
 typedef struct vm_stack
 {
-	int top;
-	size_t count;
-	Object* objects[MAX_STACK_CAPACITY];
+  int top;
+  size_t count;
+  Object* objects[MAX_STACK_CAPACITY];
 } Stack;
 
 // Initializes stack

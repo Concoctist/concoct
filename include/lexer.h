@@ -37,154 +37,154 @@
 
 typedef enum concoct_token_type
 {
-	CCT_TOKEN_IDENTIFIER,
-	CCT_TOKEN_INT,
-	CCT_TOKEN_FLOAT,
-	CCT_TOKEN_STRING,
-	CCT_TOKEN_CHAR,
-	CCT_TOKEN_ASSIGN,
-	CCT_TOKEN_ADD_ASSIGN,
-	CCT_TOKEN_SUB_ASSIGN,
-	CCT_TOKEN_MUL_ASSIGN,
-	CCT_TOKEN_DIV_ASSIGN,
-	CCT_TOKEN_MOD_ASSIGN,
-	CCT_TOKEN_EXP_ASSIGN,
-	CCT_TOKEN_ADD,
-	CCT_TOKEN_SUB,
-	CCT_TOKEN_MUL,
-	CCT_TOKEN_DIV,
-	CCT_TOKEN_MOD,
-	CCT_TOKEN_EXP,
-	CCT_TOKEN_INC,
-	CCT_TOKEN_DEC,
-	CCT_TOKEN_EQUAL,
-	CCT_TOKEN_NOT_EQUAL,
-	CCT_TOKEN_GREATER,
-	CCT_TOKEN_LESS,
-	CCT_TOKEN_GREATER_EQUAL,
-	CCT_TOKEN_LESS_EQUAL,
-	CCT_TOKEN_AND,
-	CCT_TOKEN_OR,
-	CCT_TOKEN_NOT,
-	CCT_TOKEN_BIN_AND,
-	CCT_TOKEN_BIN_OR,
-	CCT_TOKEN_BIN_XOR,
-	CCT_TOKEN_SHL,
-	CCT_TOKEN_SHR,
-	CCT_TOKEN_DOT,
-	CCT_TOKEN_COMMA,
-	CCT_TOKEN_LEFT_BRACE,
-	CCT_TOKEN_RIGHT_BRACE,
-	CCT_TOKEN_LEFT_BRACKET,
-	CCT_TOKEN_RIGHT_BRACKET,
-	CCT_TOKEN_LEFT_PAREN,
-	CCT_TOKEN_RIGHT_PAREN,
-	CCT_TOKEN_NEWLINE,
-	CCT_TOKEN_EOF,
-	CCT_TOKEN_BREAK,
-	CCT_TOKEN_CONTINUE,
-	CCT_TOKEN_CASE,
-	CCT_TOKEN_CLASS,
-	CCT_TOKEN_DO,
-	CCT_TOKEN_DEFAULT,
-	CCT_TOKEN_ELSE,
-	CCT_TOKEN_ENUM,
-	CCT_TOKEN_FALSE,
-	CCT_TOKEN_FOR,
-	CCT_TOKEN_FUNC,
-	CCT_TOKEN_GOTO,
-	CCT_TOKEN_IF,
-	CCT_TOKEN_NAMESPACE,
-	CCT_TOKEN_NULL,
-	CCT_TOKEN_RETURN,
-	CCT_TOKEN_SWITCH,
-	CCT_TOKEN_SUPER,
-	CCT_TOKEN_TRUE,
-	CCT_TOKEN_USE,
-	CCT_TOKEN_VAR,
-	CCT_TOKEN_WHILE,
-	CCT_TOKEN_IN,
-	CCT_TOKEN_ERROR,
+  CCT_TOKEN_IDENTIFIER,
+  CCT_TOKEN_INT,
+  CCT_TOKEN_FLOAT,
+  CCT_TOKEN_STRING,
+  CCT_TOKEN_CHAR,
+  CCT_TOKEN_ASSIGN,
+  CCT_TOKEN_ADD_ASSIGN,
+  CCT_TOKEN_SUB_ASSIGN,
+  CCT_TOKEN_MUL_ASSIGN,
+  CCT_TOKEN_DIV_ASSIGN,
+  CCT_TOKEN_MOD_ASSIGN,
+  CCT_TOKEN_EXP_ASSIGN,
+  CCT_TOKEN_ADD,
+  CCT_TOKEN_SUB,
+  CCT_TOKEN_MUL,
+  CCT_TOKEN_DIV,
+  CCT_TOKEN_MOD,
+  CCT_TOKEN_EXP,
+  CCT_TOKEN_INC,
+  CCT_TOKEN_DEC,
+  CCT_TOKEN_EQUAL,
+  CCT_TOKEN_NOT_EQUAL,
+  CCT_TOKEN_GREATER,
+  CCT_TOKEN_LESS,
+  CCT_TOKEN_GREATER_EQUAL,
+  CCT_TOKEN_LESS_EQUAL,
+  CCT_TOKEN_AND,
+  CCT_TOKEN_OR,
+  CCT_TOKEN_NOT,
+  CCT_TOKEN_BIN_AND,
+  CCT_TOKEN_BIN_OR,
+  CCT_TOKEN_BIN_XOR,
+  CCT_TOKEN_SHL,
+  CCT_TOKEN_SHR,
+  CCT_TOKEN_DOT,
+  CCT_TOKEN_COMMA,
+  CCT_TOKEN_LEFT_BRACE,
+  CCT_TOKEN_RIGHT_BRACE,
+  CCT_TOKEN_LEFT_BRACKET,
+  CCT_TOKEN_RIGHT_BRACKET,
+  CCT_TOKEN_LEFT_PAREN,
+  CCT_TOKEN_RIGHT_PAREN,
+  CCT_TOKEN_NEWLINE,
+  CCT_TOKEN_EOF,
+  CCT_TOKEN_BREAK,
+  CCT_TOKEN_CONTINUE,
+  CCT_TOKEN_CASE,
+  CCT_TOKEN_CLASS,
+  CCT_TOKEN_DO,
+  CCT_TOKEN_DEFAULT,
+  CCT_TOKEN_ELSE,
+  CCT_TOKEN_ENUM,
+  CCT_TOKEN_FALSE,
+  CCT_TOKEN_FOR,
+  CCT_TOKEN_FUNC,
+  CCT_TOKEN_GOTO,
+  CCT_TOKEN_IF,
+  CCT_TOKEN_NAMESPACE,
+  CCT_TOKEN_NULL,
+  CCT_TOKEN_RETURN,
+  CCT_TOKEN_SWITCH,
+  CCT_TOKEN_SUPER,
+  CCT_TOKEN_TRUE,
+  CCT_TOKEN_USE,
+  CCT_TOKEN_VAR,
+  CCT_TOKEN_WHILE,
+  CCT_TOKEN_IN,
+  CCT_TOKEN_ERROR,
 } ConcoctTokenType;
 
 #define CCT_KEYWORD_COUNT 23
 static const char* cct_keywords[CCT_KEYWORD_COUNT] = {
-	"break",
-	"continue",
-	"case",
-	"class",
-	"do",
-	"default",
-	"else",
-	"enum",
-	"false",
-	"for",
-	"func",
-	"goto",
-	"if",
-	"namespace",
-	"null",
-	"return",
-	"switch",
-	"super",
-	"true",
-	"use",
-	"var",
-	"while",
-	"in"
+  "break",
+  "continue",
+  "case",
+  "class",
+  "do",
+  "default",
+  "else",
+  "enum",
+  "false",
+  "for",
+  "func",
+  "goto",
+  "if",
+  "namespace",
+  "null",
+  "return",
+  "switch",
+  "super",
+  "true",
+  "use",
+  "var",
+  "while",
+  "in"
 };
 
 static ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
-	CCT_TOKEN_BREAK,
-	CCT_TOKEN_CONTINUE,
-	CCT_TOKEN_CASE,
-	CCT_TOKEN_CLASS,
-	CCT_TOKEN_DO,
-	CCT_TOKEN_DEFAULT,
-	CCT_TOKEN_ELSE,
-	CCT_TOKEN_ENUM,
-	CCT_TOKEN_FALSE,
-	CCT_TOKEN_FOR,
-	CCT_TOKEN_FUNC,
-	CCT_TOKEN_GOTO,
-	CCT_TOKEN_IF,
-	CCT_TOKEN_NAMESPACE,
-	CCT_TOKEN_NULL,
-	CCT_TOKEN_RETURN,
-	CCT_TOKEN_SWITCH,
-	CCT_TOKEN_SUPER,
-	CCT_TOKEN_TRUE,
-	CCT_TOKEN_USE,
-	CCT_TOKEN_VAR,
-	CCT_TOKEN_WHILE,
-	CCT_TOKEN_IN
+  CCT_TOKEN_BREAK,
+  CCT_TOKEN_CONTINUE,
+  CCT_TOKEN_CASE,
+  CCT_TOKEN_CLASS,
+  CCT_TOKEN_DO,
+  CCT_TOKEN_DEFAULT,
+  CCT_TOKEN_ELSE,
+  CCT_TOKEN_ENUM,
+  CCT_TOKEN_FALSE,
+  CCT_TOKEN_FOR,
+  CCT_TOKEN_FUNC,
+  CCT_TOKEN_GOTO,
+  CCT_TOKEN_IF,
+  CCT_TOKEN_NAMESPACE,
+  CCT_TOKEN_NULL,
+  CCT_TOKEN_RETURN,
+  CCT_TOKEN_SWITCH,
+  CCT_TOKEN_SUPER,
+  CCT_TOKEN_TRUE,
+  CCT_TOKEN_USE,
+  CCT_TOKEN_VAR,
+  CCT_TOKEN_WHILE,
+  CCT_TOKEN_IN
 };
 
 typedef struct concoct_token
 {
-	ConcoctTokenType type;
-	int line_number;
+  ConcoctTokenType type;
+  int line_number;
 } ConcoctToken;
 
 typedef enum concoct_lexer_type
 {
-	CCT_LEXER_FILE,
-	CCT_LEXER_STRING
+  CCT_LEXER_FILE,
+  CCT_LEXER_STRING
 } ConcoctLexerType;
 
 typedef struct concoct_lexer
 {
-	ConcoctLexerType type;
-	union
-	{
-		FILE* file_input;
-		const char* string_input;
-	} input;
-	char next_char;
-	int line_number;
-	int string_index;
-	char* token_text;
-	const char* error;
+  ConcoctLexerType type;
+  union
+  {
+    FILE* file_input;
+    const char* string_input;
+  } input;
+  char next_char;
+  int line_number;
+  int string_index;
+  char* token_text;
+  const char* error;
 } ConcoctLexer;
 
 ConcoctToken cct_new_token( ConcoctTokenType type, int line_number);
