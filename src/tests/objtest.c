@@ -36,99 +36,99 @@
 // Proof of concept to demonstrate garbage collection
 size_t mark_objects()
 {
-	srand((unsigned int)time(0));
-	size_t mark_count = 0;
-	if(debug_mode)
-		debug_print("Marking objects...");
-	for(size_t slot = 0; slot < get_store_capacity(); slot++)
-	{
-		if(object_store.objects[slot] != NULL && rand() % 2) // each object has a 50% chance of being marked
-		{
-			object_store.objects[slot]->marked = true;
-			mark_count++;
-		}
-	}
-	if(debug_mode)
-		debug_print("%zu objects marked.", mark_count);
-	return mark_count;
+  srand((unsigned int)time(0));
+  size_t mark_count = 0;
+  if(debug_mode)
+    debug_print("Marking objects...");
+  for(size_t slot = 0; slot < get_store_capacity(); slot++)
+  {
+    if(object_store.objects[slot] != NULL && rand() % 2) // each object has a 50% chance of being marked
+    {
+      object_store.objects[slot]->marked = true;
+      mark_count++;
+    }
+  }
+  if(debug_mode)
+    debug_print("%zu objects marked.", mark_count);
+  return mark_count;
 }
 
 int main()
 {
-	debug_mode = true;
-	init_store();
-	Object* objects[1024];
-	for(size_t i = 0; i < 1024; i++)
-	{
-		printf("Object store free/capacity: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
-		printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
-		print_store_total_size();
-		objects[i] = new_object("7");
-	}
+  debug_mode = true;
+  init_store();
+  Object* objects[1024];
+  for(size_t i = 0; i < 1024; i++)
+  {
+    printf("Object store free/capacity: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
+    printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
+    print_store_total_size();
+    objects[i] = new_object("7");
+  }
 
-	for(size_t i = 0; i < 1024; i++)
-	{
-		printf("Object of data type %s at slot #%zu is %zu bytes.\n", get_data_type(object_store.objects[i]), i, get_object_size(object_store.objects[i]));
-	}
-	mark_objects();
-	collect_garbage(); // free only marked objects
-	printf("Object store free/capacity: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
-	printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
+  for(size_t i = 0; i < 1024; i++)
+  {
+    printf("Object of data type %s at slot #%zu is %zu bytes.\n", get_data_type(object_store.objects[i]), i, get_object_size(object_store.objects[i]));
+  }
+  mark_objects();
+  collect_garbage(); // free only marked objects
+  printf("Object store free/capacity: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
+  printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
 
-	Object* object = new_object("null");
-	printf("Data type: %s\n", get_data_type(object));
-	print_object_value(object);
-	printf("%s\n\n", (char *)get_object_value(object));
+  Object* object = new_object("null");
+  printf("Data type: %s\n", get_data_type(object));
+  print_object_value(object);
+  printf("%s\n\n", (char *)get_object_value(object));
 
-	object = new_object("true");
-	printf("Data type: %s\n", get_data_type(object));
-	print_object_value(object);
-	printf("%d\n\n", *(Bool *)get_object_value(object));
+  object = new_object("true");
+  printf("Data type: %s\n", get_data_type(object));
+  print_object_value(object);
+  printf("%d\n\n", *(Bool *)get_object_value(object));
 
-	object = new_object("100");
-	printf("Data type: %s\n", get_data_type(object));
-	print_object_value(object);
-	printf("%" PRId32 "\n\n", *(Number *)get_object_value(object));
+  object = new_object("100");
+  printf("Data type: %s\n", get_data_type(object));
+  print_object_value(object);
+  printf("%" PRId32 "\n\n", *(Number *)get_object_value(object));
 
-	object = new_object("5721452096347253");
-	printf("Data type: %s\n", get_data_type(object));
-	print_object_value(object);
-	printf("%" PRId64 "\n\n", *(BigNum *)get_object_value(object));
+  object = new_object("5721452096347253");
+  printf("Data type: %s\n", get_data_type(object));
+  print_object_value(object);
+  printf("%" PRId64 "\n\n", *(BigNum *)get_object_value(object));
 
-	object = new_object("77.715");
-	printf("Data type: %s\n", get_data_type(object));
-	print_object_value(object);
-	printf("%f\n\n", *(Decimal *)get_object_value(object));
+  object = new_object("77.715");
+  printf("Data type: %s\n", get_data_type(object));
+  print_object_value(object);
+  printf("%f\n\n", *(Decimal *)get_object_value(object));
 
-	object = new_object("Greetings, Concocter!");
-	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object), object->value.strobj.strval, object->value.strobj.length);
-	print_object_value(object);
-	printf("Object size: %zu bytes\n", get_object_size(object));
-	printf("%s\n", (char *)get_object_value(object));
+  object = new_object("Greetings, Concocter!");
+  printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object), object->value.strobj.strval, object->value.strobj.length);
+  print_object_value(object);
+  printf("Object size: %zu bytes\n", get_object_size(object));
+  printf("%s\n", (char *)get_object_value(object));
 
-	puts("\nAfter realloc_string():");
-	realloc_string(&object->value.strobj, "Farewell, Concocter!");
-	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object), object->value.strobj.strval, object->value.strobj.length);
-	print_object_value(object);
-	printf("%s\n", (char *)get_object_value(object));
-	Object *object2 = clone_object(object);
+  puts("\nAfter realloc_string():");
+  realloc_string(&object->value.strobj, "Farewell, Concocter!");
+  printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object), object->value.strobj.strval, object->value.strobj.length);
+  print_object_value(object);
+  printf("%s\n", (char *)get_object_value(object));
+  Object *object2 = clone_object(object);
 
-	puts("\nCloned object:");
-	printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object2), object2->value.strobj.strval, object2->value.strobj.length);
-	free_store();
+  puts("\nCloned object:");
+  printf("Data type: %s\nString value: %s\nString length: %zu\n", get_data_type(object2), object2->value.strobj.strval, object2->value.strobj.length);
+  free_store();
 
-	puts("\nStringify tests...");
-	char* str = NULL;
-	Number numval = 42;
-	void* vptr = &numval;
-	stringify(&str, vptr, NUMBER);
-	printf("%s\n", str);
-	free(str);
-	Decimal decimalval = 57.05;
-	vptr = &decimalval;
-	stringify(&str, vptr, DECIMAL);
-	printf("%s\n", str);
-	free(str);
+  puts("\nStringify tests...");
+  char* str = NULL;
+  Number numval = 42;
+  void* vptr = &numval;
+  stringify(&str, vptr, NUMBER);
+  printf("%s\n", str);
+  free(str);
+  Decimal decimalval = 57.05;
+  vptr = &decimalval;
+  stringify(&str, vptr, DECIMAL);
+  printf("%s\n", str);
+  free(str);
 
-	return 0;
+  return 0;
 }

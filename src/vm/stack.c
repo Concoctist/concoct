@@ -32,52 +32,52 @@
 
 void init_stack(Stack* stack)
 {
-	stack->count = 0;
-	stack->top = -1;
-	if(debug_mode)
-		debug_print("Stack initialized with %zu slots.", MAX_STACK_CAPACITY);
-	return;
+  stack->count = 0;
+  stack->top = -1;
+  if(debug_mode)
+    debug_print("Stack initialized with %zu slots.", MAX_STACK_CAPACITY);
+  return;
 }
 
 // Returns object at top of stack without removal
 Object* peek(Stack* stack)
 {
-	if(stack->top == -1)
-	{
-		if(debug_mode)
-			debug_print("peek() called on empty stack!");
-		return NULL;
-	}
-	if(debug_mode)
-		debug_print("peek() called on stack for object of type %s. Stack currently contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
-	return stack->objects[stack->top];
+  if(stack->top == -1)
+  {
+    if(debug_mode)
+      debug_print("peek() called on empty stack!");
+    return NULL;
+  }
+  if(debug_mode)
+    debug_print("peek() called on stack for object of type %s. Stack currently contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
+  return stack->objects[stack->top];
 }
 
 // Returns and removes object at top of stack
 Object* pop(Stack* stack)
 {
-	if(stack->top == -1)
-	{
-		fprintf(stderr, "Stack underflow occurred!\n");
-		return NULL;
-	}
-	stack->count--;
-	if(debug_mode)
-		debug_print("pop() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
-	return stack->objects[stack->top--];
+  if(stack->top == -1)
+  {
+    fprintf(stderr, "Stack underflow occurred!\n");
+    return NULL;
+  }
+  stack->count--;
+  if(debug_mode)
+    debug_print("pop() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
+  return stack->objects[stack->top--];
 }
 
 // Pushes new object on top of stack
 void push(Stack* stack, Object* object)
 {
-	if(stack->top >= ((int)MAX_STACK_CAPACITY - 1))
-	{
-		fprintf(stderr, "Stack overflow occurred!\n");
-		return;
-	}
-	stack->count++;
-	stack->objects[++stack->top] = object;
-	if(debug_mode)
-		debug_print("push() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
-	return;
+  if(stack->top >= ((int)MAX_STACK_CAPACITY - 1))
+  {
+    fprintf(stderr, "Stack overflow occurred!\n");
+    return;
+  }
+  stack->count++;
+  stack->objects[++stack->top] = object;
+  if(debug_mode)
+    debug_print("push() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
+  return;
 }

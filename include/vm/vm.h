@@ -33,16 +33,16 @@
 
 typedef struct vm
 {
-	Stack stack; // stack structure
-	Object* sp;  // stack pointer/top item of stack
-	Byte* ip;    // instruction pointer/program counter
+  Stack stack; // stack structure
+  Object* sp;  // stack pointer/top item of stack
+  Byte* ip;    // instruction pointer/program counter
 } VM;
 extern VM vm;
 
 typedef enum
 {
-	RUN_SUCCESS,
-	RUN_ERROR
+  RUN_SUCCESS,
+  RUN_ERROR
 } RunCode;
 
 // Initializes virtual machine
