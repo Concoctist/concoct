@@ -32,13 +32,13 @@ Please follow the existing styling as closely as possible for any code contribut
    ```c
    int func()
    {
-       // ...
+     // ...
    }
    ```
    Rather than K&R style:
    ```c
    int func() {
-       // ...
+     // ...
    }
    ```
 
@@ -55,8 +55,8 @@ Please follow the existing styling as closely as possible for any code contribut
    ```c
    switch(oc)
    {
-       case OP_ADD: return "OP_ADD";
-       case OP_OR:  return "OP_OR";
-       // ...
+     case OP_ADD: return "OP_ADD";
+     case OP_OR:  return "OP_OR";
+     // ...
    }
    ```
