@@ -22,9 +22,9 @@ Please follow the existing styling as closely as possible for any code contribut
 
 * Multi-line `/* ... */` comments are encouraged before functions to document them.
 
-* Use tabs and not spaces to be consistent with the existing code.
+* Use spaces and not tabs to be consistent with the existing code.
 
-* A single tab should represent 4 spaces.
+* Indent by 2 spaces.
 
 * Custom types specified with `typedef` should have the first letter of their name capitalized.
 
@@ -51,11 +51,12 @@ Please follow the existing styling as closely as possible for any code contribut
 
 * Variable and function names containing multiple words should be separated with an underscore `_` rather than using camelCase or PascalCase.
 
-* `switch` cases with only a single statement should reside on a single line. For example:
+* `switch` cases with only a single statement should reside on a single line. The right side should also be vertically aligned. For example:
    ```c
    switch(oc)
    {
        case OP_ADD: return "OP_ADD";
+       case OP_OR:  return "OP_OR";
        // ...
    }
    ```
