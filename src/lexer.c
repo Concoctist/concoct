@@ -25,11 +25,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <ctype.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include "lexer.h"
 
 ConcoctLexer* cct_new_file_lexer(FILE* in_file)
 {
   ConcoctLexer* lexer = malloc(sizeof(ConcoctLexer));
+  if(lexer == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
+    exit(EXIT_FAILURE);
+  }
   lexer->type = CCT_LEXER_FILE;
   lexer->input.file_input = in_file;
   lexer->line_number = 1;
@@ -38,9 +47,15 @@ ConcoctLexer* cct_new_file_lexer(FILE* in_file)
   cct_next_char(lexer);
   return lexer;
 }
+
 ConcoctLexer* cct_new_string_lexer(const char* in_string)
 {
   ConcoctLexer* lexer = malloc(sizeof(ConcoctLexer));
+  if(lexer == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
+    exit(EXIT_FAILURE);
+  }
   lexer->type = CCT_LEXER_STRING;
   lexer->input.string_input = in_string;
   lexer->string_index = 0;
@@ -51,11 +66,13 @@ ConcoctLexer* cct_new_string_lexer(const char* in_string)
   cct_next_char(lexer);
   return lexer;
 }
+
 void cct_delete_lexer(ConcoctLexer* lexer)
 {
   free(lexer->token_text);
   free(lexer);
 }
+
 // Gets the next character in the lexing stream
 char cct_next_char(ConcoctLexer* lexer)
 {
@@ -81,6 +98,7 @@ int cct_lexer_is_eof(ConcoctLexer* lexer)
   }
   return lexer->next_char == '\0';
 }
+
 void cct_set_error(ConcoctLexer* lexer, const char* message)
 {
   lexer->error = message;
@@ -93,6 +111,7 @@ ConcoctToken cct_new_token(ConcoctTokenType type, int line_number)
   token.line_number = line_number;
   return token;
 }
+
 ConcoctToken cct_next_token(ConcoctLexer* lexer)
 {
   // Had to be initialized, so Error is a good default
@@ -165,7 +184,6 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
       }
     }
   }
-
 
   if(cct_lexer_is_eof(lexer))
   {

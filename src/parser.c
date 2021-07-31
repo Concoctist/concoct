@@ -25,6 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include "parser.h"
 
 ConcoctParser* cct_new_parser_str(const char* str)
@@ -35,6 +38,11 @@ ConcoctParser* cct_new_parser_str(const char* str)
 ConcoctParser* cct_new_parser(ConcoctLexer* lexer)
 {
   ConcoctParser* parser = malloc(sizeof(ConcoctParser));
+  if(lexer == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
+    exit(EXIT_FAILURE);
+  }
   parser->lexer = lexer;
   parser->current_token = cct_next_token(lexer);
   parser->error_line = 0;
@@ -87,9 +95,19 @@ Parses the program
 ConcoctNodeTree* cct_parse_program(ConcoctParser* parser)
 {
   ConcoctNodeTree* tree = malloc(sizeof(ConcoctNodeTree));
+  if(tree == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for node tree: %s\n", strerror(errno));
+    exit(EXIT_FAILURE);
+  }
   tree->node_count = 0;
   tree->node_max = 256;
   tree->nodes = malloc(tree->node_max * sizeof(ConcoctNode*));
+  if(tree->nodes == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for tree nodes: %s\n", strerror(errno));
+    exit(EXIT_FAILURE);
+  }
   // For the root of the tree, a NewLine token is used, but it can be whatever
   tree->root = cct_new_node(tree, cct_new_token(CCT_TOKEN_NEWLINE, 0), NULL);
   parser->tree = tree;
@@ -803,8 +821,18 @@ ConcoctNode* cct_new_node(ConcoctNodeTree* tree, ConcoctToken token, const char*
   {
     tree->node_max *= 2;
     tree->nodes = realloc(tree->nodes, tree->node_max * sizeof(ConcoctNode*));
+    if(tree->nodes == NULL)
+    {
+      fprintf(stderr, "Error reallocating memory for tree nodes: %s\n", strerror(errno));
+      exit(EXIT_FAILURE);
+    }
   }
   ConcoctNode* node = malloc(sizeof(ConcoctNode));
+  if(node == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for node: %s\n", strerror(errno));
+    exit(EXIT_FAILURE);
+  }
   node->child_count = 0;
   node->children = NULL;
   node->parent = NULL;
@@ -812,7 +840,12 @@ ConcoctNode* cct_new_node(ConcoctNodeTree* tree, ConcoctToken token, const char*
   node->text = NULL;
   if(text != NULL)
   {
-    node->text = malloc(strlen(text)+1);
+    node->text = malloc(strlen(text) + 1);
+    if(node->text == NULL)
+    {
+      fprintf(stderr, "Error allocating memory for node text: %s\n", strerror(errno));
+      exit(EXIT_FAILURE);
+    }
     strcpy(node->text, text);
   }
   tree->nodes[tree->node_count] = node;
@@ -822,7 +855,7 @@ ConcoctNode* cct_new_node(ConcoctNodeTree* tree, ConcoctToken token, const char*
 
 void cct_delete_node_tree(ConcoctNodeTree* tree)
 {
-  for(int i = 0;i < tree->node_count;i++)
+  for(int i = 0; i < tree->node_count; i++)
   {
     ConcoctNode* node = tree->nodes[i];
     free(node->text);
@@ -840,6 +873,11 @@ ConcoctNode* cct_node_add_child(ConcoctNode* node, ConcoctNode* child)
 {
   node->child_count++;
   node->children = realloc(node->children, sizeof(ConcoctNode*) * node->child_count);
+  if(node->children == NULL)
+  {
+    fprintf(stderr, "Error reallocating memory for node children: %s\n", strerror(errno));
+    exit(EXIT_FAILURE);
+  }
   child->parent = node;
   node->children[node->child_count - 1] = child;
   return child;
