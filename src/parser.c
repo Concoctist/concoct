@@ -155,6 +155,11 @@ ConcoctNode* cct_parse_single_expr(ConcoctParser* parser)
     case CCT_TOKEN_FALSE:
     case CCT_TOKEN_IDENTIFIER:
       node = cct_new_node(parser->tree, parser->current_token, parser->lexer->token_text);
+      if(node == NULL)
+      {
+        fprintf(stderr, "Single expression node is NULL!\n");
+        return NULL;
+      }
       cct_next_parser_token(parser);
       return node;
     case CCT_TOKEN_LEFT_PAREN:
@@ -189,6 +194,11 @@ ConcoctNode* cct_parse_primary_expr(ConcoctParser* parser)
     {
       case CCT_TOKEN_DOT:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
+        if(current_node == NULL)
+        {
+          fprintf(stderr, "Primary expression node is NULL!\n");
+          return NULL;
+        }
         cct_node_add_child(op_node, current_node);
         cct_next_parser_token(parser);
         ConcoctNode* second_expr = cct_parse_single_expr(parser);
@@ -216,6 +226,11 @@ ConcoctNode* cct_parse_unary_expr(ConcoctParser* parser)
     case CCT_TOKEN_INC:
     case CCT_TOKEN_DEC:
       op_node = cct_new_node(parser->tree, parser->current_token, NULL);
+      if(op_node == NULL)
+      {
+        fprintf(stderr, "Unary expression node is NULL!\n");
+        return NULL;
+      }
       cct_next_parser_token(parser);
       ConcoctNode* expr = cct_parse_primary_expr(parser);
       if(expr == NULL)
@@ -230,6 +245,12 @@ ConcoctNode* cct_parse_mult_expr(ConcoctParser* parser)
 {
   ConcoctNode* current_node = cct_parse_unary_expr(parser);
   int parsing = 1;
+
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Expression node is NULL!\n");
+    return NULL;
+  }
 
   while(parsing)
   {
@@ -262,6 +283,12 @@ ConcoctNode* cct_parse_additive_expr(ConcoctParser* parser)
   ConcoctNode* current_node = cct_parse_mult_expr(parser);
   int parsing = 1;
 
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Expression node is NULL!\n");
+    return NULL;
+  }
+
   while(parsing)
   {
     ConcoctNode* op_node;
@@ -290,6 +317,12 @@ ConcoctNode* cct_parse_shift_expr(ConcoctParser* parser)
 {
   ConcoctNode* current_node = cct_parse_additive_expr(parser);
   int parsing = 1;
+
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Expression node is NULL!\n");
+    return NULL;
+  }
 
   while(parsing)
   {
@@ -463,6 +496,12 @@ ConcoctNode* cct_parse_and_expr(ConcoctParser* parser)
 {
   ConcoctNode* current_node = cct_parse_bit_or_expr(parser);
   int parsing = 1;
+
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Expression node is NULL!\n");
+    return NULL;
+  }
 
   while(parsing)
   {
@@ -662,6 +701,12 @@ Parses a compound statement
 ConcoctNode* cct_parse_compound_stat(ConcoctParser* parser)
 {
   ConcoctNode* compound_stat = cct_new_node(parser->tree, parser->current_token, NULL);
+
+  if(compound_stat == NULL)
+  {
+    fprintf(stderr, "Compound statement node is NULL!\n");
+    return NULL;
+  }
 
   cct_next_parser_token(parser);
   cct_parser_skip_new_lines(parser);
