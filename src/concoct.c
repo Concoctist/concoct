@@ -177,6 +177,7 @@ void lex_file(const char* file_name)
   if(file_lexer == NULL)
   {
     fprintf(stderr, "File lexer is NULL!\n");
+    fclose(input_file);
     return;
   }
   ConcoctToken token = cct_next_token(file_lexer);

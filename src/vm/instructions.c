@@ -64,6 +64,18 @@ RunCode op_add(Stack* stack)
   if(binary_math_check(operand1, operand2, '+') == RUN_ERROR)
     return RUN_ERROR;
 
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during ADD operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during ADD operation.\n");
+    return RUN_ERROR;
+  }
+
   if(operand1->datatype == STRING && operand2->datatype == STRING) // string concatenation
     push(stack, new_object(strcat(operand1->value.strobj.strval, operand2->value.strobj.strval)));
   else
