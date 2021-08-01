@@ -25,11 +25,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <ctype.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include "lexer.h"
 
 ConcoctLexer* cct_new_file_lexer(FILE* in_file)
 {
   ConcoctLexer* lexer = malloc(sizeof(ConcoctLexer));
+
+  if(lexer == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
+    return NULL;
+  }
+
   lexer->type = CCT_LEXER_FILE;
   lexer->input.file_input = in_file;
   lexer->line_number = 1;
@@ -38,9 +49,17 @@ ConcoctLexer* cct_new_file_lexer(FILE* in_file)
   cct_next_char(lexer);
   return lexer;
 }
+
 ConcoctLexer* cct_new_string_lexer(const char* in_string)
 {
   ConcoctLexer* lexer = malloc(sizeof(ConcoctLexer));
+
+  if(lexer == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
+    return NULL;
+  }
+
   lexer->type = CCT_LEXER_STRING;
   lexer->input.string_input = in_string;
   lexer->string_index = 0;
@@ -51,24 +70,22 @@ ConcoctLexer* cct_new_string_lexer(const char* in_string)
   cct_next_char(lexer);
   return lexer;
 }
+
 void cct_delete_lexer(ConcoctLexer* lexer)
 {
   free(lexer->token_text);
   free(lexer);
 }
+
 // Gets the next character in the lexing stream
 char cct_next_char(ConcoctLexer* lexer)
 {
   if(lexer->type == CCT_LEXER_FILE)
-  {
     lexer->next_char = (char)getc(lexer->input.file_input);
-  }
   else
   {
     if(lexer->next_char != '\0')
-    {
       lexer->next_char = lexer->input.string_input[lexer->string_index++];
-    }
   }
   return lexer->next_char;
 }
@@ -76,11 +93,10 @@ char cct_next_char(ConcoctLexer* lexer)
 int cct_lexer_is_eof(ConcoctLexer* lexer)
 {
   if(lexer->type == CCT_LEXER_FILE)
-  {
     return feof(lexer->input.file_input);
-  }
   return lexer->next_char == '\0';
 }
+
 void cct_set_error(ConcoctLexer* lexer, const char* message)
 {
   lexer->error = message;
@@ -93,6 +109,7 @@ ConcoctToken cct_new_token(ConcoctTokenType type, int line_number)
   token.line_number = line_number;
   return token;
 }
+
 ConcoctToken cct_next_token(ConcoctLexer* lexer)
 {
   // Had to be initialized, so Error is a good default
@@ -105,9 +122,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
   while(1)
   {
     if(!isspace(lexer->next_char) && lexer->next_char != '#')
-    {
       break;
-    }
     while(isspace(lexer->next_char))
     {
       // But if it's a new line it makes it a token
@@ -130,9 +145,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
           {
             // Registers new lines even in a comment
             if(lexer->next_char == '\n')
-            {
               lexer->line_number++;
-            }
           }
           if(cct_lexer_is_eof(lexer))
           {
@@ -149,9 +162,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
       {
         // Single line comment
         while(lexer->next_char != '\n' && !cct_lexer_is_eof(lexer))
-        {
           cct_next_char(lexer);
-        }
         if(cct_lexer_is_eof(lexer))
         {
           // End of file is perfectly fine on single-line comments
@@ -165,7 +176,6 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
       }
     }
   }
-
 
   if(cct_lexer_is_eof(lexer))
   {
@@ -184,7 +194,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
     // Goes trhough each keyword to see if this identifier is actually a keyword
     // Should be optimized to a hash map
     int is_keyword = 0;
-    for(int i = 0;i < CCT_KEYWORD_COUNT;i++)
+    for(int i = 0; i < CCT_KEYWORD_COUNT; i++)
     {
       if(strcmp(cct_keywords[i], lexer->token_text) == 0)
       {
@@ -194,9 +204,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
       }
     }
     if(!is_keyword)
-    {
       type = CCT_TOKEN_IDENTIFIER;
-    }
   }
   else if(isdigit(lexer->next_char))
   {
@@ -210,15 +218,11 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
     {
       lexer->token_text[text_index++] = lexer->next_char;
       while(isdigit(cct_next_char(lexer)))
-      {
         lexer->token_text[text_index++] = lexer->next_char;
-      }
       type = CCT_TOKEN_FLOAT;
     }
     else
-    {
       type = CCT_TOKEN_INT;
-    }
   }
   else if(lexer->next_char == '"')
   {

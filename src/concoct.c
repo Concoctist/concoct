@@ -51,9 +51,7 @@ int main(int argc, char** argv)
     {
       // Check for command-line options
       if(argv[i][0] == ARG_PREFIX)
-      {
         handle_options(argc, argv);
-      }
       else
       {
         nonopt_count++;
@@ -128,13 +126,9 @@ void parse_file(const char* file_name)
   ConcoctParser* parser = cct_new_parser(file_lexer);
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
   if(parser->error == NULL)
-  {
     cct_print_node(node_tree->root, 0);
-  }
   else
-  {
-    fprintf(stderr, "Parsing error: [%i] %s, got %s", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
-  }
+    fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   fclose(input_file);
   cct_delete_parser(parser);
   cct_delete_node_tree(node_tree);
@@ -148,13 +142,9 @@ void parse_string(const char* input_string)
   ConcoctParser* parser = cct_new_parser(string_lexer);
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
   if(parser->error == NULL)
-  {
     cct_print_node(node_tree->root, 0);
-  }
   else
-  {
-    fprintf(stderr, "Parsing error: [%i] %s, got %s", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
-  }
+    fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   cct_delete_parser(parser);
   printf("Freed parser\n");
   cct_delete_node_tree(node_tree);
@@ -174,6 +164,12 @@ void lex_file(const char* file_name)
 
   // Creates a new lexer and iterates through the tokens
   ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
+  if(file_lexer == NULL)
+  {
+    fprintf(stderr, "File lexer is NULL!\n");
+    fclose(input_file);
+    return;
+  }
   ConcoctToken token = cct_next_token(file_lexer);
   // Continues printing until an EOF is reached
   printf("Lexing %s:\n", file_name);
@@ -200,6 +196,12 @@ void lex_string(const char* input_string)
   //const char* input = "func test() { return a + b }";
   ConcoctLexer* string_lexer = cct_new_string_lexer(input_string);
   ConcoctToken token = cct_next_token(string_lexer);
+
+  if(string_lexer == NULL)
+  {
+    fprintf(stderr, "String lexer is NULL!\n");
+    return;
+  }
 
   //printf("Lexing string...\n");
   while(token.type != CCT_TOKEN_EOF)
