@@ -28,10 +28,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdio.h> // FILE
 
 #define TOKEN_TEXT_LENGTH 1024
 
