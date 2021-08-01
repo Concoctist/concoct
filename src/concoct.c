@@ -174,6 +174,11 @@ void lex_file(const char* file_name)
 
   // Creates a new lexer and iterates through the tokens
   ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
+  if(file_lexer == NULL)
+  {
+    fprintf(stderr, "File lexer is NULL!\n");
+    return;
+  }
   ConcoctToken token = cct_next_token(file_lexer);
   // Continues printing until an EOF is reached
   printf("Lexing %s:\n", file_name);
@@ -200,6 +205,12 @@ void lex_string(const char* input_string)
   //const char* input = "func test() { return a + b }";
   ConcoctLexer* string_lexer = cct_new_string_lexer(input_string);
   ConcoctToken token = cct_next_token(string_lexer);
+
+  if(string_lexer == NULL)
+  {
+    fprintf(stderr, "String lexer is NULL!\n");
+    return;
+  }
 
   //printf("Lexing string...\n");
   while(token.type != CCT_TOKEN_EOF)
