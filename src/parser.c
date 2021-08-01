@@ -55,7 +55,8 @@ ConcoctParser* cct_new_parser(ConcoctLexer* lexer)
 void cct_delete_parser(ConcoctParser* parser)
 {
   cct_delete_lexer(parser->lexer);
-  free(parser);
+  if(parser != NULL)
+    free(parser);
 }
 
 void cct_set_parser_error(ConcoctParser* parser, const char* text)
@@ -121,7 +122,8 @@ ConcoctNodeTree* cct_parse_program(ConcoctParser* parser)
     stat = cct_parse_stat(parser);
     if(stat == NULL)
       return tree;
-    cct_node_add_child(tree->root, stat);
+    if(tree->root != NULL)
+      cct_node_add_child(tree->root, stat);
   }
   return tree;
 }
@@ -353,6 +355,12 @@ ConcoctNode* cct_parse_relational_expr(ConcoctParser* parser)
   ConcoctNode* current_node = cct_parse_shift_expr(parser);
   int parsing = 1;
 
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Current relational expression node is NULL!\n");
+    return NULL;
+  }
+
   while(parsing)
   {
     ConcoctNode* op_node;
@@ -363,6 +371,11 @@ ConcoctNode* cct_parse_relational_expr(ConcoctParser* parser)
       case CCT_TOKEN_GREATER:
       case CCT_TOKEN_GREATER_EQUAL:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
+        if(op_node == NULL)
+        {
+          fprintf(stderr, "Relational expression node is NULL!\n");
+          return NULL;
+        }
         cct_node_add_child(op_node, current_node);
         cct_next_parser_token(parser);
         ConcoctNode* second_expr = cct_parse_shift_expr(parser);
@@ -384,6 +397,12 @@ ConcoctNode* cct_parse_equality_expr(ConcoctParser* parser)
   ConcoctNode* current_node = cct_parse_relational_expr(parser);
   int parsing = 1;
 
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Current equality expression node is NULL!\n");
+    return NULL;
+  }
+
   while(parsing)
   {
     ConcoctNode* op_node;
@@ -392,6 +411,11 @@ ConcoctNode* cct_parse_equality_expr(ConcoctParser* parser)
       case CCT_TOKEN_EQUAL:
       case CCT_TOKEN_NOT_EQUAL:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
+        if(op_node == NULL)
+        {
+          fprintf(stderr, "Equality expression node is NULL!\n");
+          return NULL;
+        }
         cct_node_add_child(op_node, current_node);
         cct_next_parser_token(parser);
         ConcoctNode* second_expr = cct_parse_relational_expr(parser);
@@ -413,6 +437,12 @@ ConcoctNode* cct_parse_bit_and_expr(ConcoctParser* parser)
   ConcoctNode* current_node = cct_parse_equality_expr(parser);
   int parsing = 1;
 
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Current bitwise AND expression node is NULL!\n");
+    return NULL;
+  }
+
   while(parsing)
   {
     ConcoctNode* op_node;
@@ -420,6 +450,11 @@ ConcoctNode* cct_parse_bit_and_expr(ConcoctParser* parser)
     {
       case CCT_TOKEN_BIN_AND:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
+        if(op_node == NULL)
+        {
+          fprintf(stderr, "Bitwise AND expression node is NULL!\n");
+          return NULL;
+        }
         cct_node_add_child(op_node, current_node);
         cct_next_parser_token(parser);
         ConcoctNode* second_expr = cct_parse_equality_expr(parser);
@@ -441,6 +476,12 @@ ConcoctNode* cct_parse_bit_xor_expr(ConcoctParser* parser)
   ConcoctNode* current_node = cct_parse_bit_and_expr(parser);
   int parsing = 1;
 
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Current bitwise XOR expression node is NULL!\n");
+    return NULL;
+  }
+
   while(parsing)
   {
     ConcoctNode* op_node;
@@ -448,6 +489,11 @@ ConcoctNode* cct_parse_bit_xor_expr(ConcoctParser* parser)
     {
       case CCT_TOKEN_BIN_XOR:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
+        if(op_node == NULL)
+        {
+          fprintf(stderr, "Bitwise XOR expression node is NULL!\n");
+          return NULL;
+        }
         cct_node_add_child(op_node, current_node);
         cct_next_parser_token(parser);
         ConcoctNode* second_expr = cct_parse_bit_and_expr(parser);
@@ -469,6 +515,12 @@ ConcoctNode* cct_parse_bit_or_expr(ConcoctParser* parser)
   ConcoctNode* current_node = cct_parse_bit_xor_expr(parser);
   int parsing = 1;
 
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Current bitwise OR expression node is NULL!\n");
+    return NULL;
+  }
+
   while(parsing)
   {
     ConcoctNode* op_node;
@@ -476,6 +528,11 @@ ConcoctNode* cct_parse_bit_or_expr(ConcoctParser* parser)
     {
       case CCT_TOKEN_BIN_OR:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
+        if(op_node == NULL)
+        {
+          fprintf(stderr, "Bitwise OR expression node is NULL!\n");
+          return NULL;
+        }
         cct_node_add_child(op_node, current_node);
         cct_next_parser_token(parser);
         ConcoctNode* second_expr = cct_parse_bit_xor_expr(parser);
@@ -531,6 +588,12 @@ ConcoctNode* cct_parse_or_expr(ConcoctParser* parser)
   ConcoctNode* current_node = cct_parse_and_expr(parser);
   int parsing = 1;
 
+  if(current_node == NULL)
+  {
+    fprintf(stderr, "Current OR expression node is NULL!\n");
+    return NULL;
+  }
+
   while(parsing)
   {
     ConcoctNode* op_node;
@@ -538,6 +601,11 @@ ConcoctNode* cct_parse_or_expr(ConcoctParser* parser)
     {
       case CCT_TOKEN_OR:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
+        if(op_node == NULL)
+        {
+          fprintf(stderr, "OR expression node is NULL!\n");
+          return NULL;
+        }
         cct_node_add_child(op_node, current_node);
         cct_next_parser_token(parser);
         ConcoctNode* second_expr = cct_parse_and_expr(parser);
@@ -623,6 +691,11 @@ Parses a do-while statement
 ConcoctNode* cct_parse_do_while_stat(ConcoctParser* parser)
 {
   ConcoctNode* while_stat = cct_new_node(parser->tree, parser->current_token, NULL);
+  if(while_stat == NULL)
+  {
+    fprintf(stderr, "Do...while statement node is NULL!\n");
+    return NULL;
+  }
   cct_next_parser_token(parser);
 
   ConcoctNode* stat = cct_parse_stat(parser);
@@ -657,6 +730,11 @@ Parses a for statement
 ConcoctNode* cct_parse_for_stat(ConcoctParser* parser)
 {
   ConcoctNode* for_stat = cct_new_node(parser->tree, parser->current_token, NULL);
+  if(for_stat == NULL)
+  {
+    fprintf(stderr, "For statement node is NULL!\n");
+    return NULL;
+  }
   cct_next_parser_token(parser);
 
   if(parser->current_token.type != CCT_TOKEN_IDENTIFIER)
@@ -666,6 +744,11 @@ ConcoctNode* cct_parse_for_stat(ConcoctParser* parser)
   }
 
   ConcoctNode* identifier = cct_new_node(parser->tree, parser->current_token, parser->lexer->token_text);
+  if(identifier == NULL)
+  {
+    fprintf(stderr, "For statement identifier node is NULL!\n");
+    return NULL;
+  }
   cct_node_add_child(for_stat, identifier);
   cct_next_parser_token(parser);
 
