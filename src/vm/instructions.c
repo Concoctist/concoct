@@ -944,7 +944,7 @@ RunCode op_pow(Stack* stack)
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
         case BIGNUM:
-          bignumval = (BigNum)(pow((double)(*(BigNum *)get_object_value(operand1)), *(BigNum *)get_object_value(operand2)));
+          bignumval = (BigNum)(pow((double)(*(BigNum *)get_object_value(operand1)), (double)(*(BigNum *)get_object_value(operand2))));
           vptr = &bignumval;
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
