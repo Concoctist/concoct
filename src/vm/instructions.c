@@ -886,7 +886,7 @@ RunCode op_pow(Stack* stack)
           push(stack, new_object_by_type(vptr, NUMBER));
           break;
         case BIGNUM:
-          bignumval = (BigNum)(pow(*(Byte *)get_object_value(operand1), *(BigNum *)get_object_value(operand2)));
+          bignumval = (BigNum)(pow(*(Byte *)get_object_value(operand1), (double)(*(BigNum *)get_object_value(operand2))));
           vptr = &bignumval;
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
@@ -915,7 +915,7 @@ RunCode op_pow(Stack* stack)
           push(stack, new_object_by_type(vptr, NUMBER));
           break;
         case BIGNUM:
-          bignumval = (Number)(pow(*(Number *)get_object_value(operand1), *(BigNum *)get_object_value(operand2)));
+          bignumval = (Number)(pow(*(Number *)get_object_value(operand1), (double)(*(BigNum *)get_object_value(operand2))));
           vptr = &bignumval;
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
@@ -934,22 +934,22 @@ RunCode op_pow(Stack* stack)
       switch(operand2->datatype)
       {
         case BYTE:
-          bignumval = (BigNum)(pow(*(BigNum *)get_object_value(operand1), *(Byte *)get_object_value(operand2)));
+          bignumval = (BigNum)(pow((double)(*(BigNum *)get_object_value(operand1)), *(Byte *)get_object_value(operand2)));
           vptr = &bignumval;
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
         case NUMBER:
-          bignumval = (BigNum)(pow(*(BigNum *)get_object_value(operand1), *(Number *)get_object_value(operand2)));
+          bignumval = (BigNum)(pow((double)(*(BigNum *)get_object_value(operand1)), *(Number *)get_object_value(operand2)));
           vptr = &bignumval;
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
         case BIGNUM:
-          bignumval = (BigNum)(pow(*(BigNum *)get_object_value(operand1), *(BigNum *)get_object_value(operand2)));
+          bignumval = (BigNum)(pow((double)(*(BigNum *)get_object_value(operand1)), *(BigNum *)get_object_value(operand2)));
           vptr = &bignumval;
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
         case DECIMAL:
-          decimalval = (BigNum)(pow(*(BigNum *)get_object_value(operand1), *(Decimal *)get_object_value(operand2)));
+          decimalval = (Decimal)(pow((double)(*(BigNum *)get_object_value(operand1)), *(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
@@ -973,7 +973,7 @@ RunCode op_pow(Stack* stack)
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
         case BIGNUM:
-          decimalval = pow(*(Decimal *)get_object_value(operand1), *(BigNum *)get_object_value(operand2));
+          decimalval = pow(*(Decimal *)get_object_value(operand1), (double)(*(BigNum *)get_object_value(operand2)));
           vptr = &decimalval;
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
