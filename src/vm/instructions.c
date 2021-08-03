@@ -369,6 +369,7 @@ RunCode op_div(Stack* stack)
   BigNum bignumval = 0;
   Decimal decimalval = 0.0;
   void* vptr = NULL;
+  Bool div_by_zero = false;
 
   if(operand1 == NULL)
   {
@@ -379,6 +380,33 @@ RunCode op_div(Stack* stack)
   if(operand2 == NULL)
   {
     fprintf(stderr, "Operand 2 is NULL during DIV operation.\n");
+    return RUN_ERROR;
+  }
+
+  switch(operand2->datatype)
+  {
+    case BYTE:
+      if(*(Byte *)get_object_value(operand2) == 0)
+        div_by_zero = true;
+      break;
+    case NUMBER:
+      if(*(Number *)get_object_value(operand2) == 0)
+        div_by_zero = true;
+      break;
+    case BIGNUM:
+      if(*(BigNum *)get_object_value(operand2) == 0)
+        div_by_zero = true;
+      break;
+    case DECIMAL:
+      if(*(Decimal *)get_object_value(operand2) == 0.0)
+        div_by_zero = true;
+      break;
+    default:
+      break;
+  }
+  if(div_by_zero)
+  {
+    fprintf(stderr, "Operand 2 is 0 (zero) during DIV operation.\n");
     return RUN_ERROR;
   }
 
