@@ -74,6 +74,22 @@ int main()
   for(size_t i = pstack->count; i > 0; i--)
     print_object_value(pop(pstack));
 
+  puts("\nAdding 20 to stack...");
+  object = new_object("20");
+  push(pstack, object);
+  puts("Decrementing stack value...");
+  op_dec(pstack);
+  puts("Value after decrementing stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 20 to stack...");
+  object = new_object("20");
+  push(pstack, object);
+  puts("Incrementing stack value...");
+  op_inc(pstack);
+  puts("Value after incrementing stack contents:");
+  print_object_value(pop(pstack));
+
   puts("\nAdding 3 to stack...");
   object = new_object("3");
   push(pstack, object);
@@ -85,6 +101,76 @@ int main()
   puts("Value after adding stack contents:");
   print_object_value(pop(pstack));
 
+  puts("\nAdding 10 to stack...");
+  object = new_object("10");
+  push(pstack, object);
+  puts("Adding 3 to stack...");
+  object = new_object("3");
+  push(pstack, object);
+  puts("Subtracting stack values...");
+  op_sub(pstack);
+  puts("Value after subtracting stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 10 to stack...");
+  object = new_object("10");
+  push(pstack, object);
+  puts("Adding 5 to stack...");
+  object = new_object("5");
+  push(pstack, object);
+  puts("Dividing stack values...");
+  op_div(pstack);
+  puts("Value after dividing stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 10 to stack...");
+  object = new_object("10");
+  push(pstack, object);
+  puts("Adding 0 to stack...");
+  object = new_object("0");
+  push(pstack, object);
+  puts("Dividing stack values (zero test)...");
+  if(op_div(pstack) == RUN_ERROR)
+    puts("Runtime error encountered!");
+  else
+  {
+    puts("Value after dividing stack contents:");
+    print_object_value(pop(pstack));
+  }
+
+  puts("\nAdding 5 to stack...");
+  object = new_object("5");
+  push(pstack, object);
+  puts("Adding 2 to stack...");
+  object = new_object("2");
+  push(pstack, object);
+  puts("Multiplying stack values...");
+  op_mul(pstack);
+  puts("Value after multiplying stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 11 to stack...");
+  object = new_object("11");
+  push(pstack, object);
+  puts("Adding 5 to stack...");
+  object = new_object("5");
+  push(pstack, object);
+  puts("Modulating stack values...");
+  op_mod(pstack);
+  puts("Value after modulating stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 5 to stack...");
+  object = new_object("5");
+  push(pstack, object);
+  puts("Adding 2 to stack...");
+  object = new_object("2");
+  push(pstack, object);
+  puts("Exponentiating stack values...");
+  op_pow(pstack);
+  puts("Value after exponentiating stack contents:");
+  print_object_value(pop(pstack));
+
   puts("\nTesting string object addition of: \"Greetings, \" + \"Concocter!\"");
   object = new_object("Greetings, ");
   push(pstack, object);
@@ -93,6 +179,9 @@ int main()
   op_add(pstack);
   puts("Result:");
   print_object_value(pop(pstack));
+
+  puts("Executing NOP...");
+  OP_NOP;
 
   free_store();
 
