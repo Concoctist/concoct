@@ -31,6 +31,27 @@
 #include "memory.h"
 #include "vm/vm.h"
 
+// Validates unary operand
+RunCode unary_check(Object* operand, char* operator)
+{
+  if(operand->datatype == NIL)
+  {
+    fprintf(stderr, "Invalid operation (%s) for object of type \"null\"!\n", operator);
+    return RUN_ERROR;
+  }
+  if(operand->datatype == BOOL)
+  {
+    fprintf(stderr, "Invalid operation (%s) for object of type \"boolean\"!\n", operator);
+    return RUN_ERROR;
+  }
+  if(operand->datatype == STRING)
+  {
+    fprintf(stderr, "Invalid operation (%s) for object of type \"string\"!\n", operator);
+    return RUN_ERROR;
+  }
+  return RUN_SUCCESS;
+}
+
 // Validates binary mathematical operands
 RunCode binary_math_check(Object* operand1, Object* operand2, char* operator)
 {
@@ -48,6 +69,112 @@ RunCode binary_math_check(Object* operand1, Object* operand2, char* operator)
   {
     fprintf(stderr, "Invalid binary operation (%s) for single operand of type \"string\"!\n", operator);
     return RUN_ERROR;
+  }
+  return RUN_SUCCESS;
+}
+
+// Decrement
+RunCode op_dec(Stack* stack)
+{
+  Object* operand = pop(stack);
+  Byte byteval = 0;
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand == NULL)
+  {
+    fprintf(stderr, "Operand is NULL during DEC operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(unary_check(operand, "--") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand->datatype)
+  {
+    case BYTE:
+      byteval = *(Byte *)get_object_value(operand);
+      byteval--;
+      vptr = &byteval;
+      push(stack, new_object_by_type(vptr, BYTE));
+      break;
+    case NUMBER:
+      numval = *(Byte *)get_object_value(operand);
+      numval--;
+      vptr = &numval;
+      push(stack, new_object_by_type(vptr, NUMBER));
+      break;
+    case BIGNUM:
+      bignumval = *(Byte *)get_object_value(operand);
+      bignumval--;
+      vptr = &bignumval;
+      push(stack, new_object_by_type(vptr, BIGNUM));
+      break;
+    case DECIMAL:
+      decimalval = *(Byte *)get_object_value(operand);
+      decimalval--;
+      vptr = &decimalval;
+      push(stack, new_object_by_type(vptr, DECIMAL));
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (--)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Increment
+RunCode op_inc(Stack* stack)
+{
+  Object* operand = pop(stack);
+  Byte byteval = 0;
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand == NULL)
+  {
+    fprintf(stderr, "Operand is NULL during INC operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(unary_check(operand, "++") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand->datatype)
+  {
+    case BYTE:
+      byteval = *(Byte *)get_object_value(operand);
+      byteval++;
+      vptr = &byteval;
+      push(stack, new_object_by_type(vptr, BYTE));
+      break;
+    case NUMBER:
+      numval = *(Byte *)get_object_value(operand);
+      numval++;
+      vptr = &numval;
+      push(stack, new_object_by_type(vptr, NUMBER));
+      break;
+    case BIGNUM:
+      bignumval = *(Byte *)get_object_value(operand);
+      bignumval++;
+      vptr = &bignumval;
+      push(stack, new_object_by_type(vptr, BIGNUM));
+      break;
+    case DECIMAL:
+      decimalval = *(Byte *)get_object_value(operand);
+      decimalval++;
+      vptr = &decimalval;
+      push(stack, new_object_by_type(vptr, DECIMAL));
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (++)!\n");
+      return RUN_ERROR;
+      break;
   }
   return RUN_SUCCESS;
 }
@@ -81,6 +208,7 @@ RunCode op_add(Stack* stack)
   if(operand1->datatype == STRING && operand2->datatype == STRING) // string concatenation
     push(stack, new_object(strcat(operand1->value.strobj.strval, operand2->value.strobj.strval)));
   else
+  {
     switch(operand1->datatype)
     {
       case BYTE:
@@ -204,6 +332,7 @@ RunCode op_add(Stack* stack)
         return RUN_ERROR;
         break;
     }
+  }
   return RUN_SUCCESS;
 }
 
