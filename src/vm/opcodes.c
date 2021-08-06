@@ -38,6 +38,7 @@ const char* get_mnemonic(Opcode oc)
     case OP_CMP: return "OP_CMP";    // compare
     case OP_DEC: return "OP_DEC";    // decrement
     case OP_DIV: return "OP_DIV";    // divide
+    case OP_END: return "OP_END";    // marks end of VM instructions
     case OP_ENT: return "OP_ENT";    // entry point
     case OP_EXT: return "OP_EXT";    // exit
     case OP_FLS: return "OP_FLS";    // false

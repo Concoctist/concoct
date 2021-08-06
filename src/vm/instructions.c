@@ -73,6 +73,26 @@ RunCode binary_math_check(Object* operand1, Object* operand2, char* operator)
   return RUN_SUCCESS;
 }
 
+// Pop
+RunCode op_pop(Stack* stack, Object* object)
+{
+  object = pop(stack);
+  return RUN_SUCCESS;
+}
+
+// Push
+RunCode op_psh(Stack* stack, char* value)
+{
+  Object* operand = new_object(value);
+  if(operand == NULL)
+  {
+    fprintf(stderr, "Operand is NULL during PSH operation.\n");
+    return RUN_ERROR;
+  }
+  push(stack, operand);
+  return RUN_SUCCESS;
+}
+
 // Decrement
 RunCode op_dec(Stack* stack)
 {
