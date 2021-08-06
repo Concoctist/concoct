@@ -84,6 +84,11 @@ RunCode op_pop(Stack* stack, Object* object)
 RunCode op_psh(Stack* stack, char* value)
 {
   Object* operand = new_object(value);
+  if(operand == NULL)
+  {
+    fprintf(stderr, "Operand is NULL during PSH operation.\n");
+    return RUN_ERROR;
+  }
   push(stack, operand);
   return RUN_SUCCESS;
 }
