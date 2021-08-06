@@ -35,6 +35,8 @@
 
 RunCode unary_check(Object* operand, char* operator);
 RunCode binary_math_check(Object* operand1, Object* operand2, char operator);
+RunCode op_pop(Stack* stack, Object* object);
+RunCode op_psh(Stack* stack, char* value);
 RunCode op_dec(Stack* stack);
 RunCode op_inc(Stack* stack);
 RunCode op_add(Stack* stack);
