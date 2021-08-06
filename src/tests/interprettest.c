@@ -25,37 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VM_H
-#define VM_H
+#include "vm/vm.h"
 
-#include "types.h"      // Byte
-#include "vm/opcodes.h" // Opcode
-#include "vm/stack.h"   // Stack
-
-typedef struct vm
+int main()
 {
-  Opcode* instructions; // instructions to execute
-  Stack stack;          // stack structure
-  Object* sp;           // stack pointer/top item of stack
-  Opcode* ip;           // instruction pointer/program counter
-} VM;
-extern VM vm;
-
-typedef enum
-{
-  RUN_SUCCESS,
-  RUN_ERROR
-} RunCode;
-
-static const size_t INSTRUCTION_STORE_SIZE = 128;
-
-// Initializes virtual machine
-void init_vm();
-
-// Stops virtual machine
-void stop_vm();
-
-// Interprets code
-RunCode interpret();
-
-#endif // VM_H
+  interpret();
+  return 0;
+}

@@ -37,6 +37,7 @@ typedef enum opcode
   OP_CMP, // compare
   OP_DEC, // decrement
   OP_DIV, // divide
+  OP_END, // marks end of VM instructions
   OP_ENT, // entry point
   OP_EXT, // exit
   OP_FLS, // false
