@@ -30,7 +30,7 @@
 #include <math.h>     // round()
 #include <stdio.h>    // fprintf(), stderr
 #include <stdlib.h>   // calloc(), free(), malloc(), realloc(), EXIT_FAILURE
-#include <string.h>   // memcpy(), snprintf(), strcpy(), strlen()
+#include <string.h>   // memcpy(), snprintf(), strcpy(), strerror(), strlen()
 #include "concoct.h"
 #include "debug.h"
 #include "memory.h"

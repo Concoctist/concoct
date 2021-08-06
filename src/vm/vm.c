@@ -25,8 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <errno.h>  // errno
 #include <stdio.h>  // fprintf(), printf()
 #include <stdlib.h> // malloc()
+#include <string.h> // strerror()
 #include "debug.h"
 #include "memory.h"
 #include "vm/instructions.h"
@@ -39,6 +41,11 @@ VM vm;
 void init_vm()
 {
   vm.instructions = (Opcode *)malloc(INSTRUCTION_STORE_SIZE * sizeof(Opcode));
+  if(vm.instructions == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for instruction store: %s\n", strerror(errno));
+    return;
+  }
   Stack* stack = &vm.stack;
   init_stack(stack);
   init_store();
