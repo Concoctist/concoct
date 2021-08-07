@@ -46,8 +46,8 @@ void init_vm()
     fprintf(stderr, "Error allocating memory for instruction store: %s\n", strerror(errno));
     return;
   }
-  Stack* stack = &vm.stack;
-  init_stack(stack);
+  vm.sp = &vm.stack;
+  init_stack(vm.sp);
   init_store();
   if(debug_mode)
     debug_print("VM initialized.");
@@ -68,63 +68,63 @@ void stop_vm()
 RunCode interpret()
 {
   init_vm();
-  Stack* stack = &vm.stack;
+  vm.sp = &vm.stack;
 
   // Below is just a demonstration for now
   vm.ip = vm.instructions;
   vm.instructions[4] = OP_ADD;
-  push(stack, new_object("2"));
-  push(stack, new_object("3"));
+  push(vm.sp, new_object("2"));
+  push(vm.sp, new_object("3"));
   vm.instructions[3] = OP_SUB;
-  push(stack, new_object("10"));
-  push(stack, new_object("3"));
+  push(vm.sp, new_object("10"));
+  push(vm.sp, new_object("3"));
   vm.instructions[2] = OP_MUL;
-  push(stack, new_object("5"));
-  push(stack, new_object("2"));
+  push(vm.sp, new_object("5"));
+  push(vm.sp, new_object("2"));
   vm.instructions[1] = OP_DEC;
-  push(stack, new_object("99"));
+  push(vm.sp, new_object("99"));
   vm.instructions[0] = OP_POW;
-  push(stack, new_object("5"));
-  push(stack, new_object("2"));
+  push(vm.sp, new_object("5"));
+  push(vm.sp, new_object("2"));
   vm.instructions[5] = OP_END;
   vm.ip = vm.instructions;
 
-  while(stack->count > 0 && *vm.ip != OP_END)
+  while(vm.sp->count > 0 && *vm.ip != OP_END)
   {
     printf("Instruction: %s (0x%x)\n", get_mnemonic(*vm.ip), *vm.ip);
     switch((*vm.ip))
     {
       case OP_DEC:
-        op_dec(stack);
-        print_object_value(pop(stack));
+        op_dec(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_INC:
-        op_inc(stack);
-        print_object_value(pop(stack));
+        op_inc(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_ADD:
-        op_add(stack);
-        print_object_value(pop(stack));
+        op_add(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_SUB:
-        op_sub(stack);
-        print_object_value(pop(stack));
+        op_sub(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_DIV:
-        op_div(stack);
-        print_object_value(pop(stack));
+        op_div(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_MUL:
-        op_mul(stack);
-        print_object_value(pop(stack));
+        op_mul(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_MOD:
-        op_mod(stack);
-        print_object_value(pop(stack));
+        op_mod(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_POW:
-        op_pow(stack);
-        print_object_value(pop(stack));
+        op_pow(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       default:
         fprintf(stderr, "Illegal instruction: %s (0x%x)\n", get_mnemonic(*vm.ip), *vm.ip);

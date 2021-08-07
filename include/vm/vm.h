@@ -36,7 +36,7 @@ typedef struct vm
 {
   Opcode* instructions; // instructions to execute
   Stack stack;          // stack structure
-  Object* sp;           // stack pointer/top item of stack
+  Stack* sp;            // stack pointer/top item of stack
   Opcode* ip;           // instruction pointer/program counter
 } VM;
 extern VM vm;
