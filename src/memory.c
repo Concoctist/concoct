@@ -276,12 +276,17 @@ Object* new_object_by_type(void* data, DataType datatype)
   switch(datatype)
   {
     case NIL:
-    case BOOL:
     case STRING:
       fprintf(stderr, "Unsupported data type: %s\n", get_type(datatype));
       free(object);
       object = NULL;
       return NULL;
+      break;
+    case BOOL:
+      object->datatype = datatype;
+      object->value.boolval = *(Bool *)data;
+      if(debug_mode)
+        debug_print("Object of type %s created with value: %s", get_type(datatype), *(Bool *)data ? "true" : "false", stdout);
       break;
     case BYTE:
       object->datatype = datatype;
@@ -315,8 +320,6 @@ Object* new_object_by_type(void* data, DataType datatype)
       break;
   }
   object->marked = false;
-  if(debug_mode)
-    debug_print("Object of type %s created with value: %s", get_type(datatype), data);
   add_store_object(object);
   return object;
 }
