@@ -56,7 +56,7 @@ const char* get_mnemonic(Opcode oc)
     case OP_MOV: return "OP_MOV";    // move
     case OP_MUL: return "OP_MUL";    // multiply
     case OP_NOP: return "OP_NOP";    // no op
-    case OP_NOT: return "OP_NOT";    // not
+    case OP_NOT: return "OP_NOT";    // not/negation
     case OP_NUL: return "OP_NUL";    // null
     case OP_OR:  return "OP_OR";     // or
     case OP_POP: return "OP_POP";    // pop

@@ -93,6 +93,99 @@ RunCode op_psh(Stack* stack, char* value)
   return RUN_SUCCESS;
 }
 
+// And
+RunCode op_and(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+  Bool result = false;
+  void* vptr = NULL;
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during AND operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during AND operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand1->datatype != BOOL && operand2->datatype != BOOL)
+  {
+    fprintf(stderr, "Invalid operation (&&) for non-bool object!\n");
+    return RUN_ERROR;
+  }
+
+  result = *(Bool *)get_object_value(operand1) && *(Bool *)get_object_value(operand2);
+  vptr = &result;
+  push(stack, new_object_by_type(vptr, BOOL));
+
+  return RUN_SUCCESS;
+}
+
+// Not/negation
+RunCode op_not(Stack* stack)
+{
+  Object* operand = pop(stack);
+  Bool result = false;
+  void* vptr = NULL;
+
+  if(operand == NULL)
+  {
+    fprintf(stderr, "Operand is NULL during NOT operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand->datatype != BOOL)
+  {
+    fprintf(stderr, "Invalid operation (!) for non-bool object!\n");
+    return RUN_ERROR;
+  }
+
+  result = *(Bool *)get_object_value(operand);
+  result = !result;
+  vptr = &result;
+  push(stack, new_object_by_type(vptr, BOOL));
+
+  return RUN_SUCCESS;
+}
+
+// Or
+RunCode op_or(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+  Bool result = false;
+  void* vptr = NULL;
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during OR operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during OR operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand1->datatype != BOOL && operand2->datatype != BOOL)
+  {
+    fprintf(stderr, "Invalid operation (||) for non-bool object!\n");
+    return RUN_ERROR;
+  }
+
+  result = *(Bool *)get_object_value(operand1) || *(Bool *)get_object_value(operand2);
+  vptr = &result;
+  push(stack, new_object_by_type(vptr, BOOL));
+
+  return RUN_SUCCESS;
+}
+
 // Decrement
 RunCode op_dec(Stack* stack)
 {
