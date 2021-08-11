@@ -74,6 +74,82 @@ int main()
   for(size_t i = pstack->count; i > 0; i--)
     print_object_value(pop(pstack));
 
+  puts("\nAdding false and false to stack...");
+  object = new_object("false");
+  push(pstack, object);
+  object = new_object("false");
+  push(pstack, object);
+  puts("Anding result...");
+  op_and(pstack);
+  puts("Value after anding stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding true and false to stack...");
+  object = new_object("true");
+  push(pstack, object);
+  object = new_object("false");
+  push(pstack, object);
+  puts("Anding result...");
+  op_and(pstack);
+  puts("Value after anding stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding true and true to stack...");
+  object = new_object("true");
+  push(pstack, object);
+  object = new_object("true");
+  push(pstack, object);
+  puts("Anding result...");
+  op_and(pstack);
+  puts("Value after anding stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding false to stack...");
+  object = new_object("false");
+  push(pstack, object);
+  puts("Negating result...");
+  op_not(pstack);
+  puts("Value after negating stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding true to stack...");
+  object = new_object("true");
+  push(pstack, object);
+  puts("Negating result...");
+  op_not(pstack);
+  puts("Value after negating stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding false and false to stack...");
+  object = new_object("false");
+  push(pstack, object);
+  object = new_object("false");
+  push(pstack, object);
+  puts("Oring result...");
+  op_or(pstack);
+  puts("Value after oring stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding true and false to stack...");
+  object = new_object("true");
+  push(pstack, object);
+  object = new_object("false");
+  push(pstack, object);
+  puts("Oring result...");
+  op_or(pstack);
+  puts("Value after oring stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding true and true to stack...");
+  object = new_object("true");
+  push(pstack, object);
+  object = new_object("true");
+  push(pstack, object);
+  puts("Oring result...");
+  op_or(pstack);
+  puts("Value after oring stack contents:");
+  print_object_value(pop(pstack));
+
   puts("\nAdding 20 to stack...");
   object = new_object("20");
   push(pstack, object);

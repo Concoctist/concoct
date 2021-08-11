@@ -55,7 +55,7 @@ typedef enum opcode
   OP_MOV, // move
   OP_MUL, // multiply
   OP_NOP, // no op
-  OP_NOT, // not
+  OP_NOT, // not/negation
   OP_NUL, // null
   OP_OR,  // or
   OP_POP, // pop
