@@ -32,7 +32,7 @@
 #include "vm/vm.h"
 
 // Validates unary operand
-RunCode unary_check(Object* operand, char* operator)
+RunCode unary_operand_check(Object* operand, char* operator)
 {
   if(operand->datatype == NIL)
   {
@@ -53,7 +53,7 @@ RunCode unary_check(Object* operand, char* operator)
 }
 
 // Validates binary mathematical operands
-RunCode binary_math_check(Object* operand1, Object* operand2, char* operator)
+RunCode binary_operand_check(Object* operand1, Object* operand2, char* operator)
 {
   if(operand1->datatype == NIL || operand2->datatype == NIL)
   {
@@ -202,7 +202,7 @@ RunCode op_dec(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(unary_check(operand, "--") == RUN_ERROR)
+  if(unary_operand_check(operand, "--") == RUN_ERROR)
     return RUN_ERROR;
 
   switch(operand->datatype)
@@ -214,19 +214,19 @@ RunCode op_dec(Stack* stack)
       push(stack, new_object_by_type(vptr, BYTE));
       break;
     case NUMBER:
-      numval = *(Byte *)get_object_value(operand);
+      numval = *(Number *)get_object_value(operand);
       numval--;
       vptr = &numval;
       push(stack, new_object_by_type(vptr, NUMBER));
       break;
     case BIGNUM:
-      bignumval = *(Byte *)get_object_value(operand);
+      bignumval = *(BigNum *)get_object_value(operand);
       bignumval--;
       vptr = &bignumval;
       push(stack, new_object_by_type(vptr, BIGNUM));
       break;
     case DECIMAL:
-      decimalval = *(Byte *)get_object_value(operand);
+      decimalval = *(Decimal *)get_object_value(operand);
       decimalval--;
       vptr = &decimalval;
       push(stack, new_object_by_type(vptr, DECIMAL));
@@ -255,7 +255,7 @@ RunCode op_inc(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(unary_check(operand, "++") == RUN_ERROR)
+  if(unary_operand_check(operand, "++") == RUN_ERROR)
     return RUN_ERROR;
 
   switch(operand->datatype)
@@ -267,19 +267,19 @@ RunCode op_inc(Stack* stack)
       push(stack, new_object_by_type(vptr, BYTE));
       break;
     case NUMBER:
-      numval = *(Byte *)get_object_value(operand);
+      numval = *(Number *)get_object_value(operand);
       numval++;
       vptr = &numval;
       push(stack, new_object_by_type(vptr, NUMBER));
       break;
     case BIGNUM:
-      bignumval = *(Byte *)get_object_value(operand);
+      bignumval = *(BigNum *)get_object_value(operand);
       bignumval++;
       vptr = &bignumval;
       push(stack, new_object_by_type(vptr, BIGNUM));
       break;
     case DECIMAL:
-      decimalval = *(Byte *)get_object_value(operand);
+      decimalval = *(Decimal *)get_object_value(operand);
       decimalval++;
       vptr = &decimalval;
       push(stack, new_object_by_type(vptr, DECIMAL));
@@ -295,8 +295,8 @@ RunCode op_inc(Stack* stack)
 // Addition
 RunCode op_add(Stack* stack)
 {
-  Object* operand2 = pop(stack);
-  Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack); // addend
+  Object* operand1 = pop(stack); // augend
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -315,7 +315,7 @@ RunCode op_add(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(binary_math_check(operand1, operand2, "+") == RUN_ERROR)
+  if(binary_operand_check(operand1, operand2, "+") == RUN_ERROR)
     return RUN_ERROR;
 
   if(operand1->datatype == STRING && operand2->datatype == STRING) // string concatenation
@@ -452,8 +452,8 @@ RunCode op_add(Stack* stack)
 // Subtraction
 RunCode op_sub(Stack* stack)
 {
-  Object* operand2 = pop(stack);
-  Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack); // subtrahend
+  Object* operand1 = pop(stack); // minuend
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -472,7 +472,7 @@ RunCode op_sub(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(binary_math_check(operand1, operand2, "-") == RUN_ERROR)
+  if(binary_operand_check(operand1, operand2, "-") == RUN_ERROR)
     return RUN_ERROR;
 
   switch(operand1->datatype)
@@ -604,8 +604,8 @@ RunCode op_sub(Stack* stack)
 // Division
 RunCode op_div(Stack* stack)
 {
-  Object* operand2 = pop(stack);
-  Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack); // divisor
+  Object* operand1 = pop(stack); // dividend
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -652,7 +652,7 @@ RunCode op_div(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(binary_math_check(operand1, operand2, "/") == RUN_ERROR)
+  if(binary_operand_check(operand1, operand2, "/") == RUN_ERROR)
     return RUN_ERROR;
 
   switch(operand1->datatype)
@@ -784,8 +784,8 @@ RunCode op_div(Stack* stack)
 // Multiplication
 RunCode op_mul(Stack* stack)
 {
-  Object* operand2 = pop(stack);
-  Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack); // multiplicand
+  Object* operand1 = pop(stack); // multiplier
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -804,7 +804,7 @@ RunCode op_mul(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(binary_math_check(operand1, operand2, "*") == RUN_ERROR)
+  if(binary_operand_check(operand1, operand2, "*") == RUN_ERROR)
     return RUN_ERROR;
 
   switch(operand1->datatype)
@@ -937,8 +937,8 @@ RunCode op_mul(Stack* stack)
 // Note: Modulo operates on integers. Decimal numbers are truncated.
 RunCode op_mod(Stack* stack)
 {
-  Object* operand2 = pop(stack);
-  Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack); // divisor
+  Object* operand1 = pop(stack); // dividend
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -957,7 +957,7 @@ RunCode op_mod(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(binary_math_check(operand1, operand2, "%") == RUN_ERROR)
+  if(binary_operand_check(operand1, operand2, "%") == RUN_ERROR)
     return RUN_ERROR;
 
   switch(operand1->datatype)
@@ -1089,8 +1089,8 @@ RunCode op_mod(Stack* stack)
 // Exponentiation
 RunCode op_pow(Stack* stack)
 {
-  Object* operand2 = pop(stack);
-  Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack); // exponent/power to raise by
+  Object* operand1 = pop(stack); // base
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -1109,7 +1109,7 @@ RunCode op_pow(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(binary_math_check(operand1, operand2, "**") == RUN_ERROR)
+  if(binary_operand_check(operand1, operand2, "**") == RUN_ERROR)
     return RUN_ERROR;
 
   switch(operand1->datatype)
@@ -1232,6 +1232,132 @@ RunCode op_pow(Stack* stack)
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Bit shift left
+RunCode op_shl(Stack* stack)
+{
+  Object* operand2 = pop(stack); // positions to shift
+  Object* operand1 = pop(stack); // number to shift
+  Byte byteval = 0;
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during SHL operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during SHL operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(binary_operand_check(operand1, operand2, "<<") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      byteval = *(Byte *)get_object_value(operand1);
+      byteval = byteval << *(Number *)get_object_value(operand2);
+      vptr = &byteval;
+      push(stack, new_object_by_type(vptr, BYTE));
+      break;
+    case NUMBER:
+      numval = *(Number *)get_object_value(operand1);
+      numval = numval << *(Number *)get_object_value(operand2);
+      vptr = &numval;
+      vptr = &numval;
+      push(stack, new_object_by_type(vptr, NUMBER));
+      break;
+    case BIGNUM:
+      bignumval = *(BigNum *)get_object_value(operand1);
+      bignumval = bignumval << *(Number *)get_object_value(operand2);
+      vptr = &bignumval;
+      vptr = &bignumval;
+      push(stack, new_object_by_type(vptr, BIGNUM));
+      break;
+    case DECIMAL:
+      decimalval = *(Decimal *)get_object_value(operand1);
+      decimalval = (Number)decimalval << *(Number *)get_object_value(operand2);
+      vptr = &decimalval;
+      vptr = &decimalval;
+      push(stack, new_object_by_type(vptr, DECIMAL));
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (<<)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Bit shift right
+RunCode op_shr(Stack* stack)
+{
+  Object* operand2 = pop(stack); // positions to shift
+  Object* operand1 = pop(stack); // number to shift
+  Byte byteval = 0;
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during SHR operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during SHR operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(binary_operand_check(operand1, operand2, ">>") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      byteval = *(Byte *)get_object_value(operand1);
+      byteval = byteval >> *(Number *)get_object_value(operand2);
+      vptr = &byteval;
+      push(stack, new_object_by_type(vptr, BYTE));
+      break;
+    case NUMBER:
+      numval = *(Number *)get_object_value(operand1);
+      numval = numval >> *(Number *)get_object_value(operand2);
+      vptr = &numval;
+      vptr = &numval;
+      push(stack, new_object_by_type(vptr, NUMBER));
+      break;
+    case BIGNUM:
+      bignumval = *(BigNum *)get_object_value(operand1);
+      bignumval = bignumval >> *(Number *)get_object_value(operand2);
+      vptr = &bignumval;
+      vptr = &bignumval;
+      push(stack, new_object_by_type(vptr, BIGNUM));
+      break;
+    case DECIMAL:
+      decimalval = *(Decimal *)get_object_value(operand1);
+      decimalval = (Number)decimalval >> *(Number *)get_object_value(operand2);
+      vptr = &decimalval;
+      vptr = &decimalval;
+      push(stack, new_object_by_type(vptr, DECIMAL));
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (>>)!\n");
       return RUN_ERROR;
       break;
   }
