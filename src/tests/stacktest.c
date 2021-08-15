@@ -247,6 +247,28 @@ int main()
   puts("Value after exponentiating stack contents:");
   print_object_value(pop(pstack));
 
+  puts("\nAdding 1 to stack...");
+  object = new_object("1");
+  push(pstack, object);
+  puts("Adding 8 to stack...");
+  object = new_object("8");
+  push(pstack, object);
+  puts("Bit shifting stack value to the left...");
+  op_shl(pstack);
+  puts("Value after bit shifting stack contents to the left:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 256 to stack...");
+  object = new_object("256");
+  push(pstack, object);
+  puts("Adding 4 to stack...");
+  object = new_object("4");
+  push(pstack, object);
+  puts("Bit shifting stack value to the right...");
+  op_shr(pstack);
+  puts("Value after bit shifting stack contents to the right:");
+  print_object_value(pop(pstack));
+
   puts("\nTesting string object addition of: \"Greetings, \" + \"Concocter!\"");
   object = new_object("Greetings, ");
   push(pstack, object);

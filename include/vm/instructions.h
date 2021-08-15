@@ -33,8 +33,8 @@
 
 #define OP_NOP (void)0
 
-RunCode unary_check(Object* operand, char* operator);
-RunCode binary_math_check(Object* operand1, Object* operand2, char operator);
+RunCode unary_operand_check(Object* operand, char* operator);
+RunCode binary_operand_check(Object* operand1, Object* operand2, char operator);
 RunCode op_pop(Stack* stack, Object* object);
 RunCode op_psh(Stack* stack, char* value);
 RunCode op_and(Stack* stack);
@@ -48,5 +48,7 @@ RunCode op_div(Stack* stack);
 RunCode op_mul(Stack* stack);
 RunCode op_mod(Stack* stack);
 RunCode op_pow(Stack* stack);
+RunCode op_shl(Stack* stack);
+RunCode op_shr(Stack* stack);
 
 #endif // INSTRUCTIONS_H
