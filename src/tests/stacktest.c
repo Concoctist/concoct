@@ -247,6 +247,47 @@ int main()
   puts("Value after exponentiating stack contents:");
   print_object_value(pop(pstack));
 
+  puts("\nAdding 32 to stack...");
+  object = new_object("32");
+  push(pstack, object);
+  puts("Adding 32 to stack...");
+  object = new_object("32");
+  push(pstack, object);
+  puts("Performing bitwise and...");
+  op_bnd(pstack);
+  puts("Value after performing bitwise and:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 32 to stack...");
+  object = new_object("32");
+  push(pstack, object);
+  puts("Adding 32 to stack...");
+  object = new_object("32");
+  push(pstack, object);
+  puts("Performing bitwise or...");
+  op_bor(pstack);
+  puts("Value after performing bitwise or:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 32 to stack...");
+  object = new_object("32");
+  push(pstack, object);
+  puts("Adding 32 to stack...");
+  object = new_object("32");
+  push(pstack, object);
+  puts("Performing bitwise xor...");
+  op_xor(pstack);
+  puts("Value after performing bitwise xor:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 32 to stack...");
+  object = new_object("32");
+  push(pstack, object);
+  puts("Performing bitwise not...");
+  op_bnt(pstack);
+  puts("Value after performing bitwise not:");
+  print_object_value(pop(pstack));
+
   puts("\nAdding 1 to stack...");
   object = new_object("1");
   push(pstack, object);

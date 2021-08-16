@@ -34,7 +34,7 @@ typedef enum opcode
   OP_ADD, // add (+)
   OP_AND, // logical and (&&)
   OP_BND, // bitwise and (&)
-  OP_BNT, // bitwise not (~)
+  OP_BNT, // bitwise not/ones' complement (~)
   OP_BOR, // bitwise or (|)
   OP_CAL, // call
   OP_CMP, // compare
