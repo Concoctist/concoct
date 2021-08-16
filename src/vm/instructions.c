@@ -52,8 +52,29 @@ RunCode unary_operand_check(Object* operand, char* operator)
   return RUN_SUCCESS;
 }
 
-// Validates binary mathematical operands
+// Validates binary operands
 RunCode binary_operand_check(Object* operand1, Object* operand2, char* operator)
+{
+  if(operand1->datatype == NIL || operand2->datatype == NIL)
+  {
+    fprintf(stderr, "Invalid operation (%s) for object of type \"null\"!\n", operator);
+    return RUN_ERROR;
+  }
+  if(operand1->datatype == BOOL || operand2->datatype == BOOL)
+  {
+    fprintf(stderr, "Invalid operation (%s) for object of type \"boolean\"!\n", operator);
+    return RUN_ERROR;
+  }
+  if((operand1->datatype == STRING || operand2->datatype == STRING))
+  {
+    fprintf(stderr, "Invalid operation (%s) for object of type \"string\"!\n", operator);
+    return RUN_ERROR;
+  }
+  return RUN_SUCCESS;
+}
+
+// Validates binary operands for operations that allow a pair of strings (+ and *)
+RunCode binary_operand_check_str(Object* operand1, Object* operand2, char* operator)
 {
   if(operand1->datatype == NIL || operand2->datatype == NIL)
   {
@@ -315,7 +336,7 @@ RunCode op_add(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(binary_operand_check(operand1, operand2, "+") == RUN_ERROR)
+  if(binary_operand_check_str(operand1, operand2, "+") == RUN_ERROR)
     return RUN_ERROR;
 
   if(operand1->datatype == STRING && operand2->datatype == STRING) // string concatenation
@@ -804,8 +825,10 @@ RunCode op_mul(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(binary_operand_check(operand1, operand2, "*") == RUN_ERROR)
+  if(binary_operand_check_str(operand1, operand2, "*") == RUN_ERROR)
     return RUN_ERROR;
+
+  // ToDo: Allow string multiplication ("foo" * 3 = "foofoofoo")
 
   switch(operand1->datatype)
   {
@@ -1232,6 +1255,516 @@ RunCode op_pow(Stack* stack)
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Bitwise and
+RunCode op_bnd(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+  Byte byteval = 0;
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during BND operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during BND operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(binary_operand_check(operand1, operand2, "&") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          byteval = *(Byte *)get_object_value(operand1) & *(Byte *)get_object_value(operand2);
+          vptr = &byteval;
+          push(stack, new_object_by_type(vptr, BYTE));
+          break;
+        case NUMBER:
+          numval = *(Byte *)get_object_value(operand1) & *(Number *)get_object_value(operand2);
+          vptr = &numval;
+          push(stack, new_object_by_type(vptr, NUMBER));
+          break;
+        case BIGNUM:
+          bignumval = *(Byte *)get_object_value(operand1) & *(BigNum *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case DECIMAL:
+          decimalval = *(Byte *)get_object_value(operand1) & (Number)(*(Decimal *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case NUMBER:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          numval = *(Number *)get_object_value(operand1) & *(Byte *)get_object_value(operand2);
+          vptr = &numval;
+          push(stack, new_object_by_type(vptr, NUMBER));
+          break;
+        case NUMBER:
+          numval = *(Number *)get_object_value(operand1) & *(Number *)get_object_value(operand2);
+          vptr = &numval;
+          push(stack, new_object_by_type(vptr, NUMBER));
+          break;
+        case BIGNUM:
+          bignumval = *(Number *)get_object_value(operand1) & *(BigNum *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case DECIMAL:
+          decimalval = *(Number *)get_object_value(operand1) & (Number)(*(Decimal *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case BIGNUM:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          bignumval = *(BigNum *)get_object_value(operand1) & *(Byte *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case NUMBER:
+          bignumval = *(BigNum *)get_object_value(operand1) & *(Number *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case BIGNUM:
+          bignumval = *(BigNum *)get_object_value(operand1) & *(BigNum *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case DECIMAL:
+          decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) & (Number)(*(Decimal *)get_object_value(operand2)));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case DECIMAL:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) & *(Byte *)get_object_value(operand2);
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        case NUMBER:
+          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) & *(Number *)get_object_value(operand2);
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        case BIGNUM:
+          decimalval = (Decimal)((Number)(*(Decimal *)get_object_value(operand1)) & *(BigNum *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        case DECIMAL:
+          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) & (Number)(*(Decimal *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Bitwise or
+RunCode op_bor(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+  Byte byteval = 0;
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during BOR operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during BOR operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(binary_operand_check(operand1, operand2, "|") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          byteval = *(Byte *)get_object_value(operand1) | *(Byte *)get_object_value(operand2);
+          vptr = &byteval;
+          push(stack, new_object_by_type(vptr, BYTE));
+          break;
+        case NUMBER:
+          numval = *(Byte *)get_object_value(operand1) | *(Number *)get_object_value(operand2);
+          vptr = &numval;
+          push(stack, new_object_by_type(vptr, NUMBER));
+          break;
+        case BIGNUM:
+          bignumval = *(Byte *)get_object_value(operand1) | *(BigNum *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case DECIMAL:
+          decimalval = *(Byte *)get_object_value(operand1) | (Number)(*(Decimal *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case NUMBER:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          numval = *(Number *)get_object_value(operand1) | *(Byte *)get_object_value(operand2);
+          vptr = &numval;
+          push(stack, new_object_by_type(vptr, NUMBER));
+          break;
+        case NUMBER:
+          numval = *(Number *)get_object_value(operand1) | *(Number *)get_object_value(operand2);
+          vptr = &numval;
+          push(stack, new_object_by_type(vptr, NUMBER));
+          break;
+        case BIGNUM:
+          bignumval = *(Number *)get_object_value(operand1) | *(BigNum *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case DECIMAL:
+          decimalval = *(Number *)get_object_value(operand1) | (Number)(*(Decimal *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case BIGNUM:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          bignumval = *(BigNum *)get_object_value(operand1) | *(Byte *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case NUMBER:
+          bignumval = *(BigNum *)get_object_value(operand1) | *(Number *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case BIGNUM:
+          bignumval = *(BigNum *)get_object_value(operand1) | *(BigNum *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case DECIMAL:
+          decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) | (Number)(*(Decimal *)get_object_value(operand2)));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case DECIMAL:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) | *(Byte *)get_object_value(operand2);
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        case NUMBER:
+          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) | *(Number *)get_object_value(operand2);
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        case BIGNUM:
+          decimalval = (Decimal)((Number)(*(Decimal *)get_object_value(operand1)) | *(BigNum *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        case DECIMAL:
+          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) | (Number)(*(Decimal *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Bitwise xor
+RunCode op_xor(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+  Byte byteval = 0;
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during XOR operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during XOR operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(binary_operand_check(operand1, operand2, "^") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          byteval = *(Byte *)get_object_value(operand1) ^ *(Byte *)get_object_value(operand2);
+          vptr = &byteval;
+          push(stack, new_object_by_type(vptr, BYTE));
+          break;
+        case NUMBER:
+          numval = *(Byte *)get_object_value(operand1) ^ *(Number *)get_object_value(operand2);
+          vptr = &numval;
+          push(stack, new_object_by_type(vptr, NUMBER));
+          break;
+        case BIGNUM:
+          bignumval = *(Byte *)get_object_value(operand1) ^ *(BigNum *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case DECIMAL:
+          decimalval = *(Byte *)get_object_value(operand1) ^ (Number)(*(Decimal *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case NUMBER:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          numval = *(Number *)get_object_value(operand1) ^ *(Byte *)get_object_value(operand2);
+          vptr = &numval;
+          push(stack, new_object_by_type(vptr, NUMBER));
+          break;
+        case NUMBER:
+          numval = *(Number *)get_object_value(operand1) ^ *(Number *)get_object_value(operand2);
+          vptr = &numval;
+          push(stack, new_object_by_type(vptr, NUMBER));
+          break;
+        case BIGNUM:
+          bignumval = *(Number *)get_object_value(operand1) ^ *(BigNum *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case DECIMAL:
+          decimalval = *(Number *)get_object_value(operand1) ^ (Number)(*(Decimal *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case BIGNUM:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          bignumval = *(BigNum *)get_object_value(operand1) ^ *(Byte *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case NUMBER:
+          bignumval = *(BigNum *)get_object_value(operand1) ^ *(Number *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case BIGNUM:
+          bignumval = *(BigNum *)get_object_value(operand1) ^ *(BigNum *)get_object_value(operand2);
+          vptr = &bignumval;
+          push(stack, new_object_by_type(vptr, BIGNUM));
+          break;
+        case DECIMAL:
+          decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) ^ (Number)(*(Decimal *)get_object_value(operand2)));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case DECIMAL:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) ^ *(Byte *)get_object_value(operand2);
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        case NUMBER:
+          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) ^ *(Number *)get_object_value(operand2);
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        case BIGNUM:
+          decimalval = (Decimal)((Number)(*(Decimal *)get_object_value(operand1)) ^ *(BigNum *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        case DECIMAL:
+          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) ^ (Number)(*(Decimal *)get_object_value(operand2));
+          vptr = &decimalval;
+          push(stack, new_object_by_type(vptr, DECIMAL));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Bitwise not/ones' complement
+RunCode op_bnt(Stack* stack)
+{
+  Object* operand = pop(stack);
+
+  Byte byteval = 0;
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand == NULL)
+  {
+    fprintf(stderr, "Operand is NULL during BNT operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(unary_operand_check(operand, "~") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand->datatype)
+  {
+    case BYTE:
+      byteval = *(Byte *)get_object_value(operand);
+      byteval = ~byteval;
+      vptr = &byteval;
+      push(stack, new_object_by_type(vptr, BYTE));
+      break;
+    case NUMBER:
+      numval = *(Number *)get_object_value(operand);
+      numval = ~numval;
+      vptr = &numval;
+      push(stack, new_object_by_type(vptr, NUMBER));
+      break;
+    case BIGNUM:
+      bignumval = *(BigNum *)get_object_value(operand);
+      bignumval = ~bignumval;
+      vptr = &bignumval;
+      push(stack, new_object_by_type(vptr, BIGNUM));
+      break;
+    case DECIMAL:
+      decimalval = *(Decimal *)get_object_value(operand);
+      decimalval = ~(Number)decimalval;
+      vptr = &decimalval;
+      push(stack, new_object_by_type(vptr, DECIMAL));
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (~)!\n");
       return RUN_ERROR;
       break;
   }
