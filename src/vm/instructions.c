@@ -1366,7 +1366,7 @@ RunCode op_bnd(Stack* stack)
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
         case DECIMAL:
-          decimalval = *(BigNum *)get_object_value(operand1) & (Number)(*(Decimal *)get_object_value(operand2));
+          decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) & (Number)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
@@ -1390,7 +1390,7 @@ RunCode op_bnd(Stack* stack)
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
         case BIGNUM:
-          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) & *(BigNum *)get_object_value(operand2);
+          decimalval = (Decimal)((Number)(*(Decimal *)get_object_value(operand1)) & *(BigNum *)get_object_value(operand2));
           vptr = &decimalval;
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
@@ -1518,7 +1518,7 @@ RunCode op_bor(Stack* stack)
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
         case DECIMAL:
-          decimalval = *(BigNum *)get_object_value(operand1) | (Number)(*(Decimal *)get_object_value(operand2));
+          decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) | (Number)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
@@ -1542,7 +1542,7 @@ RunCode op_bor(Stack* stack)
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
         case BIGNUM:
-          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) | *(BigNum *)get_object_value(operand2);
+          decimalval = (Decimal)((Number)(*(Decimal *)get_object_value(operand1)) | *(BigNum *)get_object_value(operand2));
           vptr = &decimalval;
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
@@ -1670,7 +1670,7 @@ RunCode op_xor(Stack* stack)
           push(stack, new_object_by_type(vptr, BIGNUM));
           break;
         case DECIMAL:
-          decimalval = *(BigNum *)get_object_value(operand1) ^ (Number)(*(Decimal *)get_object_value(operand2));
+          decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) ^ (Number)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
@@ -1694,7 +1694,7 @@ RunCode op_xor(Stack* stack)
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
         case BIGNUM:
-          decimalval = (Number)(*(Decimal *)get_object_value(operand1)) ^ *(BigNum *)get_object_value(operand2);
+          decimalval = (Decimal)((Number)(*(Decimal *)get_object_value(operand1)) ^ *(BigNum *)get_object_value(operand2));
           vptr = &decimalval;
           push(stack, new_object_by_type(vptr, DECIMAL));
           break;
