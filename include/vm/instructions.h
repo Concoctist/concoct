@@ -35,6 +35,7 @@
 
 RunCode unary_operand_check(Object* operand, char* operator);
 RunCode binary_operand_check(Object* operand1, Object* operand2, char operator);
+RunCode binary_operand_check_str(Object* operand1, Object* operand2, char operator);
 RunCode op_pop(Stack* stack, Object* object);
 RunCode op_psh(Stack* stack, char* value);
 RunCode op_and(Stack* stack);
@@ -48,6 +49,10 @@ RunCode op_div(Stack* stack);
 RunCode op_mul(Stack* stack);
 RunCode op_mod(Stack* stack);
 RunCode op_pow(Stack* stack);
+RunCode op_bnd(Stack* stack);
+RunCode op_bor(Stack* stack);
+RunCode op_xor(Stack* stack);
+RunCode op_bnt(Stack* stack);
 RunCode op_shl(Stack* stack);
 RunCode op_shr(Stack* stack);
 
