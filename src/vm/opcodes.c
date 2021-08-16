@@ -54,6 +54,7 @@ const char* get_mnemonic(Opcode oc)
     case OP_LNZ: return "OP_LNZ";    // loop not zero
     case OP_LOE: return "OP_LOE";    // loop equal
     case OP_LOP: return "OP_LOP";    // loop
+    case OP_LOR: return "OP_LOR";    // logical or (||)
     case OP_LOZ: return "OP_LOZ";    // loop zero
     case OP_MOD: return "OP_MOD";    // modulo (%)
     case OP_MOV: return "OP_MOV";    // move
@@ -61,7 +62,6 @@ const char* get_mnemonic(Opcode oc)
     case OP_NOP: return "OP_NOP";    // no op
     case OP_NOT: return "OP_NOT";    // logical not/negation (!)
     case OP_NUL: return "OP_NUL";    // null
-    case OP_LOR: return "OP_LOR";    // logical or (||)
     case OP_POP: return "OP_POP";    // pop
     case OP_POW: return "OP_POW";    // power/exponent (**)
     case OP_PSH: return "OP_PSH";    // push
