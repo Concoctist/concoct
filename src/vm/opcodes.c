@@ -32,18 +32,21 @@ const char* get_mnemonic(Opcode oc)
 {
   switch(oc)
   {
-    case OP_ADD: return "OP_ADD";    // add
-    case OP_AND: return "OP_AND";    // and
+    case OP_ADD: return "OP_ADD";    // add (+)
+    case OP_AND: return "OP_AND";    // logical and (&&)
+    case OP_BND: return "OP_BND";    // bitwise and (&)
+    case OP_BNT: return "OP_BNT";    // bitwise not (~)
+    case OP_BOR: return "OP_BOR";    // bitwise or (|)
     case OP_CAL: return "OP_CAL";    // call
     case OP_CMP: return "OP_CMP";    // compare
-    case OP_DEC: return "OP_DEC";    // decrement
-    case OP_DIV: return "OP_DIV";    // divide
+    case OP_DEC: return "OP_DEC";    // decrement (--)
+    case OP_DIV: return "OP_DIV";    // divide (/)
     case OP_END: return "OP_END";    // marks end of VM instructions
     case OP_ENT: return "OP_ENT";    // entry point
     case OP_EXT: return "OP_EXT";    // exit
     case OP_FLS: return "OP_FLS";    // false
     case OP_HLT: return "OP_HLT";    // halt
-    case OP_INC: return "OP_INC";    // increment
+    case OP_INC: return "OP_INC";    // increment (++)
     case OP_JMC: return "OP_JMC";    // jump conditional
     case OP_JMP: return "OP_JMP";    // jump
     case OP_JMZ: return "OP_JMZ";    // jump zero
@@ -52,25 +55,25 @@ const char* get_mnemonic(Opcode oc)
     case OP_LOE: return "OP_LOE";    // loop equal
     case OP_LOP: return "OP_LOP";    // loop
     case OP_LOZ: return "OP_LOZ";    // loop zero
-    case OP_MOD: return "OP_MOD";    // modulo
+    case OP_MOD: return "OP_MOD";    // modulo (%)
     case OP_MOV: return "OP_MOV";    // move
-    case OP_MUL: return "OP_MUL";    // multiply
+    case OP_MUL: return "OP_MUL";    // multiply (*)
     case OP_NOP: return "OP_NOP";    // no op
-    case OP_NOT: return "OP_NOT";    // not/negation
+    case OP_NOT: return "OP_NOT";    // logical not/negation (!)
     case OP_NUL: return "OP_NUL";    // null
-    case OP_OR:  return "OP_OR";     // or
+    case OP_LOR: return "OP_LOR";    // logical or (||)
     case OP_POP: return "OP_POP";    // pop
-    case OP_POW: return "OP_POW";    // power/exponent
+    case OP_POW: return "OP_POW";    // power/exponent (**)
     case OP_PSH: return "OP_PSH";    // push
     case OP_RET: return "OP_RET";    // return
-    case OP_SHL: return "OP_SHL";    // bitshift left
-    case OP_SHR: return "OP_SHR";    // bitshift right
+    case OP_SHL: return "OP_SHL";    // bitshift left (<<)
+    case OP_SHR: return "OP_SHR";    // bitshift right (>>)
     case OP_STR: return "OP_STR";    // store
-    case OP_SUB: return "OP_SUB";    // subtract
+    case OP_SUB: return "OP_SUB";    // subtract (-)
     case OP_SYS: return "OP_SYS";    // system
     case OP_TRU: return "OP_TRU";    // true
     case OP_TST: return "OP_TST";    // test
-    case OP_XOR: return "OP_XOR";    // exclusive or
+    case OP_XOR: return "OP_XOR";    // bitwise exclusive or (^)
     default:     return "UNDEFINED"; // unsupported opcode
   }
 }
