@@ -319,6 +319,15 @@ int main()
   puts("Result:");
   print_object_value(pop(pstack));
 
+  puts("\nTesting string object multiplication of: \"foo\" * 3");
+  object = new_object("foo");
+  push(pstack, object);
+  object = new_object("3");
+  push(pstack, object);
+  op_mul(pstack);
+  puts("Result:");
+  print_object_value(pop(pstack));
+
   puts("Executing NOP...");
   OP_NOP;
 
