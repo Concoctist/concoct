@@ -42,8 +42,11 @@ typedef enum opcode
   OP_DIV, // divide (/)
   OP_END, // marks end of VM instructions
   OP_ENT, // entry point
+  OP_EQL, // equal to (==)
   OP_EXT, // exit
   OP_FLS, // false
+  OP_GT,  // greater than (>)
+  OP_GTE, // greater than or equal to (>=)
   OP_HLT, // halt
   OP_INC, // increment (++)
   OP_JMC, // jump conditional
@@ -55,13 +58,18 @@ typedef enum opcode
   OP_LOP, // loop
   OP_LOR, // logical or (||)
   OP_LOZ, // loop zero
+  OP_LT,  // less than (<)
+  OP_LTE, // less than or equal to (<=)
   OP_MOD, // modulo (%)
   OP_MOV, // move
   OP_MUL, // multiply (*)
+  OP_NEG, // negative
+  OP_NEQ, // not equal to (!=)
   OP_NOP, // no op
   OP_NOT, // logical not/negation (!)
   OP_NUL, // null
   OP_POP, // pop
+  OP_POS, // positive
   OP_POW, // power/exponent (**)
   OP_PSH, // push
   OP_RET, // return

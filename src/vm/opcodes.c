@@ -43,8 +43,11 @@ const char* get_mnemonic(Opcode oc)
     case OP_DIV: return "OP_DIV";    // divide (/)
     case OP_END: return "OP_END";    // marks end of VM instructions
     case OP_ENT: return "OP_ENT";    // entry point
+    case OP_EQL: return "OP_EQL";    // equal to (==)
     case OP_EXT: return "OP_EXT";    // exit
     case OP_FLS: return "OP_FLS";    // false
+    case OP_GT:  return "OP_GT";     // greater than (>)
+    case OP_GTE: return "OP_GTE";    // greater than or equal to (>=)
     case OP_HLT: return "OP_HLT";    // halt
     case OP_INC: return "OP_INC";    // increment (++)
     case OP_JMC: return "OP_JMC";    // jump conditional
@@ -56,13 +59,18 @@ const char* get_mnemonic(Opcode oc)
     case OP_LOP: return "OP_LOP";    // loop
     case OP_LOR: return "OP_LOR";    // logical or (||)
     case OP_LOZ: return "OP_LOZ";    // loop zero
+    case OP_LT:  return "OP_LT";     // less than (<)
+    case OP_LTE: return "OP_LTE";    // less than or equal to (<=)
     case OP_MOD: return "OP_MOD";    // modulo (%)
     case OP_MOV: return "OP_MOV";    // move
     case OP_MUL: return "OP_MUL";    // multiply (*)
+    case OP_NEG: return "OP_NEG";    // negative
+    case OP_NEQ: return "OP_NEQ";    // not equal to (!=)
     case OP_NOP: return "OP_NOP";    // no op
     case OP_NOT: return "OP_NOT";    // logical not/negation (!)
     case OP_NUL: return "OP_NUL";    // null
     case OP_POP: return "OP_POP";    // pop
+    case OP_POS: return "OP_POS";    // positive
     case OP_POW: return "OP_POW";    // power/exponent (**)
     case OP_PSH: return "OP_PSH";    // push
     case OP_RET: return "OP_RET";    // return
