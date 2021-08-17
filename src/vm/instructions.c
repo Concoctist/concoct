@@ -27,6 +27,7 @@
 
 #include <math.h>   // pow()
 #include <stdio.h>  // fprintf(), stderr
+#include <stdlib.h> // malloc()
 #include <string.h> // strcat()
 #include "memory.h"
 #include "vm/vm.h"
@@ -86,9 +87,9 @@ RunCode binary_operand_check_str(Object* operand1, Object* operand2, char* opera
     fprintf(stderr, "Invalid operation (%s) for object of type \"boolean\"!\n", operator);
     return RUN_ERROR;
   }
-  if((operand1->datatype == STRING && operand2->datatype != STRING) || (operand1->datatype != STRING && operand2->datatype == STRING))
+  if((operand1->datatype == STRING && (operand2->datatype != NUMBER && operand2->datatype != STRING)) || (operand2->datatype == STRING && (operand1->datatype != NUMBER && operand1->datatype != STRING)))
   {
-    fprintf(stderr, "Invalid binary operation (%s) for single operand of type \"string\"!\n", operator);
+    fprintf(stderr, "Invalid binary operation (%s) for object of type \"string\"!\n", operator);
     return RUN_ERROR;
   }
   return RUN_SUCCESS;
@@ -811,6 +812,7 @@ RunCode op_mul(Stack* stack)
   Number numval = 0;
   BigNum bignumval = 0;
   Decimal decimalval = 0.0;
+  char* multstr = NULL;
   void* vptr = NULL;
 
   if(operand1 == NULL)
@@ -828,130 +830,158 @@ RunCode op_mul(Stack* stack)
   if(binary_operand_check_str(operand1, operand2, "*") == RUN_ERROR)
     return RUN_ERROR;
 
-  // ToDo: Allow string multiplication ("foo" * 3 = "foofoofoo")
-
-  switch(operand1->datatype)
+  if((operand1->datatype == STRING && operand2->datatype == NUMBER) || (operand1->datatype == NUMBER && operand2->datatype == STRING)) // string multiplication
   {
-    case BYTE:
-      switch(operand2->datatype)
+    if(operand1->datatype == STRING)
+    {
+      multstr = malloc(operand1->value.strobj.length * *(Number *)get_object_value(operand2) + *(Number *)get_object_value(operand2));
+      if(multstr == NULL)
       {
-        case BYTE:
-          byteval = *(Byte *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
-          vptr = &byteval;
-          push(stack, new_object_by_type(vptr, BYTE));
-          break;
-        case NUMBER:
-          numval = *(Byte *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
-          vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
-          break;
-        case BIGNUM:
-          bignumval = *(Byte *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
-          vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
-          break;
-        case DECIMAL:
-          decimalval = *(Byte *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
-          vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
-          break;
-        default:
-          fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
-          return RUN_ERROR;
-          break;
+        fprintf(stderr, "Unable to allocate memory for string during MUL operation.\n");
+        return RUN_ERROR;
       }
-      break;
-    case NUMBER:
-      switch(operand2->datatype)
+      for(int i = 0; i < *(Number *)get_object_value(operand2); i++)
+        strcat(multstr, operand1->value.strobj.strval);
+    }
+    else
+    {
+      multstr = malloc(operand2->value.strobj.length * *(Number *)get_object_value(operand1) + *(Number *)get_object_value(operand1));
+      if(multstr == NULL)
       {
-        case BYTE:
-          numval = *(Number *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
-          vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
-          break;
-        case NUMBER:
-          numval = *(Number *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
-          vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
-          break;
-        case BIGNUM:
-          bignumval = *(Number *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
-          vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
-          break;
-        case DECIMAL:
-          decimalval = *(Number *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
-          vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
-          break;
-        default:
-          fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
-          return RUN_ERROR;
-          break;
+        fprintf(stderr, "Unable to allocate memory for string during MUL operation.\n");
+        return RUN_ERROR;
       }
-      break;
-    case BIGNUM:
-      switch(operand2->datatype)
-      {
-        case BYTE:
-          bignumval = *(BigNum *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
-          vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
-          break;
-        case NUMBER:
-          bignumval = *(BigNum *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
-          vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
-          break;
-        case BIGNUM:
-          bignumval = *(BigNum *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
-          vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
-          break;
-        case DECIMAL:
-          decimalval = *(BigNum *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
-          vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
-          break;
-        default:
-          fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
-          return RUN_ERROR;
-          break;
-      }
-      break;
-    case DECIMAL:
-      switch(operand2->datatype)
-      {
-        case BYTE:
-          decimalval = *(Decimal *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
-          vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
-          break;
-        case NUMBER:
-          decimalval = *(Decimal *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
-          vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
-          break;
-        case BIGNUM:
-          decimalval = *(Decimal *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
-          vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
-          break;
-        case DECIMAL:
-          decimalval = *(Decimal *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
-          vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
-          break;
-        default:
-          fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
-          return RUN_ERROR;
-          break;
-      }
-      break;
-    default:
-      fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
-      return RUN_ERROR;
-      break;
+      for(int i = 0; i < *(Number *)get_object_value(operand1); i++)
+        strcat(multstr, operand2->value.strobj.strval);
+    }
+    push(stack, new_object(multstr));
+    free(multstr);
+  }
+  else
+  {
+    switch(operand1->datatype)
+    {
+      case BYTE:
+        switch(operand2->datatype)
+        {
+          case BYTE:
+            byteval = *(Byte *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
+            vptr = &byteval;
+            push(stack, new_object_by_type(vptr, BYTE));
+            break;
+          case NUMBER:
+            numval = *(Byte *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
+            vptr = &numval;
+            push(stack, new_object_by_type(vptr, NUMBER));
+            break;
+          case BIGNUM:
+            bignumval = *(Byte *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
+            vptr = &bignumval;
+            push(stack, new_object_by_type(vptr, BIGNUM));
+            break;
+          case DECIMAL:
+            decimalval = *(Byte *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
+            vptr = &decimalval;
+            push(stack, new_object_by_type(vptr, DECIMAL));
+            break;
+          default:
+            fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
+            return RUN_ERROR;
+            break;
+        }
+        break;
+      case NUMBER:
+        switch(operand2->datatype)
+        {
+          case BYTE:
+            numval = *(Number *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
+            vptr = &numval;
+            push(stack, new_object_by_type(vptr, NUMBER));
+            break;
+          case NUMBER:
+            numval = *(Number *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
+            vptr = &numval;
+            push(stack, new_object_by_type(vptr, NUMBER));
+            break;
+          case BIGNUM:
+            bignumval = *(Number *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
+            vptr = &bignumval;
+            push(stack, new_object_by_type(vptr, BIGNUM));
+            break;
+          case DECIMAL:
+            decimalval = *(Number *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
+            vptr = &decimalval;
+            push(stack, new_object_by_type(vptr, DECIMAL));
+            break;
+          default:
+            fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
+            return RUN_ERROR;
+            break;
+        }
+        break;
+      case BIGNUM:
+        switch(operand2->datatype)
+        {
+          case BYTE:
+            bignumval = *(BigNum *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
+            vptr = &bignumval;
+            push(stack, new_object_by_type(vptr, BIGNUM));
+            break;
+          case NUMBER:
+            bignumval = *(BigNum *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
+            vptr = &bignumval;
+            push(stack, new_object_by_type(vptr, BIGNUM));
+            break;
+          case BIGNUM:
+            bignumval = *(BigNum *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
+            vptr = &bignumval;
+            push(stack, new_object_by_type(vptr, BIGNUM));
+            break;
+          case DECIMAL:
+            decimalval = *(BigNum *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
+            vptr = &decimalval;
+            push(stack, new_object_by_type(vptr, DECIMAL));
+            break;
+          default:
+            fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
+            return RUN_ERROR;
+            break;
+        }
+        break;
+      case DECIMAL:
+        switch(operand2->datatype)
+        {
+          case BYTE:
+            decimalval = *(Decimal *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
+            vptr = &decimalval;
+            push(stack, new_object_by_type(vptr, DECIMAL));
+            break;
+          case NUMBER:
+            decimalval = *(Decimal *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
+            vptr = &decimalval;
+            push(stack, new_object_by_type(vptr, DECIMAL));
+            break;
+          case BIGNUM:
+            decimalval = *(Decimal *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
+            vptr = &decimalval;
+            push(stack, new_object_by_type(vptr, DECIMAL));
+            break;
+          case DECIMAL:
+            decimalval = *(Decimal *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
+            vptr = &decimalval;
+            push(stack, new_object_by_type(vptr, DECIMAL));
+            break;
+          default:
+            fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
+            return RUN_ERROR;
+            break;
+        }
+        break;
+      default:
+        fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
+        return RUN_ERROR;
+        break;
+    }
   }
   return RUN_SUCCESS;
 }
