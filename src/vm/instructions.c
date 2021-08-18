@@ -129,7 +129,7 @@ RunCode op_tru(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// And
+// Logical and (&&)
 RunCode op_and(Stack* stack)
 {
   Object* operand2 = pop(stack);
@@ -162,7 +162,7 @@ RunCode op_and(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Not/negation
+// Logical not/negation (!)
 RunCode op_not(Stack* stack)
 {
   Object* operand = pop(stack);
@@ -189,7 +189,7 @@ RunCode op_not(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Or
+// Logical or (||)
 RunCode op_or(Stack* stack)
 {
   Object* operand2 = pop(stack);
@@ -222,7 +222,99 @@ RunCode op_or(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Decrement
+// Negative
+RunCode op_neg(Stack* stack)
+{
+  Object* operand = pop(stack);
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand == NULL)
+  {
+    fprintf(stderr, "Operand is NULL during NEG operation.\n");
+    return RUN_ERROR;
+  }
+
+  switch(operand->datatype)
+  {
+    case NUMBER:
+      numval = *(Number *)get_object_value(operand);
+      if(numval > 0)
+        numval *= -1;
+      vptr = &numval;
+      push(stack, new_object_by_type(vptr, NUMBER));
+      break;
+    case BIGNUM:
+      bignumval = *(BigNum *)get_object_value(operand);
+      if(bignumval > 0)
+        bignumval *= -1;
+      vptr = &bignumval;
+      push(stack, new_object_by_type(vptr, BIGNUM));
+      break;
+    case DECIMAL:
+      decimalval = *(Decimal *)get_object_value(operand);
+      if(decimalval > 0)
+        decimalval *= -1;
+      vptr = &decimalval;
+      push(stack, new_object_by_type(vptr, DECIMAL));
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during NEG operation!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Positive
+RunCode op_pos(Stack* stack)
+{
+  Object* operand = pop(stack);
+  Number numval = 0;
+  BigNum bignumval = 0;
+  Decimal decimalval = 0.0;
+  void* vptr = NULL;
+
+  if(operand == NULL)
+  {
+    fprintf(stderr, "Operand is NULL during POS operation.\n");
+    return RUN_ERROR;
+  }
+
+  switch(operand->datatype)
+  {
+    case NUMBER:
+      numval = *(Number *)get_object_value(operand);
+      if(numval < 0)
+        numval *= -1;
+      vptr = &numval;
+      push(stack, new_object_by_type(vptr, NUMBER));
+      break;
+    case BIGNUM:
+      bignumval = *(BigNum *)get_object_value(operand);
+      if(bignumval < 0)
+        bignumval *= -1;
+      vptr = &bignumval;
+      push(stack, new_object_by_type(vptr, BIGNUM));
+      break;
+    case DECIMAL:
+      decimalval = *(Decimal *)get_object_value(operand);
+      if(decimalval < 0)
+        decimalval *= -1;
+      vptr = &decimalval;
+      push(stack, new_object_by_type(vptr, DECIMAL));
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during POS operation!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Decrement (--)
 RunCode op_dec(Stack* stack)
 {
   Object* operand = pop(stack);
@@ -275,7 +367,7 @@ RunCode op_dec(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Increment
+// Increment (++)
 RunCode op_inc(Stack* stack)
 {
   Object* operand = pop(stack);
@@ -328,7 +420,7 @@ RunCode op_inc(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Addition
+// Addition (+)
 RunCode op_add(Stack* stack)
 {
   Object* operand2 = pop(stack); // addend
@@ -485,7 +577,7 @@ RunCode op_add(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Subtraction
+// Subtraction (-)
 RunCode op_sub(Stack* stack)
 {
   Object* operand2 = pop(stack); // subtrahend
@@ -637,7 +729,7 @@ RunCode op_sub(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Division
+// Division (/)
 RunCode op_div(Stack* stack)
 {
   Object* operand2 = pop(stack); // divisor
@@ -817,7 +909,7 @@ RunCode op_div(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Multiplication
+// Multiplication (*)
 RunCode op_mul(Stack* stack)
 {
   Object* operand2 = pop(stack); // multiplicand
@@ -844,7 +936,8 @@ RunCode op_mul(Stack* stack)
   if(binary_operand_check_str(operand1, operand2, "*") == RUN_ERROR)
     return RUN_ERROR;
 
-  if((operand1->datatype == STRING && operand2->datatype == NUMBER) || (operand1->datatype == NUMBER && operand2->datatype == STRING)) // string multiplication
+  // string multiplication
+  if((operand1->datatype == STRING && operand2->datatype == NUMBER) || (operand1->datatype == NUMBER && operand2->datatype == STRING))
   {
     if(operand1->datatype == STRING)
     {
@@ -1000,7 +1093,7 @@ RunCode op_mul(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Modulo
+// Modulo (%)
 // Note: Modulo operates on integers. Decimal numbers are truncated.
 RunCode op_mod(Stack* stack)
 {
@@ -1153,7 +1246,7 @@ RunCode op_mod(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Exponentiation
+// Exponentiation (**)
 RunCode op_pow(Stack* stack)
 {
   Object* operand2 = pop(stack); // exponent/power to raise by
@@ -1305,7 +1398,7 @@ RunCode op_pow(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Bitwise and
+// Bitwise and (&)
 RunCode op_bnd(Stack* stack)
 {
   Object* operand2 = pop(stack);
@@ -1457,7 +1550,7 @@ RunCode op_bnd(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Bitwise or
+// Bitwise or (|)
 RunCode op_bor(Stack* stack)
 {
   Object* operand2 = pop(stack);
@@ -1609,7 +1702,7 @@ RunCode op_bor(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Bitwise xor
+// Bitwise xor (^)
 RunCode op_xor(Stack* stack)
 {
   Object* operand2 = pop(stack);
@@ -1761,7 +1854,7 @@ RunCode op_xor(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Bitwise not/ones' complement
+// Bitwise not/ones' complement (~)
 RunCode op_bnt(Stack* stack)
 {
   Object* operand = pop(stack);
@@ -1815,7 +1908,7 @@ RunCode op_bnt(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Bit shift left
+// Bit shift left (<<)
 RunCode op_shl(Stack* stack)
 {
   Object* operand2 = pop(stack); // positions to shift
@@ -1878,7 +1971,7 @@ RunCode op_shl(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// Bit shift right
+// Bit shift right (>>)
 RunCode op_shr(Stack* stack)
 {
   Object* operand2 = pop(stack); // positions to shift
