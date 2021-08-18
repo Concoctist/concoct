@@ -56,7 +56,6 @@ typedef enum opcode
   OP_LNZ, // loop not zero
   OP_LOE, // loop equal
   OP_LOP, // loop
-  OP_LOR, // logical or (||)
   OP_LOZ, // loop zero
   OP_LT,  // less than (<)
   OP_LTE, // less than or equal to (<=)
@@ -68,6 +67,7 @@ typedef enum opcode
   OP_NOP, // no op
   OP_NOT, // logical not/negation (!)
   OP_NUL, // null
+  OP_OR,  // logical or (||)
   OP_POP, // pop
   OP_POS, // positive
   OP_POW, // power/exponent (**)
