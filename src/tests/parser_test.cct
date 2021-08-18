@@ -1,12 +1,12 @@
 do {
-    if "Hello" {
-        for test in tests {
-            if test {
-                x = (-5 * +3) / space.cls.obj
-            }
-        }
-        msg = "Hello"
+  if "Hello" {
+    for test in tests {
+      if test {
+        x = (-5 * +3) / space.cls.obj
+      }
     }
-    y = 3
+    msg = "Hello"
+  }
+  y = 3
 }
 while 5
