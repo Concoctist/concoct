@@ -139,8 +139,8 @@ RunCode interpret()
       case OP_EXT:
         break;
       case OP_FLS:
-        //op_fls(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_fls(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_GT:
         //op_gt(vm.sp);
@@ -185,8 +185,8 @@ RunCode interpret()
         print_object_value(pop(vm.sp));
         break;
       case OP_NEG:
-        //op_neg(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_neg(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_NEQ:
         //op_neq(vm.sp);
@@ -210,8 +210,8 @@ RunCode interpret()
         print_object_value(pop(vm.sp));
         break;
       case OP_POS:
-        //op_pos(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_pos(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_POW:
         op_pow(vm.sp);
@@ -244,8 +244,8 @@ RunCode interpret()
         //print_object_value(pop(vm.sp));
         break;
       case OP_TRU:
-        //op_tru(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_tru(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_TST:
         break;
