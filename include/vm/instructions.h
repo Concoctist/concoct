@@ -43,6 +43,8 @@ RunCode op_tru(Stack* stack);
 RunCode op_and(Stack* stack);
 RunCode op_not(Stack* stack);
 RunCode op_or(Stack* stack);
+RunCode op_neg(Stack* stack);
+RunCode op_pos(Stack* stack);
 RunCode op_dec(Stack* stack);
 RunCode op_inc(Stack* stack);
 RunCode op_add(Stack* stack);
