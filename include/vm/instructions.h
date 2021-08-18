@@ -31,16 +31,20 @@
 #include "vm/stack.h"
 #include "vm/vm.h"
 
-#define OP_NOP (void)0
+#define OP_NOOP (void)0
 
 RunCode unary_operand_check(Object* operand, char* operator);
 RunCode binary_operand_check(Object* operand1, Object* operand2, char operator);
 RunCode binary_operand_check_str(Object* operand1, Object* operand2, char operator);
 RunCode op_pop(Stack* stack, Object* object);
 RunCode op_psh(Stack* stack, char* value);
+RunCode op_fls(Stack* stack);
+RunCode op_tru(Stack* stack);
 RunCode op_and(Stack* stack);
 RunCode op_not(Stack* stack);
 RunCode op_or(Stack* stack);
+RunCode op_neg(Stack* stack);
+RunCode op_pos(Stack* stack);
 RunCode op_dec(Stack* stack);
 RunCode op_inc(Stack* stack);
 RunCode op_add(Stack* stack);
