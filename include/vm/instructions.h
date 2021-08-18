@@ -31,7 +31,7 @@
 #include "vm/stack.h"
 #include "vm/vm.h"
 
-#define OP_NOP (void)0
+#define OP_NOOP (void)0
 
 RunCode unary_operand_check(Object* operand, char* operator);
 RunCode binary_operand_check(Object* operand1, Object* operand2, char operator);

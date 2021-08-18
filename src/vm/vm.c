@@ -69,6 +69,8 @@ RunCode interpret()
 {
   init_vm();
   vm.sp = &vm.stack;
+  char* value = NULL;
+  Object* object = NULL;
 
   // Below is just a demonstration for now
   vm.ip = vm.instructions;
@@ -94,36 +96,161 @@ RunCode interpret()
     printf("Instruction: %s (0x%x)\n", get_mnemonic(*vm.ip), *vm.ip);
     switch((*vm.ip))
     {
-      case OP_DEC:
-        op_dec(vm.sp);
-        print_object_value(pop(vm.sp));
-        break;
-      case OP_INC:
-        op_inc(vm.sp);
-        print_object_value(pop(vm.sp));
-        break;
       case OP_ADD:
         op_add(vm.sp);
         print_object_value(pop(vm.sp));
         break;
-      case OP_SUB:
-        op_sub(vm.sp);
+      case OP_AND:
+        op_and(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_BND:
+        op_bnd(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_BNT:
+        op_bnt(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_BOR:
+        op_bor(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_CAL:
+        break;
+      case OP_CMP:
+        break;
+      case OP_DEC:
+        op_dec(vm.sp);
         print_object_value(pop(vm.sp));
         break;
       case OP_DIV:
         op_div(vm.sp);
         print_object_value(pop(vm.sp));
         break;
-      case OP_MUL:
-        op_mul(vm.sp);
+      case OP_END:
+        break;
+      case OP_ENT:
+        break;
+      case OP_EQL:
+        //op_eql(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
+      case OP_EXT:
+        break;
+      case OP_FLS:
+        //op_fls(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
+      case OP_GT:
+        //op_gt(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
+      case OP_GTE:
+        //op_gte(vm.sp);
+        //print_object_value(pop(vm.sp));
+        //break;
+      case OP_HLT:
+        break;
+      case OP_INC:
+        op_inc(vm.sp);
         print_object_value(pop(vm.sp));
+        break;
+      case OP_JMC:
+      case OP_JMP:
+      case OP_JMZ:
+      case OP_LNE:
+      case OP_LNZ:
+      case OP_LOE:
+      case OP_LOP:
+        break;
+      case OP_LOZ:
+        break;
+      case OP_LT:
+        //op_lt(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
+      case OP_LTE:
+        //op_lte(vm.sp);
+        //print_object_value(pop(vm.sp));
         break;
       case OP_MOD:
         op_mod(vm.sp);
         print_object_value(pop(vm.sp));
         break;
+      case OP_MOV:
+        break;
+      case OP_MUL:
+        op_mul(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_NEG:
+        //op_neg(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
+      case OP_NEQ:
+        //op_neq(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
+      case OP_NOP:
+        OP_NOOP;
+        break;
+      case OP_NOT:
+        op_not(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_NUL:
+        break;
+      case OP_OR:
+        op_or(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_POP:
+        op_pop(vm.sp, object);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_POS:
+        //op_pos(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
       case OP_POW:
         op_pow(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_PSH:
+        op_psh(vm.sp, value);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_RET:
+        break;
+      case OP_SHL:
+        op_shl(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_SHR:
+        op_shr(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_STR:
+        //op_str(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
+      case OP_SUB:
+        op_sub(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_SYS:
+        //op_sys(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
+      case OP_TRU:
+        //op_tru(vm.sp);
+        //print_object_value(pop(vm.sp));
+        break;
+      case OP_TST:
+        break;
+      case OP_XOR:
+        op_xor(vm.sp);
         print_object_value(pop(vm.sp));
         break;
       default:

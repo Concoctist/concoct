@@ -329,7 +329,7 @@ int main()
   print_object_value(pop(pstack));
 
   puts("Executing NOP...");
-  OP_NOP;
+  OP_NOOP;
 
   free_store();
 
