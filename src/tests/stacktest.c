@@ -310,6 +310,28 @@ int main()
   puts("Value after bit shifting stack contents to the right:");
   print_object_value(pop(pstack));
 
+  op_fls(pstack);
+  puts("\nValue after calling op_fls():");
+  print_object_value(pop(pstack));
+
+  op_tru(pstack);
+  puts("\nValue after calling op_tru():");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 327.98 to stack...");
+  object = new_object("327.98");
+  push(pstack, object);
+  op_neg(pstack);
+  puts("Value after calling op_neg():");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding -327.98 to stack...");
+  object = new_object("-327.98");
+  push(pstack, object);
+  op_pos(pstack);
+  puts("Value after calling op_pos():");
+  print_object_value(pop(pstack));
+
   puts("\nTesting string object addition of: \"Greetings, \" + \"Concocter!\"");
   object = new_object("Greetings, ");
   push(pstack, object);
