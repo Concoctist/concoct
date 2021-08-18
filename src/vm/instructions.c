@@ -115,6 +115,20 @@ RunCode op_psh(Stack* stack, char* value)
   return RUN_SUCCESS;
 }
 
+// False
+RunCode op_fls(Stack* stack)
+{
+  push(stack, new_object("false");
+  return RUN_SUCCESS;
+}
+
+// True
+RunCode op_tru(Stack* stack)
+{
+  push(stack, new_object("true");
+  return RUN_SUCCESS;
+}
+
 // And
 RunCode op_and(Stack* stack)
 {

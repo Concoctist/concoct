@@ -38,6 +38,8 @@ RunCode binary_operand_check(Object* operand1, Object* operand2, char operator);
 RunCode binary_operand_check_str(Object* operand1, Object* operand2, char operator);
 RunCode op_pop(Stack* stack, Object* object);
 RunCode op_psh(Stack* stack, char* value);
+RunCode op_fls(Stack* stack);
+RunCode op_tru(Stack* stack);
 RunCode op_and(Stack* stack);
 RunCode op_not(Stack* stack);
 RunCode op_or(Stack* stack);
