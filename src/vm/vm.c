@@ -74,6 +74,20 @@ RunCode interpret()
 
   // Below is just a demonstration for now
   vm.ip = vm.instructions;
+
+  vm.instructions[11] = OP_RET;
+  vm.instructions[10] = OP_BNT;
+  push(vm.sp, new_object("32"));
+  vm.instructions[9] = OP_XOR;
+  push(vm.sp, new_object("32"));
+  push(vm.sp, new_object("8"));
+  vm.instructions[8] = OP_AND;
+  push(vm.sp, new_object("true"));
+  push(vm.sp, new_object("true"));
+  vm.instructions[7] = OP_NEG;
+  push(vm.sp, new_object("35.5"));
+  vm.instructions[6] = OP_FLS;
+  vm.instructions[5] = OP_NOP;
   vm.instructions[4] = OP_ADD;
   push(vm.sp, new_object("2"));
   push(vm.sp, new_object("3"));
@@ -88,10 +102,10 @@ RunCode interpret()
   vm.instructions[0] = OP_POW;
   push(vm.sp, new_object("5"));
   push(vm.sp, new_object("2"));
-  vm.instructions[5] = OP_END;
+  vm.instructions[12] = OP_END;
   vm.ip = vm.instructions;
 
-  while(vm.sp->count > 0 && *vm.ip != OP_END)
+  while(*vm.ip != OP_END)
   {
     printf("Instruction: %s (0x%x)\n", get_mnemonic(*vm.ip), *vm.ip);
     switch((*vm.ip))
