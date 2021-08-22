@@ -150,6 +150,136 @@ int main()
   puts("Value after oring stack contents:");
   print_object_value(pop(pstack));
 
+  puts("\nAdding 5 and 5.0 to stack...");
+  object = new_object("5");
+  push(pstack, object);
+  object = new_object("5.0");
+  push(pstack, object);
+  puts("Checking equality of result...");
+  op_eql(pstack);
+  puts("Value after checking equality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 5 and 5.0 to stack...");
+  object = new_object("5");
+  push(pstack, object);
+  object = new_object("5.0");
+  push(pstack, object);
+  puts("Checking inequality of result...");
+  op_neq(pstack);
+  puts("Value after checking inequality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 5 and 5.5 to stack...");
+  object = new_object("5");
+  push(pstack, object);
+  object = new_object("5.5");
+  push(pstack, object);
+  puts("Checking equality of result...");
+  op_eql(pstack);
+  puts("Value after checking equality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 5 and 5.5 to stack...");
+  object = new_object("5");
+  push(pstack, object);
+  object = new_object("5.5");
+  push(pstack, object);
+  puts("Checking inequality of result...");
+  op_neq(pstack);
+  puts("Value after checking inequality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding \"foo\" and \"foo\" to stack...");
+  object = new_object("foo");
+  push(pstack, object);
+  object = new_object("foo");
+  push(pstack, object);
+  puts("Checking equality of result...");
+  op_eql(pstack);
+  puts("Value after checking equality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding \"foo\" and \"foo\" to stack...");
+  object = new_object("foo");
+  push(pstack, object);
+  object = new_object("foo");
+  push(pstack, object);
+  puts("Checking inequality of result...");
+  op_neq(pstack);
+  puts("Value after checking inequality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding \"foo\" and \"bar\" to stack...");
+  object = new_object("foo");
+  push(pstack, object);
+  object = new_object("bar");
+  push(pstack, object);
+  puts("Checking equality of result...");
+  op_eql(pstack);
+  puts("Value after checking equality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding \"foo\" and \"bar\" to stack...");
+  object = new_object("foo");
+  push(pstack, object);
+  object = new_object("bar");
+  push(pstack, object);
+  puts("Checking inequality of result...");
+  op_neq(pstack);
+  puts("Value after checking inequality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding null and null to stack...");
+  object = new_object("null");
+  push(pstack, object);
+  object = new_object("null");
+  push(pstack, object);
+  puts("Checking equality of result...");
+  op_eql(pstack);
+  puts("Value after checking equality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding null and null to stack...");
+  object = new_object("null");
+  push(pstack, object);
+  object = new_object("null");
+  push(pstack, object);
+  puts("Checking inequality of result...");
+  op_neq(pstack);
+  puts("Value after checking inequality of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 3 and 10 to stack...");
+  object = new_object("3");
+  push(pstack, object);
+  object = new_object("10");
+  push(pstack, object);
+  puts("Checking >= of result...");
+  op_gte(pstack);
+  puts("Value after checking >= of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 3 and 10 to stack...");
+  object = new_object("3");
+  push(pstack, object);
+  object = new_object("10");
+  push(pstack, object);
+  puts("Checking <= of result...");
+  op_lte(pstack);
+  puts("Value after checking <= of stack contents:");
+  print_object_value(pop(pstack));
+
+  puts("\nAdding 3 and 3 to stack...");
+  object = new_object("3");
+  push(pstack, object);
+  object = new_object("3");
+  push(pstack, object);
+  puts("Checking <= of result...");
+  op_lte(pstack);
+  puts("Value after checking <= of stack contents:");
+  print_object_value(pop(pstack));
+
   puts("\nAdding 20 to stack...");
   object = new_object("20");
   push(pstack, object);
