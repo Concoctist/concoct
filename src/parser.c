@@ -155,6 +155,7 @@ ConcoctNode* cct_parse_single_expr(ConcoctParser* parser)
     case CCT_TOKEN_STRING:
     case CCT_TOKEN_TRUE:
     case CCT_TOKEN_FALSE:
+    case CCT_TOKEN_NULL:
     case CCT_TOKEN_IDENTIFIER:
       node = cct_new_node(parser->tree, parser->current_token, parser->lexer->token_text);
       if(node == NULL)
@@ -637,6 +638,7 @@ Parses an if statement
   if
   -expr
   -statement
+  -[else statement]
 */
 ConcoctNode* cct_parse_if_stat(ConcoctParser* parser)
 {
@@ -652,7 +654,17 @@ ConcoctNode* cct_parse_if_stat(ConcoctParser* parser)
   if(stat == NULL)
     return NULL;
   cct_node_add_child(if_stat, stat);
-
+  
+  if(parser->current_token.type == CCT_TOKEN_ELSE)
+  {
+    cct_next_parser_token(parser);
+    ConcoctNode* else_stat = cct_parse_stat(parser);
+    if(else_stat == NULL)
+    {
+      return NULL;
+    }
+    cct_node_add_child(if_stat, else_stat);
+  }
   return if_stat;
 }
 
