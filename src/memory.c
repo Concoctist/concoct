@@ -371,7 +371,7 @@ Object* clone_object(Object* object)
 // Converts numeric data to string
 void stringify(char** str, void* data, DataType datatype)
 {
-  int length = 0;
+  size_t length = 0;
   char* nullstr = NULL;
   char* boolstr = NULL;
   switch(datatype)
