@@ -1,6 +1,6 @@
 /*
  * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language
- * Copyright (c) 2020 BlakeTheBlock and Lloyd Dilley
+ * Copyright (c) 2020-2021 BlakeTheBlock and Lloyd Dilley
  * http://concoct.dev/
  *
  * Redistribution and use in source and binary forms, with or without
@@ -147,8 +147,8 @@ RunCode interpret()
       case OP_ENT:
         break;
       case OP_EQL:
-        //op_eql(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_eql(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_EXT:
         break;
@@ -157,13 +157,13 @@ RunCode interpret()
         print_object_value(pop(vm.sp));
         break;
       case OP_GT:
-        //op_gt(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_gt(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_GTE:
-        //op_gte(vm.sp);
-        //print_object_value(pop(vm.sp));
-        //break;
+        op_gte(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
       case OP_HLT:
         break;
       case OP_INC:
@@ -181,12 +181,12 @@ RunCode interpret()
       case OP_LOZ:
         break;
       case OP_LT:
-        //op_lt(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_lt(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_LTE:
-        //op_lte(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_lte(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_MOD:
         op_mod(vm.sp);
@@ -203,8 +203,8 @@ RunCode interpret()
         print_object_value(pop(vm.sp));
         break;
       case OP_NEQ:
-        //op_neq(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_neq(vm.sp);
+        print_object_value(pop(vm.sp));
         break;
       case OP_NOP:
         OP_NOOP;

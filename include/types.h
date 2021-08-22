@@ -1,6 +1,6 @@
 /*
  * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language
- * Copyright (c) 2020 BlakeTheBlock and Lloyd Dilley
+ * Copyright (c) 2020-2021 BlakeTheBlock and Lloyd Dilley
  * http://concoct.dev/
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,6 @@ typedef struct object
   Bool marked;       // flagged for garbage collection
   union
   {
-    char* nullval;
     Bool boolval;
     Byte byteval;
     Number numval;

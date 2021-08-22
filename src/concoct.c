@@ -1,6 +1,6 @@
 /*
  * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language
- * Copyright (c) 2020 BlakeTheBlock and Lloyd Dilley
+ * Copyright (c) 2020-2021 BlakeTheBlock and Lloyd Dilley
  * http://concoct.dev/
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 #include <errno.h>   // errno
 #include <stdbool.h> // false, true
 #include <stddef.h>  // size_t
-#include <stdio.h>   // FILE, fclose(), fgets(), fprintf(), printf(), puts(), sprintf(), stdin, stderr
+#include <stdio.h>   // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin, stderr
 #include <stdlib.h>  // exit(), EXIT_FAILURE, EXIT_SUCCESS
 #include <string.h>  // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
 #include "concoct.h"
