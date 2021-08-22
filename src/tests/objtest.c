@@ -1,6 +1,6 @@
 /*
  * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language
- * Copyright (c) 2020 BlakeTheBlock and Lloyd Dilley
+ * Copyright (c) 2020-2021 BlakeTheBlock and Lloyd Dilley
  * http://concoct.dev/
  *
  * Redistribution and use in source and binary forms, with or without
@@ -127,6 +127,30 @@ int main()
   Decimal decimalval = 57.05;
   vptr = &decimalval;
   stringify(&str, vptr, DECIMAL);
+  printf("%s\n", str);
+  free(str);
+
+  char* testval = "Foo bar baz";
+  vptr = &testval;
+  stringify(&str, vptr, STRING);
+  printf("%s\n", str);
+  free(str);
+
+  Bool boolval = false;
+  vptr = &boolval;
+  stringify(&str, vptr, BOOL);
+  printf("%s\n", str);
+  free(str);
+
+  boolval = true;
+  vptr = &boolval;
+  stringify(&str, vptr, BOOL);
+  printf("%s\n", str);
+  free(str);
+
+  char* nullval = NULL;
+  vptr = &nullval;
+  stringify(&str, vptr, NIL);
   printf("%s\n", str);
   free(str);
 

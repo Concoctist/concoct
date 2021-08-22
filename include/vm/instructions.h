@@ -1,6 +1,6 @@
 /*
  * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language
- * Copyright (c) 2020 BlakeTheBlock and Lloyd Dilley
+ * Copyright (c) 2020-2021 BlakeTheBlock and Lloyd Dilley
  * http://concoct.dev/
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,12 @@ RunCode op_tru(Stack* stack);
 RunCode op_and(Stack* stack);
 RunCode op_not(Stack* stack);
 RunCode op_or(Stack* stack);
+RunCode op_eql(Stack* stack);
+RunCode op_neq(Stack* stack);
+RunCode op_gt(Stack* stack);
+RunCode op_gte(Stack* stack);
+RunCode op_lt(Stack* stack);
+RunCode op_lte(Stack* stack);
 RunCode op_neg(Stack* stack);
 RunCode op_pos(Stack* stack);
 RunCode op_dec(Stack* stack);
