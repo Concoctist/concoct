@@ -62,7 +62,6 @@ typedef struct object
   Bool marked;       // flagged for garbage collection
   union
   {
-    char* nullval;
     Bool boolval;
     Byte byteval;
     Number numval;

@@ -28,7 +28,7 @@
 #include <math.h>   // pow()
 #include <stdio.h>  // fprintf(), stderr
 #include <stdlib.h> // malloc()
-#include <string.h> // strcat()
+#include <string.h> // strcat(), strcmp()
 #include "memory.h"
 #include "vm/vm.h"
 
@@ -219,6 +219,1028 @@ RunCode op_or(Stack* stack)
   vptr = &result;
   push(stack, new_object_by_type(vptr, BOOL));
 
+  return RUN_SUCCESS;
+}
+
+// Equal to (==)
+RunCode op_eql(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during EQL operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during EQL operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand1->datatype == NIL && operand2->datatype == NIL)
+  {
+    push(stack, new_object("true"));
+    return RUN_SUCCESS;
+  }
+
+  if(operand1->datatype == BOOL && operand2->datatype == BOOL)
+  {
+    if(operand1->value.boolval == operand2->value.boolval)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
+
+  // ToDo: Awaiting Blake's input on using weaker typing similar to Javascript for number and string comparison...
+  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  {
+    if(strcmp(operand1->value.strobj.strval, operand2->value.strobj.strval) == 0)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Byte *)get_object_value(operand1) == *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Byte *)get_object_value(operand1) == *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Byte *)get_object_value(operand1) == *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Byte *)get_object_value(operand1) == *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case NUMBER:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Number *)get_object_value(operand1) == *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Number *)get_object_value(operand1) == *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Number *)get_object_value(operand1) == *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Number *)get_object_value(operand1) == *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case BIGNUM:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(BigNum *)get_object_value(operand1) == *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(BigNum *)get_object_value(operand1) == *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(BigNum *)get_object_value(operand1) == *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(BigNum *)get_object_value(operand1) == *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case DECIMAL:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Decimal *)get_object_value(operand1) == *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Decimal *)get_object_value(operand1) == *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Decimal *)get_object_value(operand1) == *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Decimal *)get_object_value(operand1) == *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Not equal to (!=)
+RunCode op_neq(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during NEQ operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during NEQ operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand1->datatype == NIL && operand2->datatype == NIL)
+  {
+    push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
+
+  if(operand1->datatype == BOOL && operand2->datatype == BOOL)
+  {
+    if(operand1->value.boolval != operand2->value.boolval)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
+
+  // ToDo: Awaiting Blake's input on using weaker typing similar to Javascript for number and string comparison...
+  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  {
+    if(strcmp(operand1->value.strobj.strval, operand2->value.strobj.strval) != 0)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Byte *)get_object_value(operand1) != *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Byte *)get_object_value(operand1) != *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Byte *)get_object_value(operand1) != *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Byte *)get_object_value(operand1) != *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case NUMBER:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Number *)get_object_value(operand1) != *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Number *)get_object_value(operand1) != *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Number *)get_object_value(operand1) != *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Number *)get_object_value(operand1) != *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case BIGNUM:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(BigNum *)get_object_value(operand1) != *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(BigNum *)get_object_value(operand1) != *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(BigNum *)get_object_value(operand1) != *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(BigNum *)get_object_value(operand1) != *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case DECIMAL:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Decimal *)get_object_value(operand1) != *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Decimal *)get_object_value(operand1) != *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Decimal *)get_object_value(operand1) != *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Decimal *)get_object_value(operand1) != *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Greater than (>)
+RunCode op_gt(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during GT operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during GT operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(binary_operand_check_str(operand1, operand2, ">") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Byte *)get_object_value(operand1) > *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Byte *)get_object_value(operand1) > *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Byte *)get_object_value(operand1) > *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Byte *)get_object_value(operand1) > *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case NUMBER:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Number *)get_object_value(operand1) > *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Number *)get_object_value(operand1) > *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Number *)get_object_value(operand1) > *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Number *)get_object_value(operand1) > *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case BIGNUM:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(BigNum *)get_object_value(operand1) > *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(BigNum *)get_object_value(operand1) > *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(BigNum *)get_object_value(operand1) > *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(BigNum *)get_object_value(operand1) > *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case DECIMAL:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Decimal *)get_object_value(operand1) > *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Decimal *)get_object_value(operand1) > *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Decimal *)get_object_value(operand1) > *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Decimal *)get_object_value(operand1) > *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Greater than or equal to (>=)
+RunCode op_gte(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during GTE operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during GTE operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(binary_operand_check_str(operand1, operand2, ">=") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Byte *)get_object_value(operand1) >= *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Byte *)get_object_value(operand1) >= *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Byte *)get_object_value(operand1) >= *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Byte *)get_object_value(operand1) >= *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case NUMBER:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Number *)get_object_value(operand1) >= *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Number *)get_object_value(operand1) >= *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Number *)get_object_value(operand1) >= *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Number *)get_object_value(operand1) >= *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case BIGNUM:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(BigNum *)get_object_value(operand1) >= *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(BigNum *)get_object_value(operand1) >= *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(BigNum *)get_object_value(operand1) >= *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(BigNum *)get_object_value(operand1) >= *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case DECIMAL:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Decimal *)get_object_value(operand1) >= *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Decimal *)get_object_value(operand1) >= *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Decimal *)get_object_value(operand1) >= *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Decimal *)get_object_value(operand1) >= *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Less than (<)
+RunCode op_lt(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during LT operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during LT operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(binary_operand_check_str(operand1, operand2, "<") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Byte *)get_object_value(operand1) < *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Byte *)get_object_value(operand1) < *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Byte *)get_object_value(operand1) < *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Byte *)get_object_value(operand1) < *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case NUMBER:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Number *)get_object_value(operand1) < *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Number *)get_object_value(operand1) < *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Number *)get_object_value(operand1) < *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Number *)get_object_value(operand1) < *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case BIGNUM:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(BigNum *)get_object_value(operand1) < *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(BigNum *)get_object_value(operand1) < *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(BigNum *)get_object_value(operand1) < *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(BigNum *)get_object_value(operand1) < *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case DECIMAL:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Decimal *)get_object_value(operand1) < *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Decimal *)get_object_value(operand1) < *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Decimal *)get_object_value(operand1) < *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Decimal *)get_object_value(operand1) < *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
+      return RUN_ERROR;
+      break;
+  }
+  return RUN_SUCCESS;
+}
+
+// Less than or equal to (<=)
+RunCode op_lte(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during LTE operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during LTE operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(binary_operand_check_str(operand1, operand2, "<=") == RUN_ERROR)
+    return RUN_ERROR;
+
+  switch(operand1->datatype)
+  {
+    case BYTE:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Byte *)get_object_value(operand1) <= *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Byte *)get_object_value(operand1) <= *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Byte *)get_object_value(operand1) <= *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Byte *)get_object_value(operand1) <= *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case NUMBER:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Number *)get_object_value(operand1) <= *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Number *)get_object_value(operand1) <= *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Number *)get_object_value(operand1) <= *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Number *)get_object_value(operand1) <= *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case BIGNUM:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(BigNum *)get_object_value(operand1) <= *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(BigNum *)get_object_value(operand1) <= *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(BigNum *)get_object_value(operand1) <= *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(BigNum *)get_object_value(operand1) <= *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    case DECIMAL:
+      switch(operand2->datatype)
+      {
+        case BYTE:
+          if(*(Decimal *)get_object_value(operand1) <= *(Byte *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case NUMBER:
+          if(*(Decimal *)get_object_value(operand1) <= *(Number *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case BIGNUM:
+          if(*(Decimal *)get_object_value(operand1) <= *(BigNum *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        case DECIMAL:
+          if(*(Decimal *)get_object_value(operand1) <= *(Decimal *)get_object_value(operand2))
+            push(stack, new_object("true"));
+          else
+            push(stack, new_object("false"));
+          break;
+        default:
+          fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
+          return RUN_ERROR;
+          break;
+      }
+      break;
+    default:
+      fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
+      return RUN_ERROR;
+      break;
+  }
   return RUN_SUCCESS;
 }
 

@@ -276,11 +276,15 @@ Object* new_object_by_type(void* data, DataType datatype)
   switch(datatype)
   {
     case NIL:
+      object->datatype = datatype;
+      if(debug_mode)
+        debug_print("Object of type %s created with value: null", get_type(datatype), stdout);
+      break;
     case STRING:
-      fprintf(stderr, "Unsupported data type: %s\n", get_type(datatype));
-      free(object);
-      object = NULL;
-      return NULL;
+      object->datatype = datatype;
+      new_string(&object->value.strobj, data);
+      if(debug_mode)
+        debug_print("Object of type %s created with value: %s", get_type(datatype), (char *)data, stdout);
       break;
     case BOOL:
       object->datatype = datatype;
@@ -320,7 +324,8 @@ Object* new_object_by_type(void* data, DataType datatype)
       break;
   }
   object->marked = false;
-  add_store_object(object);
+  if(object->datatype != STRING) // new_string() already adds object to store
+    add_store_object(object);
   return object;
 }
 
@@ -367,21 +372,48 @@ Object* clone_object(Object* object)
 void stringify(char** str, void* data, DataType datatype)
 {
   int length = 0;
+  char* nullstr = NULL;
+  char* boolstr = NULL;
   switch(datatype)
   {
     case NIL:
+      nullstr = "null";
+      length = strlen(nullstr);
+      *str = (char *)malloc(length + 1);
+      if(*str == NULL)
+      {
+        fprintf(stderr, "Error allocating memory for null in stringify(): %s\n", strerror(errno));
+        return;
+      }
+      strcpy(*str, nullstr);
+      break;
     case BOOL:
+      boolstr = *(Bool *)data ? "true" : "false";
+      length = strlen(boolstr);
+      *str = (char *)malloc(length + 1);
+      if(*str == NULL)
+      {
+        fprintf(stderr, "Error allocating memory for bool in stringify(): %s\n", strerror(errno));
+        return;
+      }
+      strcpy(*str, boolstr);
+      break;
     case STRING:
-      fprintf(stderr, "Unsupported data type in stringify(): %s\n", get_type(datatype));
-      *str = NULL;
+      length = strlen(*(char **)data);
+      *str = (char *)malloc(length + 1);
+      if(*str == NULL)
+      {
+        fprintf(stderr, "Error allocating memory for string in stringify(): %s\n", strerror(errno));
+        return;
+      }
+      strcpy(*str, *(char **)data);
       break;
     case BYTE:
       length = snprintf(NULL, 0, "%u", *(Byte *)data);
       *str = (char *)malloc(length + 1);
       if(*str == NULL)
       {
-        fprintf(stderr, "Error allocating memory for string in stringify(): %s\n", strerror(errno));
-        *str = NULL;
+        fprintf(stderr, "Error allocating memory for byte in stringify(): %s\n", strerror(errno));
         return;
       }
       snprintf(*str, length + 1, "%u", *(Byte *)data);
@@ -391,8 +423,7 @@ void stringify(char** str, void* data, DataType datatype)
       *str = (char *)malloc(length + 1);
       if(*str == NULL)
       {
-        fprintf(stderr, "Error allocating memory for string in stringify(): %s\n", strerror(errno));
-        *str = NULL;
+        fprintf(stderr, "Error allocating memory for number in stringify(): %s\n", strerror(errno));
         return;
       }
       snprintf(*str, length + 1, "%" PRId32, *(Number *)data);
@@ -402,8 +433,7 @@ void stringify(char** str, void* data, DataType datatype)
       *str = (char *)malloc(length + 1);
       if(*str == NULL)
       {
-        fprintf(stderr, "Error allocating memory for string in stringify(): %s\n", strerror(errno));
-        *str = NULL;
+        fprintf(stderr, "Error allocating memory for big number in stringify(): %s\n", strerror(errno));
         return;
       }
       snprintf(*str, length + 1, "%" PRId64, *(BigNum *)data);
@@ -413,13 +443,13 @@ void stringify(char** str, void* data, DataType datatype)
       *str = (char *)malloc(length + 1);
       if(*str == NULL)
       {
-        fprintf(stderr, "Error allocating memory for string in stringify(): %s\n", strerror(errno));
-        *str = NULL;
+        fprintf(stderr, "Error allocating memory for decimal in stringify(): %s\n", strerror(errno));
         return;
       }
       snprintf(*str, length + 1, "%f", *(Decimal *)data);
       break;
     default:
+      fprintf(stderr, "Unrecognized data type in stringify()!\n");
       *str = NULL;
       break;
   }

@@ -130,5 +130,29 @@ int main()
   printf("%s\n", str);
   free(str);
 
+  char* testval = "Foo bar baz";
+  vptr = &testval;
+  stringify(&str, vptr, STRING);
+  printf("%s\n", str);
+  free(str);
+
+  Bool boolval = false;
+  vptr = &boolval;
+  stringify(&str, vptr, BOOL);
+  printf("%s\n", str);
+  free(str);
+
+  boolval = true;
+  vptr = &boolval;
+  stringify(&str, vptr, BOOL);
+  printf("%s\n", str);
+  free(str);
+
+  char* nullval = NULL;
+  vptr = &nullval;
+  stringify(&str, vptr, NIL);
+  printf("%s\n", str);
+  free(str);
+
   return 0;
 }

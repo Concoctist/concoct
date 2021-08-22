@@ -139,7 +139,6 @@ void convert_type(Object* object, char* value)
 #endif
   {
     object->datatype = NIL;
-    object->value.nullval = NULL;
     return;
   }
 
