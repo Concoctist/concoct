@@ -621,7 +621,6 @@ RunCode op_seq(Stack* stack)
     fprintf(stderr, "Invalid operand type encountered during operation ($=)!\n");
     return RUN_ERROR;
   }
-  return RUN_SUCCESS;
 }
 
 // String not equal to ($!)
@@ -655,7 +654,6 @@ RunCode op_sne(Stack* stack)
     fprintf(stderr, "Invalid operand type encountered during operation ($!)!\n");
     return RUN_ERROR;
   }
-  return RUN_SUCCESS;
 }
 
 // Greater than (>)
