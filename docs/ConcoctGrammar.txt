@@ -28,6 +28,8 @@ equal_expr = expr, "==", expr;
 not_equal_expr = expr, "!=", expr;
 greater_equal_expr = expr, ">=", expr;
 less_equal_expr = expr, "<=", expr;
+str_equal_expr = expr, "$=", expr;
+str_not_equal_expr = expr, "$!", expr;
 
 bin_and_expr = expr, "&", expr;
 bin_or_expr = expr, "|", expr;
@@ -41,7 +43,8 @@ or_expr = expr, "||", expr;
 
 logical_expr = not_expr | and_expr | or_expr;
 binary_expr = bin_and_expr | bin_or_expr | bin_xor_expr | bin_lsh_expr | bin_rsh_expr
-compare_expr = greater_expr | less_expr | greater_equal_expr | less_equal_expr | equal_expr | not_equal_expr;
+compare_expr = greater_expr | less_expr | greater_equal_expr | less_equal_expr | equal_expr | not_equal_expr
+    | str_equal_expr | str_not_equal_expr;
 math_expr = add_expr | subtract_expr | multiply_expr | divide_expr | modulus_expr | exp_expr
 	| post_inc_expr | pre_inc_expr | post_dec_expr | pre_dec_expr;
 access_expr = identifier, {".", identifier};

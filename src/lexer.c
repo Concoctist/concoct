@@ -287,8 +287,20 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
           type = CCT_TOKEN_ASSIGN;
         }
         break;
+      case '$':
+        if(cct_next_char(lexer) == '=')
+        {
+          cct_next_char(lexer);
+          type = CCT_TOKEN_STR_EQUAL;
+        }
+        if(cct_next_char(lexer) == '!')
+        {
+          cct_next_char(lexer);
+          type = CCT_TOKEN_STR_NOT_EQUAL;
+        }
+        break;
       case '+':
-        switch (cct_next_char(lexer))
+        switch(cct_next_char(lexer))
         {
           case '=':
             cct_next_char(lexer);
@@ -304,7 +316,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
         }
         break;
       case '-':
-        switch (cct_next_char(lexer))
+        switch(cct_next_char(lexer))
         {
           case '=':
             cct_next_char(lexer);
@@ -517,6 +529,8 @@ const char* cct_token_type_to_string(ConcoctTokenType type)
     case CCT_TOKEN_DEC:           return "--";
     case CCT_TOKEN_EQUAL:         return "==";
     case CCT_TOKEN_NOT_EQUAL:     return "!=";
+    case CCT_TOKEN_STR_EQUAL:     return "$=";
+    case CCT_TOKEN_STR_NOT_EQUAL: return "$!";
     case CCT_TOKEN_GREATER:       return ">";
     case CCT_TOKEN_LESS:          return "<";
     case CCT_TOKEN_GREATER_EQUAL: return ">=";
