@@ -74,8 +74,10 @@ const char* get_mnemonic(Opcode oc)
     case OP_POW: return "OP_POW";    // power/exponent (**)
     case OP_PSH: return "OP_PSH";    // push
     case OP_RET: return "OP_RET";    // return
+    case OP_SEQ: return "OP_SEQ";    // string equal to ($=)
     case OP_SHL: return "OP_SHL";    // bitshift left (<<)
     case OP_SHR: return "OP_SHR";    // bitshift right (>>)
+    case OP_SNE: return "OP_SNE";    // string not equal to ($!)
     case OP_STR: return "OP_STR";    // store
     case OP_SUB: return "OP_SUB";    // subtract (-)
     case OP_SYS: return "OP_SYS";    // system

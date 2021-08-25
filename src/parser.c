@@ -411,6 +411,8 @@ ConcoctNode* cct_parse_equality_expr(ConcoctParser* parser)
     {
       case CCT_TOKEN_EQUAL:
       case CCT_TOKEN_NOT_EQUAL:
+      case CCT_TOKEN_STR_EQUAL:
+      case CCT_TOKEN_STR_NOT_EQUAL:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
         if(op_node == NULL)
         {
@@ -654,7 +656,7 @@ ConcoctNode* cct_parse_if_stat(ConcoctParser* parser)
   if(stat == NULL)
     return NULL;
   cct_node_add_child(if_stat, stat);
-  
+
   if(parser->current_token.type == CCT_TOKEN_ELSE)
   {
     cct_next_parser_token(parser);
