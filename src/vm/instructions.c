@@ -255,7 +255,6 @@ RunCode op_eql(Stack* stack)
     return RUN_SUCCESS;
   }
 
-  // ToDo: Awaiting Blake's input on using weaker typing similar to Javascript for number and string comparison...
   if(operand1->datatype == STRING && operand2->datatype == STRING)
   {
     if(strcmp(operand1->value.strobj.strval, operand2->value.strobj.strval) == 0)
@@ -440,7 +439,6 @@ RunCode op_neq(Stack* stack)
     return RUN_SUCCESS;
   }
 
-  // ToDo: Awaiting Blake's input on using weaker typing similar to Javascript for number and string comparison...
   if(operand1->datatype == STRING && operand2->datatype == STRING)
   {
     if(strcmp(operand1->value.strobj.strval, operand2->value.strobj.strval) != 0)
@@ -592,6 +590,74 @@ RunCode op_neq(Stack* stack)
   return RUN_SUCCESS;
 }
 
+// String equal to ($=)
+RunCode op_seq(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during SEQ operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during SEQ operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  {
+    if(operand1->value.strobj.length == operand2->value.strobj.length)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
+  else
+  {
+    fprintf(stderr, "Invalid operand type encountered during operation ($=)!\n");
+    return RUN_ERROR;
+  }
+  return RUN_SUCCESS;
+}
+
+// String not equal to ($!)
+RunCode op_sne(Stack* stack)
+{
+  Object* operand2 = pop(stack);
+  Object* operand1 = pop(stack);
+
+  if(operand1 == NULL)
+  {
+    fprintf(stderr, "Operand 1 is NULL during SNE operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand2 == NULL)
+  {
+    fprintf(stderr, "Operand 2 is NULL during SNE operation.\n");
+    return RUN_ERROR;
+  }
+
+  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  {
+    if(operand1->value.strobj.length != operand2->value.strobj.length)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
+  else
+  {
+    fprintf(stderr, "Invalid operand type encountered during operation ($!)!\n");
+    return RUN_ERROR;
+  }
+  return RUN_SUCCESS;
+}
+
 // Greater than (>)
 RunCode op_gt(Stack* stack)
 {
@@ -612,6 +678,15 @@ RunCode op_gt(Stack* stack)
 
   if(binary_operand_check_str(operand1, operand2, ">") == RUN_ERROR)
     return RUN_ERROR;
+
+  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  {
+    if(operand1->value.strobj.length > operand2->value.strobj.length)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
 
   switch(operand1->datatype)
   {
@@ -776,6 +851,15 @@ RunCode op_gte(Stack* stack)
   if(binary_operand_check_str(operand1, operand2, ">=") == RUN_ERROR)
     return RUN_ERROR;
 
+  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  {
+    if(operand1->value.strobj.length >= operand2->value.strobj.length)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
+
   switch(operand1->datatype)
   {
     case BYTE:
@@ -939,6 +1023,15 @@ RunCode op_lt(Stack* stack)
   if(binary_operand_check_str(operand1, operand2, "<") == RUN_ERROR)
     return RUN_ERROR;
 
+  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  {
+    if(operand1->value.strobj.length < operand2->value.strobj.length)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
+
   switch(operand1->datatype)
   {
     case BYTE:
@@ -1101,6 +1194,15 @@ RunCode op_lte(Stack* stack)
 
   if(binary_operand_check_str(operand1, operand2, "<=") == RUN_ERROR)
     return RUN_ERROR;
+
+  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  {
+    if(operand1->value.strobj.length <= operand2->value.strobj.length)
+      push(stack, new_object("true"));
+    else
+      push(stack, new_object("false"));
+    return RUN_SUCCESS;
+  }
 
   switch(operand1->datatype)
   {

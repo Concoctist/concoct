@@ -45,6 +45,8 @@ RunCode op_not(Stack* stack);
 RunCode op_or(Stack* stack);
 RunCode op_eql(Stack* stack);
 RunCode op_neq(Stack* stack);
+RunCode op_seq(Stack* stack);
+RunCode op_sne(Stack* stack);
 RunCode op_gt(Stack* stack);
 RunCode op_gte(Stack* stack);
 RunCode op_lt(Stack* stack);
