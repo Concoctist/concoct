@@ -411,8 +411,8 @@ ConcoctNode* cct_parse_equality_expr(ConcoctParser* parser)
     {
       case CCT_TOKEN_EQUAL:
       case CCT_TOKEN_NOT_EQUAL:
-      case CCT_TOKEN_STR_EQUAL:
-      case CCT_TOKEN_STR_NOT_EQUAL:
+      case CCT_TOKEN_STRLEN_EQUAL:
+      case CCT_TOKEN_STRLEN_NOT_EQUAL:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
         if(op_node == NULL)
         {
