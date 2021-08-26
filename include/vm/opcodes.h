@@ -73,10 +73,10 @@ typedef enum opcode
   OP_POW, // power/exponent (**)
   OP_PSH, // push
   OP_RET, // return
-  OP_SEQ, // string equal to ($=)
   OP_SHL, // bitshift left (<<)
   OP_SHR, // bitshift right (>>)
-  OP_SNE, // string not equal to ($!)
+  OP_SLE, // string length equal to ($=)
+  OP_SLN, // string length not equal to ($!)
   OP_STR, // store
   OP_SUB, // subtract (-)
   OP_SYS, // system
