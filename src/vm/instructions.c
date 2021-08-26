@@ -590,8 +590,8 @@ RunCode op_neq(Stack* stack)
   return RUN_SUCCESS;
 }
 
-// String equal to ($=)
-RunCode op_seq(Stack* stack)
+// String length equal to ($=)
+RunCode op_sle(Stack* stack)
 {
   Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
@@ -623,8 +623,8 @@ RunCode op_seq(Stack* stack)
   }
 }
 
-// String not equal to ($!)
-RunCode op_sne(Stack* stack)
+// String length not equal to ($!)
+RunCode op_sln(Stack* stack)
 {
   Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
