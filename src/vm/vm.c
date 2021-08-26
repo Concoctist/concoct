@@ -237,10 +237,6 @@ RunCode interpret()
         break;
       case OP_RET:
         break;
-      case OP_SEQ:
-        op_seq(vm.sp);
-        print_object_value(pop(vm.sp));
-        break;
       case OP_SHL:
         op_shl(vm.sp);
         print_object_value(pop(vm.sp));
@@ -249,8 +245,12 @@ RunCode interpret()
         op_shr(vm.sp);
         print_object_value(pop(vm.sp));
         break;
-      case OP_SNE:
-        op_sne(vm.sp);
+      case OP_SLE:
+        op_sle(vm.sp);
+        print_object_value(pop(vm.sp));
+        break;
+      case OP_SLN:
+        op_sln(vm.sp);
         print_object_value(pop(vm.sp));
         break;
       case OP_STR:
