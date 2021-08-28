@@ -54,13 +54,14 @@ typedef enum opcode
   OP_JMZ, // jump zero
   OP_LNE, // loop not equal
   OP_LNZ, // loop not zero
+  OP_LOD, // load (from memory to register)
   OP_LOE, // loop equal
   OP_LOP, // loop
   OP_LOZ, // loop zero
   OP_LT,  // less than (<)
   OP_LTE, // less than or equal to (<=)
   OP_MOD, // modulo (%)
-  OP_MOV, // move
+  OP_MOV, // move (from register to register)
   OP_MUL, // multiply (*)
   OP_NEG, // negative
   OP_NEQ, // not equal to (!=)
@@ -77,7 +78,7 @@ typedef enum opcode
   OP_SHR, // bitshift right (>>)
   OP_SLE, // string length equal to ($=)
   OP_SLN, // string length not equal to ($!)
-  OP_STR, // store
+  OP_STR, // store (to memory from register)
   OP_SUB, // subtract (-)
   OP_SYS, // system
   OP_TRU, // true

@@ -28,7 +28,7 @@
 #include <errno.h>  // errno
 #include <stdio.h>  // fprintf(), printf()
 #include <stdlib.h> // malloc()
-#include <string.h> // strerror()
+#include <string.h> // memset(), strerror()
 #include "debug.h"
 #include "memory.h"
 #include "vm/instructions.h"
@@ -40,12 +40,15 @@ VM vm;
 // Initializes virtual machine
 void init_vm()
 {
+  memset(vm.registers, 0, sizeof(vm.registers));
   vm.instructions = (Opcode *)malloc(INSTRUCTION_STORE_SIZE * sizeof(Opcode));
   if(vm.instructions == NULL)
   {
     fprintf(stderr, "Error allocating memory for instruction store: %s\n", strerror(errno));
     return;
   }
+  vm.ip = vm.instructions;
+  vm.rp = vm.registers;
   vm.sp = &vm.stack;
   init_stack(vm.sp);
   init_store();
@@ -64,71 +67,63 @@ void stop_vm()
   return;
 }
 
+// Prints register values
+void print_registers()
+{
+  puts("Register values:");
+  for(uint8_t i = 0; i < REGISTER_AMOUNT; i++)
+  {
+    if(i == REGISTER_AMOUNT / 2)
+      puts("");
+    if(i < 10)
+      printf("R%u: %c0x%08lX   ", i, "+-"[vm.registers[i] < 0], (uint64_t)abs(vm.registers[i]));
+    else
+      printf("R%u: %c0x%08lX  ", i, "+-"[vm.registers[i] < 0], (uint64_t)abs(vm.registers[i]));
+  }
+  puts("");
+  return;
+}
+
 // Interprets code
 RunCode interpret()
 {
-  init_vm();
-  vm.sp = &vm.stack;
+  // Below is just a demonstration for now...
+  BigNum numval = 53721;
   char* value = NULL;
   Object* object = NULL;
-
-  // Below is just a demonstration for now
-  vm.ip = vm.instructions;
-
-  vm.instructions[11] = OP_RET;
-  vm.instructions[10] = OP_BNT;
-  push(vm.sp, new_object("32"));
-  vm.instructions[9] = OP_XOR;
-  push(vm.sp, new_object("32"));
-  push(vm.sp, new_object("8"));
-  vm.instructions[8] = OP_AND;
-  push(vm.sp, new_object("true"));
-  push(vm.sp, new_object("true"));
-  vm.instructions[7] = OP_NEG;
-  push(vm.sp, new_object("35.5"));
-  vm.instructions[6] = OP_FLS;
-  vm.instructions[5] = OP_NOP;
-  vm.instructions[4] = OP_ADD;
-  push(vm.sp, new_object("2"));
-  push(vm.sp, new_object("3"));
-  vm.instructions[3] = OP_SUB;
-  push(vm.sp, new_object("10"));
-  push(vm.sp, new_object("3"));
-  vm.instructions[2] = OP_MUL;
-  push(vm.sp, new_object("5"));
-  push(vm.sp, new_object("2"));
-  vm.instructions[1] = OP_DEC;
-  push(vm.sp, new_object("99"));
-  vm.instructions[0] = OP_POW;
-  push(vm.sp, new_object("5"));
-  push(vm.sp, new_object("2"));
-  vm.instructions[12] = OP_END;
-  vm.ip = vm.instructions;
+  Byte src_reg = R1;
+  Byte dst_reg = R0;
 
   while(*vm.ip != OP_END)
   {
-    printf("Instruction: %s (0x%x)\n", get_mnemonic(*vm.ip), *vm.ip);
+    if(debug_mode)
+      printf("Instruction: %s (0x%02X)\n", get_mnemonic(*vm.ip), *vm.ip);
     switch((*vm.ip))
     {
       case OP_ADD:
         op_add(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_AND:
         op_and(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_BND:
         op_bnd(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_BNT:
         op_bnt(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_BOR:
         op_bor(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_CAL:
         break;
@@ -136,11 +131,13 @@ RunCode interpret()
         break;
       case OP_DEC:
         op_dec(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_DIV:
         op_div(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_END:
         break;
@@ -148,33 +145,47 @@ RunCode interpret()
         break;
       case OP_EQL:
         op_eql(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_EXT:
         break;
       case OP_FLS:
         op_fls(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_GT:
         op_gt(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_GTE:
         op_gte(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_HLT:
+        stop_vm();
         break;
       case OP_INC:
         op_inc(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_JMC:
       case OP_JMP:
       case OP_JMZ:
       case OP_LNE:
       case OP_LNZ:
+        break;
+      case OP_LOD:
+        op_lod(vm.rp, vm.sp, dst_reg);
+        if(debug_mode)
+        {
+          print_registers();
+        }
+        break;
       case OP_LOE:
       case OP_LOP:
         break;
@@ -182,101 +193,128 @@ RunCode interpret()
         break;
       case OP_LT:
         op_lt(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_LTE:
         op_lte(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_MOD:
         op_mod(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_MOV:
+        op_mov(vm.rp, numval, src_reg, dst_reg);
+        if(debug_mode)
+          print_registers();
         break;
       case OP_MUL:
         op_mul(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_NEG:
         op_neg(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_NEQ:
         op_neq(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_NOP:
         OP_NOOP;
         break;
       case OP_NOT:
         op_not(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_NUL:
         break;
       case OP_OR:
         op_or(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_POP:
         op_pop(vm.sp, object);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_POS:
         op_pos(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_POW:
         op_pow(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_PSH:
         op_psh(vm.sp, value);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_RET:
         break;
       case OP_SHL:
         op_shl(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_SHR:
         op_shr(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_SLE:
         op_sle(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_SLN:
         op_sln(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_STR:
-        //op_str(vm.sp);
-        //print_object_value(pop(vm.sp));
+        op_str(vm.rp, vm.sp, src_reg);
+        if(debug_mode)
+        {
+          print_registers();
+          print_object_value(pop(vm.sp));
+        }
         break;
       case OP_SUB:
         op_sub(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_SYS:
         //op_sys(vm.sp);
-        //print_object_value(pop(vm.sp));
+        //if(debug_mode)
+        //  print_object_value(pop(vm.sp));
         break;
       case OP_TRU:
         op_tru(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       case OP_TST:
         break;
       case OP_XOR:
         op_xor(vm.sp);
-        print_object_value(pop(vm.sp));
+        if(debug_mode)
+          print_object_value(pop(vm.sp));
         break;
       default:
-        fprintf(stderr, "Illegal instruction: %s (0x%x)\n", get_mnemonic(*vm.ip), *vm.ip);
+        fprintf(stderr, "Illegal instruction: %s (0x%02X)\n", get_mnemonic(*vm.ip), *vm.ip);
         return RUN_ERROR;
         break;
     }
