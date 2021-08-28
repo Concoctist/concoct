@@ -28,18 +28,43 @@
 #ifndef VM_H
 #define VM_H
 
-#include "types.h"      // Byte
+#include "types.h"      // BigNum, Byte
 #include "vm/opcodes.h" // Opcode
 #include "vm/stack.h"   // Stack
 
+#define REGISTER_AMOUNT ((uint8_t)16)
+//static const size_t REGISTER_AMOUNT = 16;
+static const uint8_t REGISTER_EMPTY = 127;
+static const size_t INSTRUCTION_STORE_SIZE = 128;
+
 typedef struct vm
 {
-  Opcode* instructions; // instructions to execute
-  Stack stack;          // stack structure
-  Stack* sp;            // stack pointer/top item of stack
-  Opcode* ip;           // instruction pointer/program counter
+  Opcode* instructions;              // instructions to execute
+  BigNum registers[REGISTER_AMOUNT]; // 64-bit registers
+  BigNum* rp;                        // Register pointer
+  Stack stack;                       // stack structure
+  Stack* sp;                         // stack pointer/top item of stack
+  Opcode* ip;                        // instruction pointer/program counter
 } VM;
 extern VM vm;
+
+// Register names/indexes
+static const Byte R0 = 0;
+static const Byte R1 = 1;
+static const Byte R2 = 2;
+static const Byte R3 = 3;
+static const Byte R4 = 4;
+static const Byte R5 = 5;
+static const Byte R6 = 6;
+static const Byte R7 = 7;
+static const Byte R8 = 8;
+static const Byte R9 = 9;
+static const Byte R10 = 10;
+static const Byte R11 = 11;
+static const Byte R12 = 12;
+static const Byte R13 = 13;
+static const Byte R14 = 14;
+static const Byte R15 = 15;
 
 typedef enum
 {
@@ -47,7 +72,8 @@ typedef enum
   RUN_ERROR
 } RunCode;
 
-static const size_t INSTRUCTION_STORE_SIZE = 128;
+// Prints register values
+void print_registers();
 
 // Initializes virtual machine
 void init_vm();
