@@ -55,13 +55,14 @@ const char* get_mnemonic(Opcode oc)
     case OP_JMZ: return "OP_JMZ";    // jump zero
     case OP_LNE: return "OP_LNE";    // loop not equal
     case OP_LNZ: return "OP_LNZ";    // loop not zero
+    case OP_LOD: return "OP_LOD";    // load (from memory to register)
     case OP_LOE: return "OP_LOE";    // loop equal
     case OP_LOP: return "OP_LOP";    // loop
     case OP_LOZ: return "OP_LOZ";    // loop zero
     case OP_LT:  return "OP_LT";     // less than (<)
     case OP_LTE: return "OP_LTE";    // less than or equal to (<=)
     case OP_MOD: return "OP_MOD";    // modulo (%)
-    case OP_MOV: return "OP_MOV";    // move
+    case OP_MOV: return "OP_MOV";    // move (from register to register)
     case OP_MUL: return "OP_MUL";    // multiply (*)
     case OP_NEG: return "OP_NEG";    // negative
     case OP_NEQ: return "OP_NEQ";    // not equal to (!=)
@@ -78,7 +79,7 @@ const char* get_mnemonic(Opcode oc)
     case OP_SHR: return "OP_SHR";    // bitshift right (>>)
     case OP_SLE: return "OP_SLE";    // string length equal to ($=)
     case OP_SLN: return "OP_SLN";    // string length not equal to ($!)
-    case OP_STR: return "OP_STR";    // store
+    case OP_STR: return "OP_STR";    // store (to memory from register)
     case OP_SUB: return "OP_SUB";    // subtract (-)
     case OP_SYS: return "OP_SYS";    // system
     case OP_TRU: return "OP_TRU";    // true
