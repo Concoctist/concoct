@@ -76,9 +76,17 @@ void print_registers()
     if(i == REGISTER_AMOUNT / 2)
       puts("");
     if(i < 10)
-      printf("R%u: %c0x%08lX   ", i, "+-"[vm.registers[i] < 0], (BigNum)llabs(vm.registers[i]));
+#ifdef _WIN32
+      printf("R%u: %c0x%08llX   ", i, "+-"[vm.registers[i] < 0], (uint64_t)llabs(vm.registers[i]));
+#else
+      printf("R%u: %c0x%08lX   ", i, "+-"[vm.registers[i] < 0], (uint64_t)llabs(vm.registers[i]));
+#endif
     else
-      printf("R%u: %c0x%08lX  ", i, "+-"[vm.registers[i] < 0], (BigNum)llabs(vm.registers[i]));
+#ifdef _WIN32
+      printf("R%u: %c0x%08llX  ", i, "+-"[vm.registers[i] < 0], (uint64_t)llabs(vm.registers[i]));
+#else
+      printf("R%u: %c0x%08lX  ", i, "+-"[vm.registers[i] < 0], (uint64_t)llabs(vm.registers[i]));
+#endif
   }
   puts("");
   return;
