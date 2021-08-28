@@ -76,9 +76,9 @@ void print_registers()
     if(i == REGISTER_AMOUNT / 2)
       puts("");
     if(i < 10)
-      printf("R%u: %c0x%08lX   ", i, "+-"[(BigNum)vm.registers[i] < 0], (BigNum)abs(vm.registers[i]));
+      printf("R%u: %c0x%08lX   ", i, "+-"[vm.registers[i] < 0], (BigNum)llabs(vm.registers[i]));
     else
-      printf("R%u: %c0x%08lX  ", i, "+-"[(BigNum)vm.registers[i] < 0], (BigNum)abs(vm.registers[i]));
+      printf("R%u: %c0x%08lX  ", i, "+-"[vm.registers[i] < 0], (BigNum)llabs(vm.registers[i]));
   }
   puts("");
   return;
