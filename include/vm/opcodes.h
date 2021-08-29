@@ -83,6 +83,7 @@ typedef enum opcode
   OP_SYS, // system
   OP_TRU, // true
   OP_TST, // test
+  OP_XCG, // exchange/swap
   OP_XOR  // bitwise exclusive or (^)
 } Opcode;
 
