@@ -149,6 +149,16 @@ RunCode op_str(BigNum* rp, Stack* stack, Byte src_reg)
   return RUN_SUCCESS;
 }
 
+// Exchange/swap
+RunCode op_xcg(BigNum* rp, Byte reg1, Byte reg2)
+{
+  BigNum tmp = 0;
+  tmp = rp[reg1];
+  reg1 = reg2;
+  rp[reg2] = tmp;
+  return RUN_SUCCESS;
+}
+
 // Pop
 RunCode op_pop(Stack* stack, Object* object)
 {

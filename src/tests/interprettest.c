@@ -31,6 +31,7 @@
 
 int main()
 {
+  Object* object = NULL;
   void* vptr = NULL;
   BigNum numval = -5552424;
   debug_mode = true;
@@ -43,6 +44,9 @@ int main()
   vm.instructions[11] = OP_RET;
   vptr = &numval;
   push(vm.sp, new_object_by_type(vptr, BIGNUM));
+  //object = new_object("5552424");
+  //numval = (*(BigNum *)get_object_value(object) & 0xFFFF) << 32;
+  //push(vm.sp, object);
   vm.instructions[10] = OP_BNT;
   push(vm.sp, new_object("32"));
   vm.instructions[9] = OP_XOR;
