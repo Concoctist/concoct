@@ -96,7 +96,7 @@ RunCode binary_operand_check_str(Object* operand1, Object* operand2, char* opera
 }
 
 // Load (load from memory to register)
-RunCode op_lod(BigNum* rp, Stack* stack, Byte dst_reg)
+RunCode op_lod(Object** rp, Stack* stack, Byte dst_reg)
 {
   Object* object = pop(stack);
   if(object == NULL)
@@ -109,12 +109,12 @@ RunCode op_lod(BigNum* rp, Stack* stack, Byte dst_reg)
     fprintf(stderr, "Invalid register during LOD operation.\n");
     return RUN_ERROR;
   }
-  rp[dst_reg] = *(BigNum *)get_object_value(object);
+  rp[dst_reg] = object;
   return RUN_SUCCESS;
 }
 
 // Move (move from register to register)
-RunCode op_mov(BigNum* rp, BigNum value, Byte src_reg, Byte dst_reg)
+RunCode op_mov(Object** rp, Object* object, Byte src_reg, Byte dst_reg)
 {
   if(dst_reg >= REGISTER_AMOUNT)
   {
@@ -122,39 +122,30 @@ RunCode op_mov(BigNum* rp, BigNum value, Byte src_reg, Byte dst_reg)
     return RUN_ERROR;
   }
   if(src_reg >= REGISTER_AMOUNT)
-    rp[dst_reg] = value;
+    rp[dst_reg] = object;
   else
     rp[dst_reg] = rp[src_reg];
   return RUN_SUCCESS;
 }
 
 // Store (store to memory from register)
-RunCode op_str(BigNum* rp, Stack* stack, Byte src_reg)
+RunCode op_str(Object** rp, Stack* stack, Byte src_reg)
 {
-  Object* object = NULL;
-  void* vptr = NULL;
   if(src_reg >= REGISTER_AMOUNT)
   {
     fprintf(stderr, "Invalid register during STR operation.\n");
     return RUN_ERROR;
   }
-  vptr = (BigNum *)&rp[src_reg];
-  object = new_object_by_type(vptr, BIGNUM);
-  if(object == NULL)
-  {
-    fprintf(stderr, "Object is NULL during STR operation.\n");
-    return RUN_ERROR;
-  }
-  push(stack, object);
+  push(stack, rp[src_reg]);
   return RUN_SUCCESS;
 }
 
 // Exchange/swap
-RunCode op_xcg(BigNum* rp, Byte reg1, Byte reg2)
+RunCode op_xcg(Object** rp, Byte reg1, Byte reg2)
 {
-  BigNum tmp = 0;
+  Object* tmp = NULL;
   tmp = rp[reg1];
-  reg1 = reg2;
+  rp[reg1] = rp[reg2];
   rp[reg2] = tmp;
   return RUN_SUCCESS;
 }
