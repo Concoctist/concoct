@@ -4,10 +4,6 @@
 
 https://github.com/ConcoctLang/concoct/issues
 
-## Discord
-
-https://discord.concoct.dev/
-
 ## Wiki
 
 https://github.com/ConcoctLang/concoct/wiki
