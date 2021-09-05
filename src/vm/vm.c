@@ -188,7 +188,6 @@ void print_registers()
 RunCode interpret()
 {
   // Below is just a demonstration for now...
-  BigNum numval = 53721;
   char* value = NULL;
   Object* object = NULL;
   Byte src_reg = R1;
