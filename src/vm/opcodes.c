@@ -84,6 +84,7 @@ const char* get_mnemonic(Opcode oc)
     case OP_SYS: return "OP_SYS";    // system
     case OP_TRU: return "OP_TRU";    // true
     case OP_TST: return "OP_TST";    // test
+    case OP_XCG: return "OP_XCG";    // exchange/swap
     case OP_XOR: return "OP_XOR";    // bitwise exclusive or (^)
     default:     return "UNDEFINED"; // unsupported opcode
   }

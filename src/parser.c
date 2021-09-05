@@ -662,9 +662,7 @@ ConcoctNode* cct_parse_if_stat(ConcoctParser* parser)
     cct_next_parser_token(parser);
     ConcoctNode* else_stat = cct_parse_stat(parser);
     if(else_stat == NULL)
-    {
       return NULL;
-    }
     cct_node_add_child(if_stat, else_stat);
   }
   return if_stat;
