@@ -25,10 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <errno.h>  // errno
-#include <stdio.h>  // fprintf(), printf()
-#include <stdlib.h> // malloc()
-#include <string.h> // memset(), strerror()
+#include <errno.h>    // errno
+#include <inttypes.h> // PRIXPTR
+#include <stdio.h>    // fprintf(), printf()
+#include <stdlib.h>   // malloc()
+#include <string.h>   // memset(), strcmp(), strerror()
 #include "debug.h"
 #include "memory.h"
 #include "vm/instructions.h"
@@ -50,6 +51,9 @@ void init_vm()
   vm.ip = vm.instructions;
   vm.rp = vm.registers;
   vm.sp = &vm.stack;
+  IP = &vm.ip;
+  RP = vm.rp;
+  SP = &vm.sp;
   init_stack(vm.sp);
   init_store();
   if(debug_mode)
@@ -70,25 +74,113 @@ void stop_vm()
 // Prints register values
 void print_registers()
 {
+  char* strval = NULL;
+  void* vptr = NULL;
+  Object* object = NULL;
+
   puts("Register values:");
   for(uint8_t i = 0; i < REGISTER_AMOUNT; i++)
   {
-    if(i == REGISTER_AMOUNT / 2)
-      puts("");
-    if(i < 10)
-#ifdef _WIN32
-      printf("R%u: %c0x%08llX   ", i, "+-"[vm.registers[i] < 0], (uint64_t)llabs(vm.registers[i]));
-#else
-      printf("R%u: %c0x%08lX   ", i, "+-"[vm.registers[i] < 0], (uint64_t)llabs(vm.registers[i]));
-#endif
+    object = vm.registers[i];
+    if(object == NULL)
+    {
+      strval = NULL;
+    }
     else
-#ifdef _WIN32
-      printf("R%u: %c0x%08llX  ", i, "+-"[vm.registers[i] < 0], (uint64_t)llabs(vm.registers[i]));
-#else
-      printf("R%u: %c0x%08lX  ", i, "+-"[vm.registers[i] < 0], (uint64_t)llabs(vm.registers[i]));
-#endif
+    {
+      switch(object->datatype)
+      {
+        case NIL:
+          strval = "null";
+          break;
+        case BOOL:
+          vptr = &object->value.boolval;
+          stringify(&strval, vptr, BOOL);
+          break;
+        case BYTE:
+          vptr = &object->value.byteval;
+          stringify(&strval, vptr, BYTE);
+          break;
+        case NUMBER:
+          vptr = &object->value.numval;
+          stringify(&strval, vptr, NUMBER);
+          break;
+        case BIGNUM:
+          vptr = &object->value.bignumval;
+          stringify(&strval, vptr, BIGNUM);
+          break;
+        case DECIMAL:
+          vptr = &object->value.decimalval;
+          stringify(&strval, vptr, DECIMAL);
+          break;
+        case STRING:
+          vptr = &object->value.strobj.strval;
+          stringify(&strval, vptr, STRING);
+          break;
+        default:
+          strval = "Unknown";
+          break;
+      }
+    }
+
+    if(i == REGISTER_AMOUNT - 1)
+    {
+      if(strval == NULL)
+        printf("RS: empty\n");
+      else
+        printf("RS: %.64s (%s)\n", strval, get_data_type(object));
+    }
+    else
+    {
+      if(strval == NULL)
+        printf("R%u: empty\n", i);
+      else
+        printf("R%u: %.64s (%s)\n", i, strval, get_data_type(object));
+    }
   }
-  puts("");
+
+  if((*SP)->count > 0)
+  {
+    object = (*SP)->objects[(*SP)->top];
+    switch(object->datatype)
+    {
+      case NIL:
+        strval = "null";
+        break;
+      case BOOL:
+        vptr = &object->value.boolval;
+        stringify(&strval, vptr, BOOL);
+        break;
+      case BYTE:
+        vptr = &object->value.byteval;
+        stringify(&strval, vptr, BYTE);
+        break;
+      case NUMBER:
+        vptr = &object->value.numval;
+        stringify(&strval, vptr, NUMBER);
+        break;
+      case BIGNUM:
+        vptr = &object->value.bignumval;
+        stringify(&strval, vptr, BIGNUM);
+        break;
+      case DECIMAL:
+        vptr = &object->value.decimalval;
+        stringify(&strval, vptr, DECIMAL);
+        break;
+      case STRING:
+        vptr = &object->value.strobj.strval;
+        stringify(&strval, vptr, STRING);
+        break;
+      default:
+        strval = "Unknown";
+        break;
+    }
+    printf("IP: %s (0x%02X)\nRP: 0x%" PRIXPTR "\nSP: %.64s (%s)\n\n", get_mnemonic(**IP), **IP, (uintptr_t)*RP, strval, get_data_type(object));
+  }
+  else
+    printf("IP: %s (0x%02X)\nRP: 0x%" PRIXPTR "\nSP: empty\n\n", get_mnemonic(**IP), **IP, (uintptr_t)*RP);
+  if(strval != NULL && (strcmp(strval, "null") != 0))
+    free(strval);
   return;
 }
 
@@ -148,6 +240,8 @@ RunCode interpret()
           print_object_value(pop(vm.sp));
         break;
       case OP_END:
+        if(debug_mode)
+          print_registers();
         break;
       case OP_ENT:
         break;
@@ -190,9 +284,7 @@ RunCode interpret()
       case OP_LOD:
         op_lod(vm.rp, vm.sp, dst_reg);
         if(debug_mode)
-        {
           print_registers();
-        }
         break;
       case OP_LOE:
       case OP_LOP:
@@ -215,7 +307,7 @@ RunCode interpret()
           print_object_value(pop(vm.sp));
         break;
       case OP_MOV:
-        op_mov(vm.rp, numval, src_reg, dst_reg);
+        op_mov(vm.rp, object, src_reg, dst_reg);
         if(debug_mode)
           print_registers();
         break;
@@ -316,6 +408,11 @@ RunCode interpret()
         break;
       case OP_TST:
         break;
+      case OP_XCG:
+        op_xcg(vm.rp, src_reg, dst_reg);
+        if(debug_mode)
+          print_registers();
+        break;
       case OP_XOR:
         op_xor(vm.sp);
         if(debug_mode)
@@ -328,6 +425,8 @@ RunCode interpret()
     }
     (*vm.ip++);
   }
+  if(debug_mode)
+    print_registers();
   stop_vm();
   return RUN_SUCCESS;
 }

@@ -32,19 +32,19 @@
 #include "vm/opcodes.h" // Opcode
 #include "vm/stack.h"   // Stack
 
-#define REGISTER_AMOUNT ((uint8_t)16)
+#define REGISTER_AMOUNT ((uint8_t)17)
 //static const size_t REGISTER_AMOUNT = 16;
 static const uint8_t REGISTER_EMPTY = 127;
 static const size_t INSTRUCTION_STORE_SIZE = 128;
 
 typedef struct vm
 {
-  Opcode* instructions;              // instructions to execute
-  BigNum registers[REGISTER_AMOUNT]; // 64-bit registers
-  BigNum* rp;                        // Register pointer
-  Stack stack;                       // stack structure
-  Stack* sp;                         // stack pointer/top item of stack
-  Opcode* ip;                        // instruction pointer/program counter
+  Opcode* instructions;               // instructions to execute
+  Object* registers[REGISTER_AMOUNT]; // registers
+  Object** rp;                        // register pointer
+  Stack stack;                        // stack structure
+  Stack* sp;                          // stack pointer/top item of stack
+  Opcode* ip;                         // instruction pointer/program counter
 } VM;
 extern VM vm;
 
@@ -65,6 +65,10 @@ static const Byte R12 = 12;
 static const Byte R13 = 13;
 static const Byte R14 = 14;
 static const Byte R15 = 15;
+static const Byte RS = 16;  // result
+static Opcode** IP;         // instruction pointer
+static Object** RP;         // register pointer
+static Stack** SP;          // stack pointer
 
 typedef enum
 {
