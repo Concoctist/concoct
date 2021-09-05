@@ -31,16 +31,21 @@
 
 int main()
 {
+  Object* object = NULL;
   void* vptr = NULL;
-  BigNum numval = -5552424;
+  BigNum numval = -8675309;
   debug_mode = true;
   init_vm();
 
+  vm.instructions[15] = OP_XCG;
   vm.instructions[14] = OP_LOD;
   vm.instructions[13] = OP_STR;
   vm.instructions[12] = OP_MOV;
-  vm.rp[R1] = -8675309;
+  vptr = &numval;
+  object = new_object_by_type(vptr, BIGNUM);
+  vm.rp[R1] = object;
   vm.instructions[11] = OP_RET;
+  numval = -5552424;
   vptr = &numval;
   push(vm.sp, new_object_by_type(vptr, BIGNUM));
   vm.instructions[10] = OP_BNT;
@@ -69,7 +74,7 @@ int main()
   vm.instructions[0] = OP_POW;
   push(vm.sp, new_object("5"));
   push(vm.sp, new_object("2"));
-  vm.instructions[15] = OP_END;
+  vm.instructions[16] = OP_END;
 
   interpret();
 
