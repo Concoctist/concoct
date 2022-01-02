@@ -41,7 +41,7 @@ typedef double Decimal;    // decimal
 typedef struct cct_string  // string
 {
   size_t length;
-  char *strval;
+  char* strval;
 } String;
 
 typedef enum data_type
@@ -59,7 +59,9 @@ typedef enum data_type
 typedef struct object
 {
   DataType datatype;
-  Bool marked;       // flagged for garbage collection
+  Bool is_garbage;   // flagged for garbage collection
+  Bool is_global;    // is a global variable and never considered for garbage collection
+  char* const_name;  // name of constant -- constants are never considered for garbage collection
   union
   {
     Bool boolval;

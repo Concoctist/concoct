@@ -36,7 +36,6 @@
 // Proof of concept to demonstrate garbage collection
 size_t mark_objects()
 {
-  srand((unsigned int)time(0));
   size_t mark_count = 0;
   if(debug_mode)
     debug_print("Marking objects...");
@@ -44,8 +43,11 @@ size_t mark_objects()
   {
     if(object_store.objects[slot] != NULL && rand() % 2) // each object has a 50% chance of being marked
     {
-      object_store.objects[slot]->marked = true;
-      mark_count++;
+      if(!object_store.objects[slot]->is_global && object_store.objects[slot]->const_name == NULL)
+      {
+        object_store.objects[slot]->is_garbage = true;
+        mark_count++;
+      }
     }
   }
   if(debug_mode)
@@ -56,6 +58,8 @@ size_t mark_objects()
 int main()
 {
   debug_mode = true;
+  uint8_t randnum = 0;
+  srand((unsigned int)time(0));
   init_store();
   Object* objects[1024];
   for(size_t i = 0; i < 1024; i++)
@@ -63,7 +67,13 @@ int main()
     printf("Object store free/capacity: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
     printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
     print_store_total_size();
-    objects[i] = new_object("7");
+    randnum = rand() % 100 + 1;
+    if(randnum <= 10)
+      objects[i] = new_constant("100", "TEMP");
+    else if(randnum > 10 && randnum <= 20)
+      objects[i] = new_global("200");
+    else
+      objects[i] = new_object("7");
   }
 
   for(size_t i = 0; i < 1024; i++)
