@@ -521,7 +521,7 @@ size_t flag_objects(Stack* stack)
 }
 
 // Collects garbage and returns number of objects collected
-size_t collect_garbage(Stack* stack)
+size_t collect_garbage()
 {
   size_t collect_count = 0;
   size_t old_store_size = get_store_objects_size();
