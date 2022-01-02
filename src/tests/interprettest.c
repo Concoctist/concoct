@@ -44,11 +44,14 @@ int main()
   vptr = &numval;
   object = new_object_by_type(vptr, BIGNUM);
   vm.rp[R1] = object;
+  vm.rp[RS] = object;
   vm.instructions[11] = OP_RET;
   numval = -5552424;
   vptr = &numval;
   push(vm.sp, new_object_by_type(vptr, BIGNUM));
   vm.instructions[10] = OP_BNT;
+  push(vm.sp, new_object("217"));
+  push(vm.sp, new_object("107"));
   push(vm.sp, new_object("32"));
   vm.instructions[9] = OP_XOR;
   push(vm.sp, new_object("32"));
@@ -74,7 +77,9 @@ int main()
   vm.instructions[0] = OP_POW;
   push(vm.sp, new_object("5"));
   push(vm.sp, new_object("2"));
-  vm.instructions[16] = OP_END;
+  vm.instructions[16] = OP_CLR;
+  vm.instructions[17] = OP_CLS;
+  vm.instructions[18] = OP_END;
 
   interpret();
 

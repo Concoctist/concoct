@@ -37,6 +37,8 @@ typedef enum opcode
   OP_BNT, // bitwise not/ones' complement (~)
   OP_BOR, // bitwise or (|)
   OP_CAL, // call
+  OP_CLR, // clear registers
+  OP_CLS, // clear stack
   OP_CMP, // compare
   OP_DEC, // decrement (--)
   OP_DIV, // divide (/)

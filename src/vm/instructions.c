@@ -95,6 +95,23 @@ RunCode binary_operand_check_str(Object* operand1, Object* operand2, char* opera
   return RUN_SUCCESS;
 }
 
+// Clear registers
+RunCode op_clr(Object** rp)
+{
+  for(uint8_t i = 0; i < REGISTER_AMOUNT; i++)
+    rp[i] = NULL;
+  return RUN_SUCCESS;
+}
+
+// Clear stack
+RunCode op_cls(Stack* stack)
+{
+  Object* object = NULL;
+  while(stack->count > 0)
+    object = pop(stack);
+  return RUN_SUCCESS;
+}
+
 // Load (load from memory to register)
 RunCode op_lod(Object** rp, Stack* stack, Byte dst_reg)
 {

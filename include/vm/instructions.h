@@ -36,6 +36,8 @@
 RunCode unary_operand_check(Object* operand, char* operator);
 RunCode binary_operand_check(Object* operand1, Object* operand2, char operator);
 RunCode binary_operand_check_str(Object* operand1, Object* operand2, char operator);
+RunCode op_clr(Object** rp);
+RunCode op_cls(Stack* stack);
 RunCode op_lod(Object** rp, Stack* stack, Byte dst_reg);
 RunCode op_mov(Object** rp, Object* object, Byte src_reg, Byte dst_reg);
 RunCode op_str(Object** rp, Stack* stack, Byte src_reg);

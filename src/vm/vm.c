@@ -226,6 +226,14 @@ RunCode interpret()
         break;
       case OP_CAL:
         break;
+      case OP_CLR:
+        op_clr(vm.rp);
+        if(debug_mode)
+          print_registers();
+        break;
+      case OP_CLS:
+        op_cls(vm.sp);
+        break;
       case OP_CMP:
         break;
       case OP_DEC:
