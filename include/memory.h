@@ -29,6 +29,7 @@
 #define MEMORY_H
 
 #include "types.h"
+#include "vm/stack.h"
 
 // Initial free store capacity
 static const size_t INITIAL_STORE_CAPACITY = 128;
@@ -128,6 +129,9 @@ Object* clone_object(Object* object);
 
 // Converts numeric data to string
 void stringify(char** str, void* data, DataType datatype);
+
+// Flags objects to prevent them from being garbage collected and returns number of objects flagged
+size_t flag_objects(Stack* stack);
 
 // Collects garbage and returns number of objects collected
 size_t collect_garbage();

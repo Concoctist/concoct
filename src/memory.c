@@ -257,7 +257,7 @@ Object* new_object(char* value)
     return NULL;
   }
   convert_type(object, value);
-  object->is_garbage = false;
+  object->is_flagged = false;
   object->is_global = false;
   object->const_name = NULL;
   if(debug_mode)
@@ -276,7 +276,7 @@ Object* new_global(char* value)
     return NULL;
   }
   convert_type(object, value);
-  object->is_garbage = false;
+  object->is_flagged = false;
   object->is_global = true;
   object->const_name = NULL;
   if(debug_mode)
@@ -295,7 +295,7 @@ Object* new_constant(char* value, char* name)
     return NULL;
   }
   convert_type(object, value);
-  object->is_garbage = false;
+  object->is_flagged = true;   // constants are never garbage collected
   object->is_global = false;
   object->const_name = name;
   if(debug_mode)
@@ -363,7 +363,7 @@ Object* new_object_by_type(void* data, DataType datatype)
       return NULL;
       break;
   }
-  object->is_garbage = false;
+  object->is_flagged = false;
   object->is_global = false;
   object->const_name = NULL;
   if(object->datatype != STRING) // new_string() already adds object to store
@@ -498,30 +498,72 @@ void stringify(char** str, void* data, DataType datatype)
   return;
 }
 
-// Collects garbage and returns number of objects collected
-size_t collect_garbage()
+// Flags objects to prevent them from being garbage collected and returns number of objects flagged
+size_t flag_objects(Stack* stack)
 {
-  size_t collect_count = 0;
+  size_t flag_count = 0;
   if(debug_mode)
-    debug_print("Collecting garbage...");
-  for(size_t slot = 0; slot < get_store_capacity(); slot++)
+    debug_print("GC: Flagging objects...");
+  for(size_t stack_slot = 0; stack_slot < stack->count; stack_slot++)
   {
-    if(object_store.objects[slot] != NULL && object_store.objects[slot]->is_garbage)
+    for(size_t store_slot = 0; store_slot < get_store_capacity(); store_slot++)
     {
-      if(!object_store.objects[slot]->is_global && object_store.objects[slot]->const_name == NULL)
+      if(stack->objects[stack_slot] == object_store.objects[store_slot])
       {
-        free_object(&object_store.objects[slot]);
-        collect_count++;
+        object_store.objects[store_slot]->is_flagged = true;
+        flag_count++;
       }
     }
   }
   if(debug_mode)
-    debug_print("%zu objects collected.", collect_count);
+    debug_print("GC: %zu objects flagged.", flag_count);
+  return flag_count;
+}
+
+// Collects garbage and returns number of objects collected
+size_t collect_garbage(Stack* stack)
+{
+  size_t collect_count = 0;
+  size_t old_store_size = get_store_objects_size();
+  size_t size_difference = 0;
+
+  if(debug_mode)
+    debug_print("GC: Collecting garbage...");
+  for(size_t slot = 0; slot < get_store_capacity(); slot++)
+  {
+    if(object_store.objects[slot] != NULL && !object_store.objects[slot]->is_flagged)
+    {
+      free_object(&object_store.objects[slot]);
+      collect_count++;
+    }
+  }
+  size_difference = old_store_size - get_store_objects_size();
+  if(debug_mode)
+  {
+    if(size_difference < KILOBYTE_BOUNDARY)
+      debug_print("GC: %zu objects collected. %zu bytes freed.\n", collect_count, size_difference);
+    else if(size_difference > KILOBYTE_BOUNDARY && size_difference < MEGABYTE_BOUNDARY)
+      debug_print("GC: %zu objects collected. %.3fKB freed.\n", collect_count, size_difference / 1024.0);
+    else if(size_difference > MEGABYTE_BOUNDARY && size_difference < GIGABYTE_BOUNDARY)
+      debug_print("GC: %zu objects collected. %.3fMB freed.\n", collect_count, size_difference / 1024.0 / 1024.0);
+    else if(size_difference > GIGABYTE_BOUNDARY)
+      debug_print("GC: %zu objects collected. %.3fGB freed.\n", collect_count, size_difference / 1024.0 / 1024.0 / 1024.0);
+  }
+
+  // Resize object store
   if(get_store_used_slots() != 0 && (size_t)round(get_store_capacity() / get_store_used_slots() * 100.0) >= STORE_SHRINK_THRESHOLD)
   {
     size_t new_size = (size_t)round(get_store_capacity() - (get_store_capacity() * (STORE_SHRINK_FACTOR / 100.0)));
     if(new_size >= INITIAL_STORE_CAPACITY)
       realloc_store(new_size);
   }
+
+  // Reset object non-collection flag (constants are never collected)
+  for(size_t slot = 0; slot < get_store_capacity(); slot++)
+  {
+    if(object_store.objects[slot] != NULL && object_store.objects[slot]->const_name == NULL)
+      object_store.objects[slot]->is_flagged=false;
+  }
+
   return collect_count;
 }

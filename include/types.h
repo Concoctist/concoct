@@ -59,9 +59,9 @@ typedef enum data_type
 typedef struct object
 {
   DataType datatype;
-  Bool is_garbage;   // flagged for garbage collection
-  Bool is_global;    // is a global variable and never considered for garbage collection
-  char* const_name;  // name of constant -- constants are never considered for garbage collection
+  Bool is_flagged;   // flagged to prevent garbage collection
+  Bool is_global;    // is a global variable
+  char* const_name;  // name of constant (constants are never considered for garbage collection)
   union
   {
     Bool boolval;

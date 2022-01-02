@@ -38,20 +38,17 @@ size_t mark_objects()
 {
   size_t mark_count = 0;
   if(debug_mode)
-    debug_print("Marking objects...");
+    debug_print("GC: Marking objects...");
   for(size_t slot = 0; slot < get_store_capacity(); slot++)
   {
     if(object_store.objects[slot] != NULL && rand() % 2) // each object has a 50% chance of being marked
     {
-      if(!object_store.objects[slot]->is_global && object_store.objects[slot]->const_name == NULL)
-      {
-        object_store.objects[slot]->is_garbage = true;
-        mark_count++;
-      }
+      object_store.objects[slot]->is_flagged = true;
+      mark_count++;
     }
   }
   if(debug_mode)
-    debug_print("%zu objects marked.", mark_count);
+    debug_print("GC: %zu objects marked.", mark_count);
   return mark_count;
 }
 
@@ -81,7 +78,7 @@ int main()
     printf("Object of data type %s at slot #%zu is %zu bytes.\n", get_data_type(object_store.objects[i]), i, get_object_size(object_store.objects[i]));
   }
   mark_objects();
-  collect_garbage(); // free only marked objects
+  collect_garbage(); // free only non-marked objects
   printf("Object store free/capacity: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
   printf("Used slots: %zu/%zu\n\n", get_store_used_slots(), get_store_capacity());
 
