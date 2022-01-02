@@ -38,6 +38,8 @@ const char* get_mnemonic(Opcode oc)
     case OP_BNT: return "OP_BNT";    // bitwise not/ones' complement (~)
     case OP_BOR: return "OP_BOR";    // bitwise or (|)
     case OP_CAL: return "OP_CAL";    // call
+    case OP_CLR: return "OP_CLR";    // clear registers
+    case OP_CLS: return "OP_CLS";    // clear stack
     case OP_CMP: return "OP_CMP";    // compare
     case OP_DEC: return "OP_DEC";    // decrement (--)
     case OP_DIV: return "OP_DIV";    // divide (/)
