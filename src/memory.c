@@ -257,9 +257,49 @@ Object* new_object(char* value)
     return NULL;
   }
   convert_type(object, value);
-  object->marked = false;
+  object->is_garbage = false;
+  object->is_global = false;
+  object->const_name = NULL;
   if(debug_mode)
     debug_print("Object of type %s created with value: %s", get_data_type(object), value);
+  add_store_object(object);
+  return object;
+}
+
+// Creates a new global object
+Object* new_global(char* value)
+{
+  Object* object = (Object *)malloc(sizeof(Object));
+  if(object == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for global object: %s\n", strerror(errno));
+    return NULL;
+  }
+  convert_type(object, value);
+  object->is_garbage = false;
+  object->is_global = true;
+  object->const_name = NULL;
+  if(debug_mode)
+    debug_print("Global object of type %s created with value: %s", get_data_type(object), value);
+  add_store_object(object);
+  return object;
+}
+
+// Creates a new constant object
+Object* new_constant(char* value, char* name)
+{
+  Object* object = (Object *)malloc(sizeof(Object));
+  if(object == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for constant object: %s\n", strerror(errno));
+    return NULL;
+  }
+  convert_type(object, value);
+  object->is_garbage = false;
+  object->is_global = false;
+  object->const_name = name;
+  if(debug_mode)
+    debug_print("Constant object of type %s created with value: %s", get_data_type(object), value);
   add_store_object(object);
   return object;
 }
@@ -323,7 +363,9 @@ Object* new_object_by_type(void* data, DataType datatype)
       return NULL;
       break;
   }
-  object->marked = false;
+  object->is_garbage = false;
+  object->is_global = false;
+  object->const_name = NULL;
   if(object->datatype != STRING) // new_string() already adds object to store
     add_store_object(object);
   return object;
@@ -464,10 +506,13 @@ size_t collect_garbage()
     debug_print("Collecting garbage...");
   for(size_t slot = 0; slot < get_store_capacity(); slot++)
   {
-    if(object_store.objects[slot] != NULL && object_store.objects[slot]->marked)
+    if(object_store.objects[slot] != NULL && object_store.objects[slot]->is_garbage)
     {
-      free_object(&object_store.objects[slot]);
-      collect_count++;
+      if(!object_store.objects[slot]->is_global && object_store.objects[slot]->const_name == NULL)
+      {
+        free_object(&object_store.objects[slot]);
+        collect_count++;
+      }
     }
   }
   if(debug_mode)

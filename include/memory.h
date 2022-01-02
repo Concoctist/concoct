@@ -111,6 +111,12 @@ void free_string(String* strobj);
 // Populates Object struct
 Object* new_object(char* value);
 
+// Creates a new global object
+Object* new_global(char* value);
+
+// Creates a new constant object
+Object* new_constant(char* value, char* name);
+
 // Populates Object struct based on datatype
 Object* new_object_by_type(void* data, DataType datatype);
 
