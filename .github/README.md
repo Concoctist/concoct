@@ -53,10 +53,14 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 
 4. Build Concoct:
    ```sh
-   make
+   $ make
    ```
 
-5. Congratulations! There should now be a `concoct` executable under the `bin` directory.
+5. There should now be a `concoct` executable under the `bin` directory if the build was successful:
+   ```
+   $ ./concoct -v
+   Concoct v0.1.0 rev 148 (d976be2) (64-bit Linux) (Debug) built at 00:46 on 01-02-2022
+   ```
 
 #### Windows Steps
 1. Install the prerequisite software. This includes [Visual Studio](https://visualstudio.microsoft.com/) >=2015 with the "_Desktop development with C++_" workload as
@@ -82,7 +86,7 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 
    ![image](https://user-images.githubusercontent.com/3323717/147864201-8d8d2ac9-78fe-4efa-a6b7-3c4b7dc3c3d0.png)
 
-5. If successful, `concoct.exe` should now exist in your output directory.
+5. If the build was successful, `concoct.exe` should now exist in your output directory:
 
    ![image](https://user-images.githubusercontent.com/3323717/147864334-5c8d44f3-136f-47f9-a1d5-434826e6572d.png)
 
