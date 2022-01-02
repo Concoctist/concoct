@@ -269,7 +269,10 @@ void print_usage()
 
 void print_version()
 {
-  printf("Concoct v%s rev %s (%s) (%s %s) (%s) built at %s on %s\n", VERSION, GIT_REV, GIT_HASH, BITNESS, PLATFORM, BUILD_TYPE, BUILD_TIME, BUILD_DATE);
+  if(strlen(GIT_REV) == 0) // git not detected in path
+    printf("Concoct v%s (%s %s) (%s) built at %s on %s\n", VERSION, BITNESS, PLATFORM, BUILD_TYPE, BUILD_TIME, BUILD_DATE);
+  else
+    printf("Concoct v%s rev %s (%s) (%s %s) (%s) built at %s on %s\n", VERSION, GIT_REV, GIT_HASH, BITNESS, PLATFORM, BUILD_TYPE, BUILD_TIME, BUILD_DATE);
   return;
 }
 
