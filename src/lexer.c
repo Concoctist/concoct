@@ -65,6 +65,7 @@ ConcoctLexer* cct_new_string_lexer(const char* in_string)
   lexer->string_index = 0;
   lexer->line_number = 1;
   lexer->error = NULL;
+  lexer->is_error_allocated = 0;
   lexer->token_text = malloc(TOKEN_TEXT_LENGTH);
   lexer->next_char = 'a'; // any non-zero value
   cct_next_char(lexer);
@@ -73,6 +74,10 @@ ConcoctLexer* cct_new_string_lexer(const char* in_string)
 
 void cct_delete_lexer(ConcoctLexer* lexer)
 {
+  if(lexer->is_error_allocated)
+  {
+    free(lexer->error);
+  }
   free(lexer->token_text);
   free(lexer);
 }
@@ -97,9 +102,15 @@ int cct_lexer_is_eof(ConcoctLexer* lexer)
   return lexer->next_char == '\0';
 }
 
-void cct_set_error(ConcoctLexer* lexer, const char* message)
+void cct_set_error(ConcoctLexer* lexer, char* message)
 {
   lexer->error = message;
+}
+
+void cct_set_error_allocated(ConcoctLexer* lexer, char* message)
+{
+  lexer->error = message;
+  lexer->is_error_allocated = 1;
 }
 
 ConcoctToken cct_new_token(ConcoctTokenType type, int line_number)
@@ -487,7 +498,17 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
       default:
         // This means it's some sort of unsupported character
         // We just set the text to the original text, and set the type to Error
-        cct_set_error(lexer, "Unexpected character");
+        char* error_string = malloc(32);
+        if (error_string != NULL)
+        {
+            sprintf_s(error_string, 32, "Unexpected character '%c'", lexer->next_char);
+            cct_set_error_allocated(lexer, error_string);
+        }
+        else
+        {
+            cct_set_error(lexer, "Error allocating memory");
+        }
+        
         lexer->token_text[text_index++] = lexer->next_char;
         lexer->token_text[text_index] = '\0';
         cct_next_char(lexer);
