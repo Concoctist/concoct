@@ -183,7 +183,8 @@ typedef struct concoct_lexer
   int line_number;
   int string_index;
   char* token_text;
-  const char* error;
+  char* error;
+  int is_error_allocated;
 } ConcoctLexer;
 
 ConcoctToken cct_new_token( ConcoctTokenType type, int line_number);
@@ -197,7 +198,8 @@ void cct_delete_lexer(ConcoctLexer* lexer);
 
 int cct_lexer_is_eof(ConcoctLexer* lexer);
 
-void cct_set_error(ConcoctLexer* lexer, const char* message);
+void cct_set_error(ConcoctLexer* lexer, char* message);
+void cct_set_error_allocated(ConcoctLexer* lexer, char* message);
 
 char cct_next_char(ConcoctLexer* lexer);
 ConcoctToken cct_next_token(ConcoctLexer* lexer);
