@@ -37,6 +37,9 @@
 #include "vm/vm.h"
 
 VM vm;
+Opcode** IP;
+Object** RP;
+Stack** SP;
 
 // Initializes virtual machine
 void init_vm()
@@ -430,7 +433,7 @@ RunCode interpret()
         return RUN_ERROR;
         break;
     }
-    (*vm.ip++);
+    (vm.ip)++;
   }
   if(debug_mode)
     print_registers();
