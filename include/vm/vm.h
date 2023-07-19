@@ -66,9 +66,9 @@ static const Byte R13 = 13;
 static const Byte R14 = 14;
 static const Byte R15 = 15;
 static const Byte RS = 16;  // result
-static Opcode** IP;         // instruction pointer
-static Object** RP;         // register pointer
-static Stack** SP;          // stack pointer
+extern Opcode** IP;         // instruction pointer
+extern Object** RP;         // register pointer
+extern Stack** SP;          // stack pointer
 
 typedef enum
 {

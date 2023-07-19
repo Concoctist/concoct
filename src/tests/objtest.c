@@ -27,8 +27,9 @@
 
 #include <inttypes.h>
 #include <stdio.h>
-#include <stdlib.h> // rand(), srand()
-#include <time.h>   // time()
+#include <stdlib.h>  // rand(), srand()
+#include <time.h>    // time()
+#include "concoct.h"
 #include "debug.h"
 #include "memory.h"
 #include "types.h"
@@ -59,6 +60,7 @@ int main()
   srand((unsigned int)time(0));
   init_store();
   Object* objects[1024];
+  UNUSED(objects);
   for(size_t i = 0; i < 1024; i++)
   {
     printf("Object store free/capacity: %zu/%zu\n", get_store_free_slots(), get_store_capacity());
