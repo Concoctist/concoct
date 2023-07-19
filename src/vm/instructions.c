@@ -25,10 +25,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <math.h>   // pow()
-#include <stdio.h>  // fprintf(), stderr
-#include <stdlib.h> // malloc()
-#include <string.h> // strcat(), strcmp()
+#include <math.h>    // pow()
+#include <stdio.h>   // fprintf(), stderr
+#include <stdlib.h>  // malloc()
+#include <string.h>  // strcat(), strcmp()
+#include "concoct.h"
 #include "memory.h"
 #include "vm/vm.h"
 
@@ -107,6 +108,7 @@ RunCode op_clr(Object** rp)
 RunCode op_cls(Stack* stack)
 {
   Object* object = NULL;
+  UNUSED(object);
   while(stack->count > 0)
     object = pop(stack);
   return RUN_SUCCESS;
@@ -170,6 +172,7 @@ RunCode op_xcg(Object** rp, Byte reg1, Byte reg2)
 // Pop
 RunCode op_pop(Stack* stack, Object* object)
 {
+  UNUSED(object);
   object = pop(stack);
   return RUN_SUCCESS;
 }

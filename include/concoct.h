@@ -34,6 +34,9 @@
   static const char ARG_PREFIX = '-';
 #endif
 
+// Used to flag unused variables and silence compiler warnings
+#define UNUSED(x) (void)(x)
+
 void clean_exit(int status);
 void lex_file(const char* file_name);
 void lex_string(const char* input_string);

@@ -31,6 +31,58 @@
 #include <string.h>
 #include "lexer.h"
 
+const char* cct_keywords[CCT_KEYWORD_COUNT] = {
+  "break",
+  "continue",
+  "case",
+  "class",
+  "do",
+  "default",
+  "else",
+  "enum",
+  "false",
+  "for",
+  "func",
+  "goto",
+  "if",
+  "namespace",
+  "null",
+  "return",
+  "switch",
+  "super",
+  "true",
+  "use",
+  "var",
+  "while",
+  "in"
+};
+
+ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
+  CCT_TOKEN_BREAK,
+  CCT_TOKEN_CONTINUE,
+  CCT_TOKEN_CASE,
+  CCT_TOKEN_CLASS,
+  CCT_TOKEN_DO,
+  CCT_TOKEN_DEFAULT,
+  CCT_TOKEN_ELSE,
+  CCT_TOKEN_ENUM,
+  CCT_TOKEN_FALSE,
+  CCT_TOKEN_FOR,
+  CCT_TOKEN_FUNC,
+  CCT_TOKEN_GOTO,
+  CCT_TOKEN_IF,
+  CCT_TOKEN_NAMESPACE,
+  CCT_TOKEN_NULL,
+  CCT_TOKEN_RETURN,
+  CCT_TOKEN_SWITCH,
+  CCT_TOKEN_SUPER,
+  CCT_TOKEN_TRUE,
+  CCT_TOKEN_USE,
+  CCT_TOKEN_VAR,
+  CCT_TOKEN_WHILE,
+  CCT_TOKEN_IN
+};
+
 ConcoctLexer* cct_new_file_lexer(FILE* in_file)
 {
   ConcoctLexer* lexer = malloc(sizeof(ConcoctLexer));
@@ -127,6 +179,8 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
   ConcoctTokenType type = CCT_TOKEN_ERROR;
   // How far into the text we are
   int text_index = 0;
+  // Error text
+  char* error_string = malloc(32);
   // Default to an empty string
   lexer->token_text[0] = '\0';
   // Skips whitespace and comments, repeatedly
@@ -498,17 +552,16 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
       default:
         // This means it's some sort of unsupported character
         // We just set the text to the original text, and set the type to Error
-        char* error_string = malloc(32);
         if (error_string != NULL)
         {
-            sprintf_s(error_string, 32, "Unexpected character '%c'", lexer->next_char);
-            cct_set_error_allocated(lexer, error_string);
+          sprintf(error_string, "Unexpected character '%c'", lexer->next_char);
+          cct_set_error_allocated(lexer, error_string);
         }
         else
         {
-            cct_set_error(lexer, "Error allocating memory");
+          cct_set_error(lexer, "Error allocating memory");
         }
-        
+
         lexer->token_text[text_index++] = lexer->next_char;
         lexer->token_text[text_index] = '\0';
         cct_next_char(lexer);
