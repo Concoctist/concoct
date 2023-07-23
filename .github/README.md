@@ -1,15 +1,14 @@
 [![AppVeyor build status](https://img.shields.io/appveyor/ci/ldilley/concoct?label=AppVeyor%20build%20status)](https://ci.appveyor.com/project/ldilley/concoct)
-[![Travis CI build status](https://img.shields.io/travis/com/ConcoctLang/concoct?label=Travis%20CI%20build%20status)](https://travis-ci.com/ConcoctLang/concoct)
-[![CodeFactor grade](https://img.shields.io/codefactor/grade/github/ConcoctLang/concoct?label=CodeFactor%20quality)](https://www.codefactor.io/repository/github/ConcoctLang/concoct)
-[![Discord](https://img.shields.io/discord/540333638479380487?label=Discord)](https://discord.concoct.dev/)
+[![CodeFactor grade](https://img.shields.io/codefactor/grade/github/Concoctist/concoct?label=CodeFactor%20quality)](https://www.codefactor.io/repository/github/Concoctist/concoct)
+[![Discord](https://img.shields.io/discord/540333638479380487?label=Discord)](https://discord.concoct.ist/)
 
 Concoct 🧪
 =======
 Concoct is an imperative, dynamically-typed, interpreted, general-purpose programming language written in C.
 
-:construction: **Note:** This project is very much a work in progress. The interpreter is not yet functional. Have a look at the [roadmap](https://github.com/ConcoctLang/concoct/wiki/Roadmap).
+:construction: **Note:** This project is very much a work in progress. The interpreter is not yet functional. Have a look at the [roadmap](https://github.com/Concoctist/concoct/wiki/Roadmap).
 
-For more information about Concoct, please see the [wiki](https://github.com/ConcoctLang/concoct/wiki).
+For more information about Concoct, please see the [wiki](https://github.com/Concoctist/concoct/wiki).
 
 ### Building :hammer_and_wrench:
 #### Requirements
@@ -34,11 +33,11 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
    ```
 1. Obtain the source code via `git` or download a zip archive:
    ```sh
-   $ git clone https://github.com/ConcoctLang/concoct.git
+   $ git clone https://github.com/Concoctist/concoct.git
    ```
    Or:
    ```sh
-   $ wget https://github.com/ConcoctLang/concoct/archive/master.zip && unzip master.zip
+   $ wget https://github.com/Concoctist/concoct/archive/master.zip && unzip master.zip
    ```
 
 2. In the top-level directory where `CMakeLists.txt` exists, create a build directory:
@@ -91,9 +90,9 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
    ![image](https://user-images.githubusercontent.com/3323717/147864334-5c8d44f3-136f-47f9-a1d5-434826e6572d.png)
 
 ### Contributing and Support :octocat:
-Feel free to [submit an issue](https://github.com/ConcoctLang/concoct/issues/new) if you require assistance or would like to
-make a feature request. You are also welcome to join our Discord server at https://discord.concoct.dev/. Any contributions such as build testing, creating bug reports
+Feel free to [submit an issue](https://github.com/Concoctist/concoct/issues/new) if you require assistance or would like to
+make a feature request. You are also welcome to join our Discord server at https://discord.concoct.ist/. Any contributions such as build testing, creating bug reports
 or feature requests, and submitting pull requests are appreciated. Our code style guidelines can be found in the "Coding Convention" section of
-[CONTRIBUTING.md](https://github.com/ConcoctLang/concoct/blob/master/.github/CONTRIBUTING.md). Please see the
+[CONTRIBUTING.md](https://github.com/Concoctist/concoct/blob/master/.github/CONTRIBUTING.md). Please see the
 [fork and pull guide](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork)
 for direction if you are not certain how to submit a pull request.
