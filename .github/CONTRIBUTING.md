@@ -2,15 +2,15 @@
 
 ## Issue Tracker
 
-https://github.com/ConcoctLang/concoct/issues
+https://github.com/Concoctist/concoct/issues
 
 ## Discord
 
-https://discord.concoct.dev/
+https://discord.concoct.ist/
 
 ## Wiki
 
-https://github.com/ConcoctLang/concoct/wiki
+https://github.com/Concoctist/concoct/wiki
 
 ## Coding Convention
 
