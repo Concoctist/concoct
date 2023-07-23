@@ -1,7 +1,7 @@
 /*
  * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language
- * Copyright (c) 2020-2022 BlakeTheBlock and Lloyd Dilley
- * http://concoct.dev/
+ * Copyright (c) 2020-2023 BlakeTheBlock and Lloyd Dilley
+ * http://concoct.ist/
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
