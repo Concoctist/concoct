@@ -60,7 +60,6 @@ typedef struct concoct_parser
 
 ConcoctNode* cct_new_node(ConcoctNodeTree* tree, ConcoctToken token, const char* text);
 ConcoctParser* cct_new_parser(ConcoctLexer* lexer);
-ConcoctParser* cct_new_parser_str(const char* str);
 void cct_delete_parser(ConcoctParser* parser);
 void cct_delete_node_tree(ConcoctNodeTree* tree);
 ConcoctNode* cct_node_add_child(ConcoctNode* node, ConcoctNode* child);

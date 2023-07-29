@@ -30,11 +30,6 @@
 #include <string.h>
 #include "parser.h"
 
-ConcoctParser* cct_new_parser_str(const char* str)
-{
-  return cct_new_parser(cct_new_string_lexer(str));
-}
-
 ConcoctParser* cct_new_parser(ConcoctLexer* lexer)
 {
   ConcoctParser* parser = malloc(sizeof(ConcoctParser));
@@ -147,7 +142,7 @@ ConcoctNode* cct_parse_single_expr(ConcoctParser* parser)
 {
   ConcoctNode* node;
 
-  switch (parser->current_token.type)
+  switch(parser->current_token.type)
   {
     case CCT_TOKEN_INT:
     case CCT_TOKEN_FLOAT:
@@ -193,7 +188,7 @@ ConcoctNode* cct_parse_primary_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_DOT:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
@@ -221,7 +216,7 @@ ConcoctNode* cct_parse_unary_expr(ConcoctParser* parser)
 {
   ConcoctNode* op_node;
 
-  switch (parser->current_token.type)
+  switch(parser->current_token.type)
   {
     case CCT_TOKEN_ADD:
     case CCT_TOKEN_SUB:
@@ -258,7 +253,7 @@ ConcoctNode* cct_parse_mult_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_MUL:
       case CCT_TOKEN_DIV:
@@ -295,7 +290,7 @@ ConcoctNode* cct_parse_additive_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_ADD:
       case CCT_TOKEN_SUB:
@@ -330,7 +325,7 @@ ConcoctNode* cct_parse_shift_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_SHL:
       case CCT_TOKEN_SHR:
@@ -365,7 +360,7 @@ ConcoctNode* cct_parse_relational_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_LESS:
       case CCT_TOKEN_LESS_EQUAL:
@@ -407,7 +402,7 @@ ConcoctNode* cct_parse_equality_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_EQUAL:
       case CCT_TOKEN_NOT_EQUAL:
@@ -449,7 +444,7 @@ ConcoctNode* cct_parse_bit_and_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_BIN_AND:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
@@ -488,7 +483,7 @@ ConcoctNode* cct_parse_bit_xor_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_BIN_XOR:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
@@ -527,7 +522,7 @@ ConcoctNode* cct_parse_bit_or_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_BIN_OR:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
@@ -566,7 +561,7 @@ ConcoctNode* cct_parse_and_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_AND:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
@@ -600,7 +595,7 @@ ConcoctNode* cct_parse_or_expr(ConcoctParser* parser)
   while(parsing)
   {
     ConcoctNode* op_node;
-    switch (parser->current_token.type)
+    switch(parser->current_token.type)
     {
       case CCT_TOKEN_OR:
         op_node = cct_new_node(parser->tree, parser->current_token, NULL);
@@ -861,7 +856,7 @@ ConcoctNode* cct_parse_assign(ConcoctParser* parser)
   cct_next_parser_token(parser);
   ConcoctNode* assign_op_node;
 
-  switch (parser->current_token.type)
+  switch(parser->current_token.type)
   {
     case CCT_TOKEN_ASSIGN:
     case CCT_TOKEN_ADD_ASSIGN:
@@ -893,7 +888,7 @@ ConcoctNode* cct_parse_stat(ConcoctParser* parser)
 {
   cct_parser_skip_new_lines(parser);
   // Tests the current token and chooses the associated parsing function
-  switch (parser->current_token.type)
+  switch(parser->current_token.type)
   {
     case CCT_TOKEN_IF:         return cct_parse_if_stat(parser);
     case CCT_TOKEN_WHILE:      return cct_parse_while_stat(parser);

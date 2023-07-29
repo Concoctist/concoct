@@ -30,7 +30,8 @@
 
 #include <stdio.h> // FILE
 
-#define TOKEN_TEXT_LENGTH 1024
+#define MAX_TOKEN_TEXT_LENGTH 1024
+#define MAX_ERROR_STRING_LENGTH 64
 
 typedef enum concoct_token_type
 {
@@ -117,43 +118,52 @@ typedef struct concoct_token
   int line_number;
 } ConcoctToken;
 
-typedef enum concoct_lexer_type
+typedef enum concoct_char_stream_type
 {
-  CCT_LEXER_FILE,
-  CCT_LEXER_STRING
-} ConcoctLexerType;
+  CCT_CHAR_STREAM_FILE,
+  CCT_CHAR_STREAM_STRING
+} ConcoctCharStreamType;
 
-typedef struct concoct_lexer
+typedef struct concoct_char_stream
 {
-  ConcoctLexerType type;
+  ConcoctCharStreamType type;
   union
   {
     FILE* file_input;
     const char* string_input;
   } input;
+  int index;
+} ConcoctCharStream;
+
+typedef struct concoct_lexer
+{
+  ConcoctCharStream* source;
   char next_char;
   int line_number;
-  int string_index;
   char* token_text;
   char* error;
-  int is_error_allocated;
 } ConcoctLexer;
 
-ConcoctToken cct_new_token( ConcoctTokenType type, int line_number);
+ConcoctToken cct_new_token(ConcoctTokenType type, int line_number);
 
 // Helper function for getting type names
 const char* cct_token_type_to_string(ConcoctTokenType type);
 
-ConcoctLexer* cct_new_file_lexer(FILE* in_file);
-ConcoctLexer* cct_new_string_lexer(const char* in_string);
+ConcoctLexer* cct_new_lexer(ConcoctCharStream* source);
 void cct_delete_lexer(ConcoctLexer* lexer);
 
 int cct_lexer_is_eof(ConcoctLexer* lexer);
 
-void cct_set_error(ConcoctLexer* lexer, char* message);
-void cct_set_error_allocated(ConcoctLexer* lexer, char* message);
+void cct_set_error(ConcoctLexer* lexer, const char* message);
 
 char cct_next_char(ConcoctLexer* lexer);
 ConcoctToken cct_next_token(ConcoctLexer* lexer);
+
+
+ConcoctCharStream* cct_new_file_char_stream(FILE* in_file);
+ConcoctCharStream* cct_new_string_char_stream(const char* in_string);
+char cct_get_char_from_stream(ConcoctCharStream* stream);
+int cct_char_stream_eof(ConcoctCharStream* stream);
+void cct_delete_char_stream(ConcoctCharStream* stream);
 
 #endif // LEXER_H

@@ -83,7 +83,7 @@ ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
   CCT_TOKEN_IN
 };
 
-ConcoctLexer* cct_new_file_lexer(FILE* in_file)
+ConcoctLexer* cct_new_lexer(ConcoctCharStream* source)
 {
   ConcoctLexer* lexer = malloc(sizeof(ConcoctLexer));
 
@@ -92,44 +92,21 @@ ConcoctLexer* cct_new_file_lexer(FILE* in_file)
     fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
     return NULL;
   }
-
-  lexer->type = CCT_LEXER_FILE;
-  lexer->input.file_input = in_file;
+  lexer->source = source;
   lexer->line_number = 1;
   lexer->error = NULL;
-  lexer->token_text = malloc(TOKEN_TEXT_LENGTH);
+
+  lexer->token_text = malloc(MAX_TOKEN_TEXT_LENGTH);
   cct_next_char(lexer);
   return lexer;
 }
-
-ConcoctLexer* cct_new_string_lexer(const char* in_string)
-{
-  ConcoctLexer* lexer = malloc(sizeof(ConcoctLexer));
-
-  if(lexer == NULL)
-  {
-    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
-    return NULL;
-  }
-
-  lexer->type = CCT_LEXER_STRING;
-  lexer->input.string_input = in_string;
-  lexer->string_index = 0;
-  lexer->line_number = 1;
-  lexer->error = NULL;
-  lexer->is_error_allocated = 0;
-  lexer->token_text = malloc(TOKEN_TEXT_LENGTH);
-  lexer->next_char = 'a'; // any non-zero value
-  cct_next_char(lexer);
-  return lexer;
-}
-
 void cct_delete_lexer(ConcoctLexer* lexer)
 {
-  if(lexer->is_error_allocated)
+  if(lexer->error != NULL)
   {
     free(lexer->error);
   }
+
   free(lexer->token_text);
   free(lexer);
 }
@@ -137,32 +114,84 @@ void cct_delete_lexer(ConcoctLexer* lexer)
 // Gets the next character in the lexing stream
 char cct_next_char(ConcoctLexer* lexer)
 {
-  if(lexer->type == CCT_LEXER_FILE)
-    lexer->next_char = (char)getc(lexer->input.file_input);
-  else
-  {
-    if(lexer->next_char != '\0')
-      lexer->next_char = lexer->input.string_input[lexer->string_index++];
-  }
+  lexer->next_char = cct_get_char_from_stream(lexer->source);
   return lexer->next_char;
 }
 
 int cct_lexer_is_eof(ConcoctLexer* lexer)
 {
-  if(lexer->type == CCT_LEXER_FILE)
-    return feof(lexer->input.file_input);
   return lexer->next_char == '\0';
 }
 
-void cct_set_error(ConcoctLexer* lexer, char* message)
+void cct_set_error(ConcoctLexer* lexer, const char* message)
 {
-  lexer->error = message;
+  if(lexer->error == NULL)
+  {
+    lexer->error = malloc(MAX_ERROR_STRING_LENGTH);
+  }
+  strcpy(lexer->error, message);
 }
 
-void cct_set_error_allocated(ConcoctLexer* lexer, char* message)
+ConcoctCharStream* cct_new_file_char_stream(FILE* in_file)
 {
-  lexer->error = message;
-  lexer->is_error_allocated = 1;
+  ConcoctCharStream* stream = malloc(sizeof(ConcoctCharStream));
+
+  if(stream == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
+    return NULL;
+  }
+
+  stream->type = CCT_CHAR_STREAM_FILE;
+  stream->input.file_input = in_file;
+  stream->index = 0;
+  return stream;
+}
+
+ConcoctCharStream* cct_new_string_char_stream(const char* in_string)
+{
+  ConcoctCharStream* stream = malloc(sizeof(ConcoctCharStream));
+
+  if(stream == NULL)
+  {
+    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
+    return NULL;
+  }
+
+  stream->type = CCT_CHAR_STREAM_STRING;
+  stream->input.string_input = in_string;
+  stream->index = 0;
+  return stream;
+}
+
+char cct_get_char_from_stream(ConcoctCharStream* stream)
+{
+  if(!cct_char_stream_eof(stream))
+  {
+    stream->index += 1;
+    if(stream->type == CCT_CHAR_STREAM_STRING)
+    {
+      char ch = stream->input.string_input[stream->index - 1];
+
+      return ch;
+    }
+    return (char)getc(stream->input.file_input);
+  }
+  return '\0';
+}
+
+int cct_char_stream_eof(ConcoctCharStream* stream)
+{
+  if(stream->type == CCT_CHAR_STREAM_STRING)
+  {
+    return stream->input.string_input[stream->index] == '\0';
+  }
+  return feof(stream->input.file_input);
+}
+
+void cct_delete_char_stream(ConcoctCharStream* stream)
+{
+  free(stream);
 }
 
 ConcoctToken cct_new_token(ConcoctTokenType type, int line_number)
@@ -179,8 +208,6 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
   ConcoctTokenType type = CCT_TOKEN_ERROR;
   // How far into the text we are
   int text_index = 0;
-  // Error text
-  char* error_string = malloc(32);
   // Default to an empty string
   lexer->token_text[0] = '\0';
   // Skips whitespace and comments, repeatedly
@@ -231,7 +258,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
         if(cct_lexer_is_eof(lexer))
         {
           // End of file is perfectly fine on single-line comments
-          ConcoctToken eof_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
+          ConcoctToken eof_token = cct_new_token(CCT_TOKEN_EOF, lexer->line_number);
           return eof_token;
         }
         // Return the newline that terminated the comment
@@ -550,22 +577,17 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
         type = CCT_TOKEN_COMMA;
         break;
       default:
+        // cct_set_error is called to allocate memory for storing the error message; need a better way of doing this
+        cct_set_error(lexer, "");
+        sprintf(lexer->error, "Unexpected character '%c'", lexer->next_char);
+
         // This means it's some sort of unsupported character
         // We just set the text to the original text, and set the type to Error
-        if (error_string != NULL)
-        {
-          sprintf(error_string, "Unexpected character '%c'", lexer->next_char);
-          cct_set_error_allocated(lexer, error_string);
-        }
-        else
-        {
-          cct_set_error(lexer, "Error allocating memory");
-        }
-
         lexer->token_text[text_index++] = lexer->next_char;
         lexer->token_text[text_index] = '\0';
         cct_next_char(lexer);
         ConcoctToken token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
+
         return token;
     }
   }

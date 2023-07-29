@@ -122,7 +122,8 @@ void parse_file(const char* file_name)
   }
 
   // Creates a new lexer and iterates through the tokens
-  ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
+  ConcoctCharStream* char_stream = cct_new_file_char_stream(input_file);
+  ConcoctLexer* file_lexer = cct_new_lexer(char_stream);
   ConcoctParser* parser = cct_new_parser(file_lexer);
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
   if(parser->error == NULL)
@@ -131,6 +132,7 @@ void parse_file(const char* file_name)
     fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   fclose(input_file);
   cct_delete_parser(parser);
+  cct_delete_char_stream(char_stream);
   cct_delete_node_tree(node_tree);
   return;
 }
@@ -138,7 +140,8 @@ void parse_file(const char* file_name)
 // Parses string
 void parse_string(const char* input_string)
 {
-  ConcoctLexer* string_lexer = cct_new_string_lexer(input_string);
+  ConcoctCharStream* char_stream = cct_new_string_char_stream(input_string);
+  ConcoctLexer* string_lexer = cct_new_lexer(char_stream);
   ConcoctParser* parser = cct_new_parser(string_lexer);
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
   if(parser->error == NULL)
@@ -149,6 +152,7 @@ void parse_string(const char* input_string)
   printf("Freed parser\n");
   cct_delete_node_tree(node_tree);
   printf("Freed node tree\n");
+  cct_delete_char_stream(char_stream);
   return;
 }
 
@@ -163,11 +167,13 @@ void lex_file(const char* file_name)
   }
 
   // Creates a new lexer and iterates through the tokens
-  ConcoctLexer* file_lexer = cct_new_file_lexer(input_file);
+  ConcoctCharStream* char_stream = cct_new_file_char_stream(input_file);
+  ConcoctLexer* file_lexer = cct_new_lexer(char_stream);
   if(file_lexer == NULL)
   {
     fprintf(stderr, "File lexer is NULL!\n");
     fclose(input_file);
+    cct_delete_char_stream(char_stream);
     return;
   }
   ConcoctToken token = cct_next_token(file_lexer);
@@ -186,6 +192,7 @@ void lex_file(const char* file_name)
   }
   fclose(input_file);
   cct_delete_lexer(file_lexer);
+  cct_delete_char_stream(char_stream);
   return;
 }
 
@@ -194,7 +201,8 @@ void lex_string(const char* input_string)
 {
   // Lexer also can be created for strings
   //const char* input = "func test() { return a + b }";
-  ConcoctLexer* string_lexer = cct_new_string_lexer(input_string);
+  ConcoctCharStream* char_stream = cct_new_string_char_stream(input_string);
+  ConcoctLexer* string_lexer = cct_new_lexer(char_stream);
   ConcoctToken token = cct_next_token(string_lexer);
 
   if(string_lexer == NULL)
@@ -216,6 +224,7 @@ void lex_string(const char* input_string)
     token = cct_next_token(string_lexer);
   }
   cct_delete_lexer(string_lexer);
+  cct_delete_char_stream(char_stream);
   return;
 }
 
