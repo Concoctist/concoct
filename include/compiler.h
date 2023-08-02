@@ -25,48 +25,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef COMPILER_H
+#define COMPILER_H
 
-#include "lexer.h"
+#include <stdbool.h> // bool
+#include "parser.h"
 
-static const size_t CCT_NODE_COUNT_PER_BLOCK = 256;
+#define MAX_QUEUE_CAPACITY ((size_t)256)
+//static const size_t MAX_QUEUE_CAPACITY = CCT_NODE_COUNT_PER_BLOCK;
 
-typedef struct ConcoctNode
+typedef struct node_queue
 {
-  ConcoctToken token;
-  char* text;
-  struct ConcoctNode* parent;
-  int child_count;
-  struct ConcoctNode** children;
-} ConcoctNode;
+  int front;
+  int back;
+  size_t count;
+  ConcoctNode* nodes[MAX_QUEUE_CAPACITY];
+} Queue;
 
-typedef struct concoct_node_tree
-{
-  ConcoctNode** nodes;
-  int node_count;
-  int node_max;
-  ConcoctNode* root;
-} ConcoctNodeTree;
+// Initializes queue
+void init_queue(Queue* queue);
 
-typedef struct concoct_parser
-{
-  ConcoctLexer* lexer;
-  ConcoctNodeTree* tree;
-  ConcoctToken current_token;
-  int error_line;
-  const char* error;
-} ConcoctParser;
+// Is queue empty?
+bool is_empty(Queue* queue);
 
-ConcoctNode* cct_new_node(ConcoctNodeTree* tree, ConcoctToken token, const char* text);
-ConcoctParser* cct_new_parser(ConcoctLexer* lexer);
-void cct_delete_parser(ConcoctParser* parser);
-void cct_delete_node_tree(ConcoctNodeTree* tree);
-ConcoctNode* cct_node_add_child(ConcoctNode* node, ConcoctNode* child);
-ConcoctNodeTree* cct_parse_program(ConcoctParser* parser);
-ConcoctNode* cct_parse_stat(ConcoctParser* parser);
-ConcoctNode* cct_parse_expr(ConcoctParser* parser);
-ConcoctToken cct_next_parser_token(ConcoctParser* parser);
-void cct_print_node(ConcoctNode* node, int tab_level);
+// Is queue full?
+bool is_full(Queue* queue);
 
-#endif // PARSER_H
+// Returns size of queue
+size_t size(Queue* queue);
+
+// Returns node at the back of queue
+ConcoctNode* back(Queue* queue);
+
+// Returns node at the front of queue
+ConcoctNode* front(Queue* queue);
+
+// Returns and removes next node from queue
+void dequeue(Queue* queue, ConcoctNode** node);
+
+// Inserts new node into queue
+void enqueue(Queue* queue, ConcoctNode* node);
+
+// Translates lexer/parser tokens to VM instructions
+void compile(ConcoctNodeTree* tree);
+
+#endif // COMPILER_H
