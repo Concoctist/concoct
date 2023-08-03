@@ -91,7 +91,6 @@ void reverse_instructions(size_t ic)
     size_t j = 0;
     while(i > j)
     {
-      printf("i: %ld\nj: %ld\n", i, j);
       Opcode tmp = vm.instructions[i];
       vm.instructions[i] = vm.instructions[j];
       vm.instructions[j] = tmp;
