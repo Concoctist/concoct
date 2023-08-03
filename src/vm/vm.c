@@ -465,6 +465,7 @@ RunCode interpret()
     print_registers();
 
   vm.ip = vm.instructions; // reset VM instruction pointer to beginning of instructions
+  clear_instructions();
 
   return RUN_SUCCESS;
 }
