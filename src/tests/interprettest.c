@@ -82,6 +82,7 @@ int main()
   vm.instructions[18] = OP_END;
 
   interpret();
+  stop_vm();
 
   return 0;
 }

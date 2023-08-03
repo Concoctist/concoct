@@ -29,7 +29,7 @@
 #include "compiler.h"
 #include "debug.h"    // debug_print()
 #include "memory.h"   // new_object(), new_object_by_type()
-#include "vm/vm.h"    // interpret()
+#include "vm/vm.h"    // interpret(), reverse_instructions()
 
 // Initializes queue
 void init_queue(Queue* queue)
@@ -104,6 +104,7 @@ void compile(ConcoctNodeTree* tree)
   ConcoctNode* root = tree->root;
   Queue queue;
   Queue* pqueue = &queue;
+  size_t ic = 0; // instruction count
 
   if(root == NULL)
     return;
@@ -119,23 +120,138 @@ void compile(ConcoctNodeTree* tree)
     switch(current->token.type)
     {
       case CCT_TOKEN_ADD:
-        //vm.instructions[x] = OP_ADD;
+        vm.instructions[ic] = OP_ADD;
+        ic++;
+        break;
+      case CCT_TOKEN_ADD_ASSIGN:
+        // OP_ADD + OP_ASN
+        break;
+      case CCT_TOKEN_AND:
+        vm.instructions[ic] = OP_AND;
+        ic++;
         break;
       case CCT_TOKEN_ASSIGN:
+        break;
+      case CCT_TOKEN_BIN_AND:
+        vm.instructions[ic] = OP_BND;
+        ic++;
+        break;
+      case CCT_TOKEN_BIN_OR:
+        vm.instructions[ic] = OP_BOR;
+        ic++;
+        break;
+      case CCT_TOKEN_BIN_XOR:
+        vm.instructions[ic] = OP_XOR;
+        ic++;
+        break;
+      case CCT_TOKEN_CHAR:
+        push(vm.sp, new_object_by_type(current->text, BYTE));
+        break;
+      case CCT_TOKEN_DEC:
+        vm.instructions[ic] = OP_DEC;
+        ic++;
+        break;
+      case CCT_TOKEN_DIV:
+        vm.instructions[ic] = OP_DIV;
+        ic++;
+        break;
+      case CCT_TOKEN_DIV_ASSIGN:
+        // OP_DIV + OP_ASN
+        break;
+      case CCT_TOKEN_EQUAL:
+        vm.instructions[ic] = OP_EQL;
+        ic++;
+        break;
+      case CCT_TOKEN_EXP:
+        vm.instructions[ic] = OP_POW;
+        ic++;
+        break;
+      case CCT_TOKEN_EXP_ASSIGN:
+        // OP_POW + OP_ASN
+        break;
+      case CCT_TOKEN_FALSE:
+        vm.instructions[ic] = OP_FLS;
+        ic++;
         break;
       case CCT_TOKEN_FLOAT:
         push(vm.sp, new_object_by_type(current->text, DECIMAL));
         break;
+      case CCT_TOKEN_GREATER:
+        vm.instructions[ic] = OP_GT;
+        ic++;
+        break;
+      case CCT_TOKEN_GREATER_EQUAL:
+        vm.instructions[ic] = OP_GTE;
+        ic++;
+        break;
       case CCT_TOKEN_IDENTIFIER:
+        // ToDo: handle vars (associative array?)
+        break;
+      case CCT_TOKEN_INC:
+        vm.instructions[ic] = OP_INC;
+        ic++;
         break;
       case CCT_TOKEN_INT:
         push(vm.sp, new_object(current->text));
         break;
+      case CCT_TOKEN_LESS:
+        vm.instructions[ic] = OP_LT;
+        ic++;
+        break;
+      case CCT_TOKEN_LESS_EQUAL:
+        vm.instructions[ic] = OP_LTE;
+        ic++;
+        break;
+      case CCT_TOKEN_MOD:
+        vm.instructions[ic] = OP_MOD;
+        ic++;
+        break;
+      case CCT_TOKEN_MOD_ASSIGN:
+        // OP_MOD + OP_ASN
+        break;
+      case CCT_TOKEN_MUL:
+        vm.instructions[ic] = OP_MUL;
+        ic++;
+        break;
+      case CCT_TOKEN_MUL_ASSIGN:
+        // OP_MUL + OP_ASN
+        break;
+      case CCT_TOKEN_NOT:
+        vm.instructions[ic] = OP_NOT;
+        ic++;
+        break;
+      case CCT_TOKEN_NOT_EQUAL:
+        vm.instructions[ic] = OP_NEQ;
+        ic++;
+        break;
       case CCT_TOKEN_NEWLINE:
         // Ignore whitespace
         break;
+      case CCT_TOKEN_OR:
+        vm.instructions[ic] = OP_OR;
+        ic++;
+        break;
       case CCT_TOKEN_STRING:
         push(vm.sp, new_object_by_type(current->text, STRING));
+        break;
+      case CCT_TOKEN_STRLEN_EQUAL:
+        vm.instructions[ic] = OP_SLE;
+        ic++;
+        break;
+      case CCT_TOKEN_STRLEN_NOT_EQUAL:
+        vm.instructions[ic] = OP_SLN;
+        ic++;
+        break;
+      case CCT_TOKEN_SUB:
+        vm.instructions[ic] = OP_SUB;
+        ic++;
+        break;
+      case CCT_TOKEN_SUB_ASSIGN:
+        // OP_SUB + OP_ASN
+        break;
+      case CCT_TOKEN_TRUE:
+        vm.instructions[ic] = OP_TRU;
+        ic++;
         break;
       default:
         fprintf(stderr, "Unable to handle token: %s\n", cct_token_type_to_string(current->token.type));
@@ -144,8 +260,10 @@ void compile(ConcoctNodeTree* tree)
     for(int i = 0; i < current->child_count; i++)
       enqueue(pqueue, current->children[i]);
   }
-  // ToDo: Append OP_END and uncomment interpret()
-  //vm.instructions[x] = OP_END;
-  //interpret();
+
+  reverse_instructions(ic);
+  vm.instructions[ic] = OP_END; // append end instruction
+  interpret();
+
   return;
 }
