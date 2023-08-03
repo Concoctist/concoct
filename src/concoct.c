@@ -292,7 +292,7 @@ void print_version()
 void interactive_mode()
 {
   char input[1024];
-  puts("Note: Only lexing and partial parsing is currently supported.");
+  puts("Warning: Expect things to break.");
   while(true)
   {
     memset(input, 0, sizeof(input)); // reset input every iteration
