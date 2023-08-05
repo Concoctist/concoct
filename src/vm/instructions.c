@@ -2144,7 +2144,7 @@ RunCode op_mul(Stack* stack)
         fprintf(stderr, "Unable to allocate memory for string during MUL operation.\n");
         return RUN_ERROR;
       }
-      for(int i = 0; i < *(Number *)get_object_value(operand2); i++)
+      for(size_t i = 0; i < abs(*(Number *)get_object_value(operand2)); i++)
         strcat(multstr, operand1->value.strobj.strval);
     }
     else
@@ -2155,7 +2155,7 @@ RunCode op_mul(Stack* stack)
         fprintf(stderr, "Unable to allocate memory for string during MUL operation.\n");
         return RUN_ERROR;
       }
-      for(int i = 0; i < *(Number *)get_object_value(operand1); i++)
+      for(size_t i = 0; i < abs(*(Number *)get_object_value(operand1)); i++)
         strcat(multstr, operand2->value.strobj.strval);
     }
     push(stack, new_object(multstr));

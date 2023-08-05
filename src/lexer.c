@@ -286,7 +286,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
     // Goes trhough each keyword to see if this identifier is actually a keyword
     // Should be optimized to a hash map
     int is_keyword = 0;
-    for(int i = 0; i < CCT_KEYWORD_COUNT; i++)
+    for(uint8_t i = 0; i < CCT_KEYWORD_COUNT; i++)
     {
       if(strcmp(cct_keywords[i], lexer->token_text) == 0)
       {

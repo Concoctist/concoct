@@ -37,7 +37,7 @@ void debug_print(const char* message, ...)
 {
   char timestamp[64];
   time_t rawtime;
-  struct tm *timedata;
+  struct tm* timedata;
   time(&rawtime);
   timedata = localtime(&rawtime);
 
