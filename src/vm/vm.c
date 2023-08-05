@@ -51,6 +51,7 @@ void init_vm()
     fprintf(stderr, "Error allocating memory for instruction store: %s\n", strerror(errno));
     return;
   }
+  clear_instructions();
   vm.ip = vm.instructions;
   vm.rp = vm.registers;
   vm.sp = &vm.stack;
@@ -72,6 +73,31 @@ void stop_vm()
   if(debug_mode)
     debug_print("VM stopped.");
   return;
+}
+
+// Clears instructions
+void clear_instructions()
+{
+  for(size_t i = 0; i < INSTRUCTION_STORE_SIZE; i++)
+    vm.instructions[i] = 0xFF;
+}
+
+// Reverses instructions since they should be in a LIFO arrangement
+void reverse_instructions(size_t ic)
+{
+  if(ic > 0)
+  {
+    size_t i = ic - 1;
+    size_t j = 0;
+    while(i > j)
+    {
+      Opcode tmp = vm.instructions[i];
+      vm.instructions[i] = vm.instructions[j];
+      vm.instructions[j] = tmp;
+      i--;
+      j++;
+    }
+  }
 }
 
 // Prints register values
@@ -190,7 +216,6 @@ void print_registers()
 // Interprets code
 RunCode interpret()
 {
-  // Below is just a demonstration for now...
   char* value = NULL;
   Object* object = NULL;
   Byte src_reg = R1;
@@ -205,27 +230,27 @@ RunCode interpret()
       case OP_ADD:
         op_add(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_AND:
         op_and(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_BND:
         op_bnd(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_BNT:
         op_bnt(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_BOR:
         op_bor(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_CAL:
         break;
@@ -242,12 +267,12 @@ RunCode interpret()
       case OP_DEC:
         op_dec(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_DIV:
         op_div(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_END:
         if(debug_mode)
@@ -258,24 +283,24 @@ RunCode interpret()
       case OP_EQL:
         op_eql(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_EXT:
         break;
       case OP_FLS:
         op_fls(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_GT:
         op_gt(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_GTE:
         op_gte(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_HLT:
         stop_vm();
@@ -283,7 +308,7 @@ RunCode interpret()
       case OP_INC:
         op_inc(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_JMC:
       case OP_JMP:
@@ -304,17 +329,17 @@ RunCode interpret()
       case OP_LT:
         op_lt(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_LTE:
         op_lte(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_MOD:
         op_mod(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_MOV:
         op_mov(vm.rp, object, src_reg, dst_reg);
@@ -324,17 +349,17 @@ RunCode interpret()
       case OP_MUL:
         op_mul(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_NEG:
         op_neg(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_NEQ:
         op_neq(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_NOP:
         OP_NOOP;
@@ -342,69 +367,69 @@ RunCode interpret()
       case OP_NOT:
         op_not(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_NUL:
         break;
       case OP_OR:
         op_or(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_POP:
         op_pop(vm.sp, object);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_POS:
         op_pos(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_POW:
         op_pow(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_PSH:
         op_psh(vm.sp, value);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_RET:
         break;
       case OP_SHL:
         op_shl(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_SHR:
         op_shr(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_SLE:
         op_sle(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_SLN:
         op_sln(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_STR:
         op_str(vm.rp, vm.sp, src_reg);
         if(debug_mode)
         {
           print_registers();
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         }
         break;
       case OP_SUB:
         op_sub(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_SYS:
         //op_sys(vm.sp);
@@ -414,7 +439,7 @@ RunCode interpret()
       case OP_TRU:
         op_tru(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       case OP_TST:
         break;
@@ -426,7 +451,7 @@ RunCode interpret()
       case OP_XOR:
         op_xor(vm.sp);
         if(debug_mode)
-          print_object_value(pop(vm.sp));
+          print_object_value(peek(vm.sp));
         break;
       default:
         fprintf(stderr, "Illegal instruction: %s (0x%02X)\n", get_mnemonic(*vm.ip), *vm.ip);
@@ -435,8 +460,12 @@ RunCode interpret()
     }
     (vm.ip)++;
   }
+
   if(debug_mode)
     print_registers();
-  stop_vm();
+
+  vm.ip = vm.instructions; // reset VM instruction pointer to beginning of instructions
+  clear_instructions();
+
   return RUN_SUCCESS;
 }

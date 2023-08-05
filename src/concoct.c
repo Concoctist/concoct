@@ -25,19 +25,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <ctype.h>   // isspace()
-#include <errno.h>   // errno
-#include <stdbool.h> // false, true
-#include <stddef.h>  // size_t
-#include <stdio.h>   // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin, stderr
-#include <stdlib.h>  // exit(), EXIT_FAILURE, EXIT_SUCCESS
-#include <string.h>  // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
+#include <ctype.h>    // isspace()
+#include <errno.h>    // errno
+#include <stdbool.h>  // false, true
+#include <stddef.h>   // size_t
+#include <stdio.h>    // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin, stderr
+#include <stdlib.h>   // exit(), EXIT_FAILURE, EXIT_SUCCESS
+#include <string.h>   // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
+#include "compiler.h"
 #include "concoct.h"
 #include "debug.h"
 #include "lexer.h"
 #include "parser.h"
 #include "types.h"
-#include "version.h" // VERSION
+#include "version.h"  // VERSION
 #include "vm/vm.h"
 
 int main(int argc, char** argv)
@@ -131,6 +132,7 @@ void parse_file(const char* file_name)
   else
     fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   fclose(input_file);
+  compile(node_tree);
   cct_delete_parser(parser);
   cct_delete_char_stream(char_stream);
   cct_delete_node_tree(node_tree);
@@ -148,6 +150,7 @@ void parse_string(const char* input_string)
     cct_print_node(node_tree->root, 0);
   else
     fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
+  compile(node_tree);
   cct_delete_parser(parser);
   printf("Freed parser\n");
   cct_delete_node_tree(node_tree);
@@ -289,7 +292,7 @@ void print_version()
 void interactive_mode()
 {
   char input[1024];
-  puts("Note: Only lexing and partial parsing is currently supported.");
+  puts("Warning: Expect things to break.");
   while(true)
   {
     memset(input, 0, sizeof(input)); // reset input every iteration

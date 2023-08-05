@@ -76,6 +76,12 @@ typedef enum
   RUN_ERROR
 } RunCode;
 
+// Clears instructions
+void clear_instructions();
+
+// Reverses instructions since they should be in a LIFO arrangement
+void reverse_instructions(size_t ic);
+
 // Prints register values
 void print_registers();
 
