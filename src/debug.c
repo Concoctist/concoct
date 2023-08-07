@@ -35,7 +35,7 @@ bool debug_mode = false;
 // Prints debug messages
 void debug_print(const char* message, ...)
 {
-  char timestamp[64];
+  char timestamp[TIMESTAMP_LENGTH];
   time_t rawtime;
   struct tm* timedata;
   time(&rawtime);
@@ -43,7 +43,7 @@ void debug_print(const char* message, ...)
 
   va_list args;
   va_start(args, message);
-  strftime(timestamp, 64, "[%d/%m/%Y %H:%M:%S %Z] -", timedata);
+  strftime(timestamp, TIMESTAMP_LENGTH, "[%d/%m/%Y %H:%M:%S %Z] -", timedata);
   printf("Debug: %s ", timestamp);
   vprintf(message, args);
   va_end(args);
