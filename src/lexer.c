@@ -514,6 +514,10 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
         cct_next_char(lexer);
         type = CCT_TOKEN_COMMA;
         break;
+      case '~':
+        cct_next_char(lexer);
+        type = CCT_TOKEN_BIN_NOT;
+        break;
       default:
         // cct_set_error is called to allocate memory for storing the error message; need a better way of doing this
         cct_set_error(lexer, "");
@@ -575,6 +579,7 @@ const char* cct_token_type_to_string(ConcoctTokenType type)
     case CCT_TOKEN_BIN_AND:          return "&";
     case CCT_TOKEN_BIN_OR:           return "|";
     case CCT_TOKEN_BIN_XOR:          return "^";
+    case CCT_TOKEN_BIN_NOT:          return "~";
     case CCT_TOKEN_SHL:              return "<<";
     case CCT_TOKEN_SHR:              return ">>";
     case CCT_TOKEN_DOT:              return ".";

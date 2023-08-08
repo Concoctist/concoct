@@ -69,6 +69,7 @@ typedef enum concoct_token_type
   CCT_TOKEN_BIN_AND,
   CCT_TOKEN_BIN_OR,
   CCT_TOKEN_BIN_XOR,
+  CCT_TOKEN_BIN_NOT,
   CCT_TOKEN_SHL,
   CCT_TOKEN_SHR,
   CCT_TOKEN_DOT,
