@@ -67,6 +67,6 @@ int gettimeofday(struct timeval* tv, struct timezone* tz);
 #endif // _WIN32
 
 // Returns delta of 2 timevals
-long double microdelta(time_t startsec, suseconds_t startusec, struct timeval* stop);
+double microdelta(time_t startsec, suseconds_t startusec, struct timeval* stop);
 
 #endif // SECONDS_H

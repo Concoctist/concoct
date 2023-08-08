@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <inttypes.h> // PRId64
 #include <stdarg.h>   // va_end, va_list, va_start, vprintf()
 #include <stdio.h>    // printf()
 #include <time.h>     // strftime(), time(), time_t, tm
@@ -48,9 +49,8 @@ void debug_print(const char* message, ...)
   time(&rawtime);
   timedata = localtime(&rawtime);
   va_start(args, message);
-
   strftime(timestamp, TIMESTAMP_LENGTH, "[%d/%m/%Y %H:%M:%S %Z", timedata);
-  printf("Debug: %s (%ld.%ld) +/-%Lf] - ", timestamp, tv.tv_sec, tv.tv_usec, microdelta(oldtvsec, oldtvusec, &tv));
+  printf("Debug: %s (%" PRId64 ".%06" PRId64 ") +/-%0.6f] - ", timestamp, (int64_t)tv.tv_sec, (int64_t)tv.tv_usec, microdelta(oldtvsec, oldtvusec, &tv));
   oldtvsec = tv.tv_sec;
   oldtvusec = tv.tv_usec;
   vprintf(message, args);

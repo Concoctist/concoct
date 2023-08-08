@@ -25,6 +25,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <math.h>    // fabs()
 #include "seconds.h"
 
 #ifdef _WIN32
@@ -69,11 +70,11 @@ int gettimeofday(struct timeval* tv, struct timezone* tz)
 #endif // _WIN32
 
 // Returns delta of 2 timevals
-long double microdelta(time_t startsec, suseconds_t startusec, struct timeval* stop)
+double microdelta(time_t startsec, suseconds_t startusec, struct timeval* stop)
 {
-  long double start_total = startsec + (long double)startusec / MICROSECONDS_PER_SECOND;
-  long double stop_total = stop->tv_sec + (long double)stop->tv_usec / MICROSECONDS_PER_SECOND;
+  double start_total = startsec + (double)startusec / MICROSECONDS_PER_SECOND;
+  double stop_total = stop->tv_sec + (double)stop->tv_usec / MICROSECONDS_PER_SECOND;
   if(start_total == 0.0)
     return 0.0;
-  return stop_total - start_total;
+  return fabs(stop_total - start_total);
 }
