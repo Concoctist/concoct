@@ -28,6 +28,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#include <stdint.h>      // uint8_t
 #include "char_stream.h"
 
 #define MAX_TOKEN_TEXT_LENGTH ((size_t)1024)
