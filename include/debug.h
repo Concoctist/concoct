@@ -32,7 +32,7 @@
 
 extern bool debug_mode;
 
-static const uint8_t DEBUG_TIMESTAMP_LENGTH = 64;
+#define TIMESTAMP_LENGTH ((uint8_t)64)
 
 void debug_print(const char* message, ...);
 
