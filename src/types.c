@@ -39,14 +39,14 @@ const char* get_type(DataType datatype)
 {
   switch(datatype)
   {
-    case NIL:     return "null";
-    case BOOL:    return "boolean";
-    case BYTE:    return "byte";
-    case NUMBER:  return "number";
-    case BIGNUM:  return "big number";
-    case DECIMAL: return "decimal";
-    case STRING:  return "string";
-    default:      return "unknown";
+    case CCT_TYPE_NIL:     return "null";
+    case CCT_TYPE_BOOL:    return "boolean";
+    case CCT_TYPE_BYTE:    return "byte";
+    case CCT_TYPE_NUMBER:  return "number";
+    case CCT_TYPE_BIGNUM:  return "big number";
+    case CCT_TYPE_DECIMAL: return "decimal";
+    case CCT_TYPE_STRING:  return "string";
+    default:               return "unknown";
   }
 }
 
@@ -55,14 +55,14 @@ const char* get_data_type(Object* object)
 {
   switch(object->datatype)
   {
-    case NIL:     return "null";
-    case BOOL:    return "boolean";
-    case BYTE:    return "byte";
-    case NUMBER:  return "number";
-    case BIGNUM:  return "big number";
-    case DECIMAL: return "decimal";
-    case STRING:  return "string";
-    default:      return "unknown";
+    case CCT_TYPE_NIL:     return "null";
+    case CCT_TYPE_BOOL:    return "boolean";
+    case CCT_TYPE_BYTE:    return "byte";
+    case CCT_TYPE_NUMBER:  return "number";
+    case CCT_TYPE_BIGNUM:  return "big number";
+    case CCT_TYPE_DECIMAL: return "decimal";
+    case CCT_TYPE_STRING:  return "string";
+    default:               return "unknown";
   }
 }
 
@@ -71,25 +71,25 @@ void* get_object_value(Object* object)
 {
   switch(object->datatype)
   {
-    case NIL:
+    case CCT_TYPE_NIL:
       return NULL;
       break;
-    case BOOL:
+    case CCT_TYPE_BOOL:
       return &object->value.boolval;
       break;
-    case BYTE:
+    case CCT_TYPE_BYTE:
       return &object->value.byteval;
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       return &object->value.numval;
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       return &object->value.bignumval;
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       return &object->value.decimalval;
       break;
-    case STRING:
+    case CCT_TYPE_STRING:
       return object->value.strobj.strval;
       break;
   }
@@ -101,28 +101,28 @@ void print_object_value(Object* object)
 {
   switch(object->datatype)
   {
-    case NIL:
+    case CCT_TYPE_NIL:
       puts("null");
       break;
-    case BOOL:
+    case CCT_TYPE_BOOL:
       if(object->value.boolval == false)
         puts("false");
       else
         puts("true");
       break;
-    case BYTE:
+    case CCT_TYPE_BYTE:
       printf("%u\n", (Byte)object->value.byteval);
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       printf("%" PRId32 "\n", object->value.numval);
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       printf("%" PRId64 "\n", object->value.bignumval);
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       printf("%f\n", object->value.decimalval);
       break;
-    case STRING:
+    case CCT_TYPE_STRING:
       printf("%s\n", object->value.strobj.strval);
       break;
   }
@@ -138,7 +138,7 @@ void convert_type(Object* object, char* value)
   if(strcasecmp(value, "null") == 0)
 #endif
   {
-    object->datatype = NIL;
+    object->datatype = CCT_TYPE_NIL;
     return;
   }
 
@@ -149,7 +149,7 @@ void convert_type(Object* object, char* value)
   if(strcasecmp(value, "true") == 0)
 #endif
   {
-    object->datatype = BOOL;
+    object->datatype = CCT_TYPE_BOOL;
     object->value.boolval = true;
     return;
   }
@@ -159,7 +159,7 @@ void convert_type(Object* object, char* value)
   if(strcasecmp(value, "false") == 0)
 #endif
   {
-    object->datatype = BOOL;
+    object->datatype = CCT_TYPE_BOOL;
     object->value.boolval = false;
     return;
   }
@@ -172,7 +172,7 @@ void convert_type(Object* object, char* value)
   {
     if(bignum > INT32_MIN && bignum < INT32_MAX)
     {
-      object->datatype = NUMBER;
+      object->datatype = CCT_TYPE_NUMBER;
       object->value.numval = (Number)bignum;
       return;
     }
@@ -184,7 +184,7 @@ void convert_type(Object* object, char* value)
   bignum = strtoll(value, &end, 10);
   if(*end == '\0' && errno != ERANGE && errno != EINVAL)
   {
-    object->datatype = BIGNUM;
+    object->datatype = CCT_TYPE_BIGNUM;
     object->value.bignumval = bignum;
     return;
   }
@@ -195,13 +195,13 @@ void convert_type(Object* object, char* value)
   Decimal dec = strtod(value, &end);
   if(*end == '\0' && errno != ERANGE && errno != EINVAL)
   {
-    object->datatype = DECIMAL;
+    object->datatype = CCT_TYPE_DECIMAL;
     object->value.decimalval = dec;
     return;
   }
 
   // Default to string otherwise
-  object->datatype = STRING;
+  object->datatype = CCT_TYPE_STRING;
   new_string(&object->value.strobj, value);
   return;
 }

@@ -25,36 +25,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <inttypes.h> // PRId64
-#include <stdarg.h>   // va_end, va_list, va_start, vprintf()
-#include <stdio.h>    // printf()
-#include <time.h>     // strftime(), time(), time_t, tm
-#include "debug.h"    // debug_print(), debug_mode, TIMESTAMP_LENGTH
-#include "seconds.h"  // gettimeofday(), microdelta()
+#ifndef SECONDS_H
+#define SECONDS_H
 
-bool debug_mode = false;
+#include <stdint.h>
+#ifndef _WIN32
+#include <sys/time.h> // timeval
+#endif // _WIN32
 
-// Prints debug messages
-void debug_print(const char* message, ...)
+static const uint32_t MICROSECONDS_PER_SECOND = 1000000ULL;
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
+/*
+  Since this project conforms to the C99 standard, portable gettimeofday() functionality is necessary for Windows.
+  Otherwise, timespec from the C11 standard could be used to obtain microseconds. Visual Studio does not support
+  timespec_get() until VS 2019 version 16.8.0.
+*/
+
+typedef int32_t suseconds_t;
+
+// Seconds between Windows epoch (01-01-1601 00:00:00 UTC) and Unix epoch (01-01-1970 00:00:00 UTC)
+static const uint64_t EPOCH_OFFSET = 11644473600000000ULL;
+
+typedef struct timeval
 {
-  char timestamp[TIMESTAMP_LENGTH];
-  time_t rawtime;
-  struct tm* timedata;
-  struct timeval tv;
-  static time_t oldtvsec = 0;
-  static suseconds_t oldtvusec = 0;
-  va_list args;
+  time_t tv_sec;       // seconds
+  suseconds_t tv_usec; // microseconds
+} timeval;
 
-  gettimeofday(&tv, NULL);
-  time(&rawtime);
-  timedata = localtime(&rawtime);
-  va_start(args, message);
-  strftime(timestamp, TIMESTAMP_LENGTH, "[%d/%m/%Y %H:%M:%S %Z", timedata);
-  printf("Debug: %s (%" PRId64 ".%06" PRId64 ") +/-%0.6f] - ", timestamp, (int64_t)tv.tv_sec, (int64_t)tv.tv_usec, microdelta(oldtvsec, oldtvusec, &tv));
-  oldtvsec = tv.tv_sec;
-  oldtvusec = tv.tv_usec;
-  vprintf(message, args);
-  va_end(args);
-  printf("\n");
-  return;
-}
+struct timezone
+{
+  int tz_minuteswest; // minutes west of Greenwich
+  int tz_dsttime;     // type of DST correction
+};
+
+// Fills timeval structure with the number of seconds and microseconds since the Unix epoch
+int gettimeofday(struct timeval* tv, struct timezone* tz);
+#endif // _WIN32
+
+// Returns delta of 2 timevals
+double microdelta(time_t startsec, suseconds_t startusec, struct timeval* stop);
+
+#endif // SECONDS_H

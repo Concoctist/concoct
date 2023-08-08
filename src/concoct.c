@@ -25,20 +25,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <ctype.h>    // isspace()
-#include <errno.h>    // errno
-#include <stdbool.h>  // false, true
-#include <stddef.h>   // size_t
-#include <stdio.h>    // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin, stderr
-#include <stdlib.h>   // exit(), EXIT_FAILURE, EXIT_SUCCESS
-#include <string.h>   // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
+#include <ctype.h>       // isspace()
+#include <errno.h>       // errno
+#include <stdbool.h>     // false, true
+#include <stddef.h>      // size_t
+#include <stdio.h>       // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin, stderr
+#include <stdlib.h>      // exit(), EXIT_FAILURE, EXIT_SUCCESS
+#include <string.h>      // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
+#include "char_stream.h"
 #include "compiler.h"
 #include "concoct.h"
 #include "debug.h"
 #include "lexer.h"
 #include "parser.h"
 #include "types.h"
-#include "version.h"  // VERSION
+#include "version.h"     // VERSION
 #include "vm/vm.h"
 
 int main(int argc, char** argv)

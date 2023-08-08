@@ -42,13 +42,13 @@ int main()
   vm.instructions[13] = OP_STR;
   vm.instructions[12] = OP_MOV;
   vptr = &numval;
-  object = new_object_by_type(vptr, BIGNUM);
+  object = new_object_by_type(vptr, CCT_TYPE_BIGNUM);
   vm.rp[R1] = object;
   vm.rp[RS] = object;
   vm.instructions[11] = OP_RET;
   numval = -5552424;
   vptr = &numval;
-  push(vm.sp, new_object_by_type(vptr, BIGNUM));
+  push(vm.sp, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
   vm.instructions[10] = OP_BNT;
   push(vm.sp, new_object("217"));
   push(vm.sp, new_object("107"));

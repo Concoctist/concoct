@@ -36,17 +36,17 @@
 // Validates unary operand
 RunCode unary_operand_check(Object* operand, char* operator)
 {
-  if(operand->datatype == NIL)
+  if(operand->datatype == CCT_TYPE_NIL)
   {
     fprintf(stderr, "Invalid operation (%s) for object of type \"null\"!\n", operator);
     return RUN_ERROR;
   }
-  if(operand->datatype == BOOL)
+  if(operand->datatype == CCT_TYPE_BOOL)
   {
     fprintf(stderr, "Invalid operation (%s) for object of type \"boolean\"!\n", operator);
     return RUN_ERROR;
   }
-  if(operand->datatype == STRING)
+  if(operand->datatype == CCT_TYPE_STRING)
   {
     fprintf(stderr, "Invalid operation (%s) for object of type \"string\"!\n", operator);
     return RUN_ERROR;
@@ -57,17 +57,17 @@ RunCode unary_operand_check(Object* operand, char* operator)
 // Validates binary operands
 RunCode binary_operand_check(Object* operand1, Object* operand2, char* operator)
 {
-  if(operand1->datatype == NIL || operand2->datatype == NIL)
+  if(operand1->datatype == CCT_TYPE_NIL || operand2->datatype == CCT_TYPE_NIL)
   {
     fprintf(stderr, "Invalid operation (%s) for object of type \"null\"!\n", operator);
     return RUN_ERROR;
   }
-  if(operand1->datatype == BOOL || operand2->datatype == BOOL)
+  if(operand1->datatype == CCT_TYPE_BOOL || operand2->datatype == CCT_TYPE_BOOL)
   {
     fprintf(stderr, "Invalid operation (%s) for object of type \"boolean\"!\n", operator);
     return RUN_ERROR;
   }
-  if((operand1->datatype == STRING || operand2->datatype == STRING))
+  if((operand1->datatype == CCT_TYPE_STRING || operand2->datatype == CCT_TYPE_STRING))
   {
     fprintf(stderr, "Invalid operation (%s) for object of type \"string\"!\n", operator);
     return RUN_ERROR;
@@ -78,17 +78,17 @@ RunCode binary_operand_check(Object* operand1, Object* operand2, char* operator)
 // Validates binary operands for operations that allow a pair of strings (+ and *)
 RunCode binary_operand_check_str(Object* operand1, Object* operand2, char* operator)
 {
-  if(operand1->datatype == NIL || operand2->datatype == NIL)
+  if(operand1->datatype == CCT_TYPE_NIL || operand2->datatype == CCT_TYPE_NIL)
   {
     fprintf(stderr, "Invalid operation (%s) for object of type \"null\"!\n", operator);
     return RUN_ERROR;
   }
-  if(operand1->datatype == BOOL || operand2->datatype == BOOL)
+  if(operand1->datatype == CCT_TYPE_BOOL || operand2->datatype == CCT_TYPE_BOOL)
   {
     fprintf(stderr, "Invalid operation (%s) for object of type \"boolean\"!\n", operator);
     return RUN_ERROR;
   }
-  if((operand1->datatype == STRING && (operand2->datatype != NUMBER && operand2->datatype != STRING)) || (operand2->datatype == STRING && (operand1->datatype != NUMBER && operand1->datatype != STRING)))
+  if((operand1->datatype == CCT_TYPE_STRING && (operand2->datatype != CCT_TYPE_NUMBER && operand2->datatype != CCT_TYPE_STRING)) || (operand2->datatype == CCT_TYPE_STRING && (operand1->datatype != CCT_TYPE_NUMBER && operand1->datatype != CCT_TYPE_STRING)))
   {
     fprintf(stderr, "Invalid binary operation (%s) for object of type \"string\"!\n", operator);
     return RUN_ERROR;
@@ -224,7 +224,7 @@ RunCode op_and(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(operand1->datatype != BOOL && operand2->datatype != BOOL)
+  if(operand1->datatype != CCT_TYPE_BOOL && operand2->datatype != CCT_TYPE_BOOL)
   {
     fprintf(stderr, "Invalid operation (&&) for non-bool object!\n");
     return RUN_ERROR;
@@ -232,7 +232,7 @@ RunCode op_and(Stack* stack)
 
   result = *(Bool *)get_object_value(operand1) && *(Bool *)get_object_value(operand2);
   vptr = &result;
-  push(stack, new_object_by_type(vptr, BOOL));
+  push(stack, new_object_by_type(vptr, CCT_TYPE_BOOL));
 
   return RUN_SUCCESS;
 }
@@ -250,7 +250,7 @@ RunCode op_not(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(operand->datatype != BOOL)
+  if(operand->datatype != CCT_TYPE_BOOL)
   {
     fprintf(stderr, "Invalid operation (!) for non-bool object!\n");
     return RUN_ERROR;
@@ -259,7 +259,7 @@ RunCode op_not(Stack* stack)
   result = *(Bool *)get_object_value(operand);
   result = !result;
   vptr = &result;
-  push(stack, new_object_by_type(vptr, BOOL));
+  push(stack, new_object_by_type(vptr, CCT_TYPE_BOOL));
 
   return RUN_SUCCESS;
 }
@@ -284,7 +284,7 @@ RunCode op_or(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(operand1->datatype != BOOL && operand2->datatype != BOOL)
+  if(operand1->datatype != CCT_TYPE_BOOL && operand2->datatype != CCT_TYPE_BOOL)
   {
     fprintf(stderr, "Invalid operation (||) for non-bool object!\n");
     return RUN_ERROR;
@@ -292,7 +292,7 @@ RunCode op_or(Stack* stack)
 
   result = *(Bool *)get_object_value(operand1) || *(Bool *)get_object_value(operand2);
   vptr = &result;
-  push(stack, new_object_by_type(vptr, BOOL));
+  push(stack, new_object_by_type(vptr, CCT_TYPE_BOOL));
 
   return RUN_SUCCESS;
 }
@@ -315,13 +315,13 @@ RunCode op_eql(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(operand1->datatype == NIL && operand2->datatype == NIL)
+  if(operand1->datatype == CCT_TYPE_NIL && operand2->datatype == CCT_TYPE_NIL)
   {
     push(stack, new_object("true"));
     return RUN_SUCCESS;
   }
 
-  if(operand1->datatype == BOOL && operand2->datatype == BOOL)
+  if(operand1->datatype == CCT_TYPE_BOOL && operand2->datatype == CCT_TYPE_BOOL)
   {
     if(operand1->value.boolval == operand2->value.boolval)
       push(stack, new_object("true"));
@@ -330,7 +330,7 @@ RunCode op_eql(Stack* stack)
     return RUN_SUCCESS;
   }
 
-  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING)
   {
     if(strcmp(operand1->value.strobj.strval, operand2->value.strobj.strval) == 0)
       push(stack, new_object("true"));
@@ -341,28 +341,28 @@ RunCode op_eql(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Byte *)get_object_value(operand1) == *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Byte *)get_object_value(operand1) == *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Byte *)get_object_value(operand1) == *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Byte *)get_object_value(operand1) == *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -374,28 +374,28 @@ RunCode op_eql(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Number *)get_object_value(operand1) == *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Number *)get_object_value(operand1) == *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Number *)get_object_value(operand1) == *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Number *)get_object_value(operand1) == *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -407,28 +407,28 @@ RunCode op_eql(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(BigNum *)get_object_value(operand1) == *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(BigNum *)get_object_value(operand1) == *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(BigNum *)get_object_value(operand1) == *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(BigNum *)get_object_value(operand1) == *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -440,28 +440,28 @@ RunCode op_eql(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Decimal *)get_object_value(operand1) == *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Decimal *)get_object_value(operand1) == *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Decimal *)get_object_value(operand1) == *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Decimal *)get_object_value(operand1) == *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -499,13 +499,13 @@ RunCode op_neq(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(operand1->datatype == NIL && operand2->datatype == NIL)
+  if(operand1->datatype == CCT_TYPE_NIL && operand2->datatype == CCT_TYPE_NIL)
   {
     push(stack, new_object("false"));
     return RUN_SUCCESS;
   }
 
-  if(operand1->datatype == BOOL && operand2->datatype == BOOL)
+  if(operand1->datatype == CCT_TYPE_BOOL && operand2->datatype == CCT_TYPE_BOOL)
   {
     if(operand1->value.boolval != operand2->value.boolval)
       push(stack, new_object("true"));
@@ -514,7 +514,7 @@ RunCode op_neq(Stack* stack)
     return RUN_SUCCESS;
   }
 
-  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING)
   {
     if(strcmp(operand1->value.strobj.strval, operand2->value.strobj.strval) != 0)
       push(stack, new_object("true"));
@@ -525,28 +525,28 @@ RunCode op_neq(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Byte *)get_object_value(operand1) != *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Byte *)get_object_value(operand1) != *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Byte *)get_object_value(operand1) != *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Byte *)get_object_value(operand1) != *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -558,28 +558,28 @@ RunCode op_neq(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Number *)get_object_value(operand1) != *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Number *)get_object_value(operand1) != *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Number *)get_object_value(operand1) != *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Number *)get_object_value(operand1) != *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -591,28 +591,28 @@ RunCode op_neq(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(BigNum *)get_object_value(operand1) != *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(BigNum *)get_object_value(operand1) != *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(BigNum *)get_object_value(operand1) != *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(BigNum *)get_object_value(operand1) != *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -624,28 +624,28 @@ RunCode op_neq(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Decimal *)get_object_value(operand1) != *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Decimal *)get_object_value(operand1) != *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Decimal *)get_object_value(operand1) != *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Decimal *)get_object_value(operand1) != *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -683,7 +683,7 @@ RunCode op_sle(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING)
   {
     if(operand1->value.strobj.length == operand2->value.strobj.length)
       push(stack, new_object("true"));
@@ -716,7 +716,7 @@ RunCode op_sln(Stack* stack)
     return RUN_ERROR;
   }
 
-  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING)
   {
     if(operand1->value.strobj.length != operand2->value.strobj.length)
       push(stack, new_object("true"));
@@ -752,7 +752,7 @@ RunCode op_gt(Stack* stack)
   if(binary_operand_check_str(operand1, operand2, ">") == RUN_ERROR)
     return RUN_ERROR;
 
-  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING)
   {
     if(operand1->value.strobj.length > operand2->value.strobj.length)
       push(stack, new_object("true"));
@@ -763,28 +763,28 @@ RunCode op_gt(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Byte *)get_object_value(operand1) > *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Byte *)get_object_value(operand1) > *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Byte *)get_object_value(operand1) > *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Byte *)get_object_value(operand1) > *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -796,28 +796,28 @@ RunCode op_gt(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Number *)get_object_value(operand1) > *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Number *)get_object_value(operand1) > *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Number *)get_object_value(operand1) > *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Number *)get_object_value(operand1) > *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -829,28 +829,28 @@ RunCode op_gt(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(BigNum *)get_object_value(operand1) > *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(BigNum *)get_object_value(operand1) > *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(BigNum *)get_object_value(operand1) > *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(BigNum *)get_object_value(operand1) > *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -862,28 +862,28 @@ RunCode op_gt(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Decimal *)get_object_value(operand1) > *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Decimal *)get_object_value(operand1) > *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Decimal *)get_object_value(operand1) > *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Decimal *)get_object_value(operand1) > *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -924,7 +924,7 @@ RunCode op_gte(Stack* stack)
   if(binary_operand_check_str(operand1, operand2, ">=") == RUN_ERROR)
     return RUN_ERROR;
 
-  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING)
   {
     if(operand1->value.strobj.length >= operand2->value.strobj.length)
       push(stack, new_object("true"));
@@ -935,28 +935,28 @@ RunCode op_gte(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Byte *)get_object_value(operand1) >= *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Byte *)get_object_value(operand1) >= *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Byte *)get_object_value(operand1) >= *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Byte *)get_object_value(operand1) >= *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -968,28 +968,28 @@ RunCode op_gte(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Number *)get_object_value(operand1) >= *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Number *)get_object_value(operand1) >= *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Number *)get_object_value(operand1) >= *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Number *)get_object_value(operand1) >= *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1001,28 +1001,28 @@ RunCode op_gte(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(BigNum *)get_object_value(operand1) >= *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(BigNum *)get_object_value(operand1) >= *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(BigNum *)get_object_value(operand1) >= *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(BigNum *)get_object_value(operand1) >= *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1034,28 +1034,28 @@ RunCode op_gte(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Decimal *)get_object_value(operand1) >= *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Decimal *)get_object_value(operand1) >= *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Decimal *)get_object_value(operand1) >= *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Decimal *)get_object_value(operand1) >= *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1096,7 +1096,7 @@ RunCode op_lt(Stack* stack)
   if(binary_operand_check_str(operand1, operand2, "<") == RUN_ERROR)
     return RUN_ERROR;
 
-  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING)
   {
     if(operand1->value.strobj.length < operand2->value.strobj.length)
       push(stack, new_object("true"));
@@ -1107,28 +1107,28 @@ RunCode op_lt(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Byte *)get_object_value(operand1) < *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Byte *)get_object_value(operand1) < *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Byte *)get_object_value(operand1) < *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Byte *)get_object_value(operand1) < *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1140,28 +1140,28 @@ RunCode op_lt(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Number *)get_object_value(operand1) < *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Number *)get_object_value(operand1) < *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Number *)get_object_value(operand1) < *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Number *)get_object_value(operand1) < *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1173,28 +1173,28 @@ RunCode op_lt(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(BigNum *)get_object_value(operand1) < *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(BigNum *)get_object_value(operand1) < *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(BigNum *)get_object_value(operand1) < *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(BigNum *)get_object_value(operand1) < *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1206,28 +1206,28 @@ RunCode op_lt(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Decimal *)get_object_value(operand1) < *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Decimal *)get_object_value(operand1) < *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Decimal *)get_object_value(operand1) < *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Decimal *)get_object_value(operand1) < *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1268,7 +1268,7 @@ RunCode op_lte(Stack* stack)
   if(binary_operand_check_str(operand1, operand2, "<=") == RUN_ERROR)
     return RUN_ERROR;
 
-  if(operand1->datatype == STRING && operand2->datatype == STRING)
+  if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING)
   {
     if(operand1->value.strobj.length <= operand2->value.strobj.length)
       push(stack, new_object("true"));
@@ -1279,28 +1279,28 @@ RunCode op_lte(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Byte *)get_object_value(operand1) <= *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Byte *)get_object_value(operand1) <= *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Byte *)get_object_value(operand1) <= *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Byte *)get_object_value(operand1) <= *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1312,28 +1312,28 @@ RunCode op_lte(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Number *)get_object_value(operand1) <= *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Number *)get_object_value(operand1) <= *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Number *)get_object_value(operand1) <= *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Number *)get_object_value(operand1) <= *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1345,28 +1345,28 @@ RunCode op_lte(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(BigNum *)get_object_value(operand1) <= *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(BigNum *)get_object_value(operand1) <= *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(BigNum *)get_object_value(operand1) <= *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(BigNum *)get_object_value(operand1) <= *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1378,28 +1378,28 @@ RunCode op_lte(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           if(*(Decimal *)get_object_value(operand1) <= *(Byte *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           if(*(Decimal *)get_object_value(operand1) <= *(Number *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           if(*(Decimal *)get_object_value(operand1) <= *(BigNum *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
             push(stack, new_object("false"));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           if(*(Decimal *)get_object_value(operand1) <= *(Decimal *)get_object_value(operand2))
             push(stack, new_object("true"));
           else
@@ -1436,26 +1436,26 @@ RunCode op_neg(Stack* stack)
 
   switch(operand->datatype)
   {
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       numval = *(Number *)get_object_value(operand);
       if(numval > 0)
         numval *= -1;
       vptr = &numval;
-      push(stack, new_object_by_type(vptr, NUMBER));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       bignumval = *(BigNum *)get_object_value(operand);
       if(bignumval > 0)
         bignumval *= -1;
       vptr = &bignumval;
-      push(stack, new_object_by_type(vptr, BIGNUM));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       decimalval = *(Decimal *)get_object_value(operand);
       if(decimalval > 0)
         decimalval *= -1;
       vptr = &decimalval;
-      push(stack, new_object_by_type(vptr, DECIMAL));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during NEG operation!\n");
@@ -1482,26 +1482,26 @@ RunCode op_pos(Stack* stack)
 
   switch(operand->datatype)
   {
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       numval = *(Number *)get_object_value(operand);
       if(numval < 0)
         numval *= -1;
       vptr = &numval;
-      push(stack, new_object_by_type(vptr, NUMBER));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       bignumval = *(BigNum *)get_object_value(operand);
       if(bignumval < 0)
         bignumval *= -1;
       vptr = &bignumval;
-      push(stack, new_object_by_type(vptr, BIGNUM));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       decimalval = *(Decimal *)get_object_value(operand);
       if(decimalval < 0)
         decimalval *= -1;
       vptr = &decimalval;
-      push(stack, new_object_by_type(vptr, DECIMAL));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during POS operation!\n");
@@ -1532,29 +1532,29 @@ RunCode op_dec(Stack* stack)
 
   switch(operand->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       byteval = *(Byte *)get_object_value(operand);
       byteval--;
       vptr = &byteval;
-      push(stack, new_object_by_type(vptr, BYTE));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       numval = *(Number *)get_object_value(operand);
       numval--;
       vptr = &numval;
-      push(stack, new_object_by_type(vptr, NUMBER));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       bignumval = *(BigNum *)get_object_value(operand);
       bignumval--;
       vptr = &bignumval;
-      push(stack, new_object_by_type(vptr, BIGNUM));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       decimalval = *(Decimal *)get_object_value(operand);
       decimalval--;
       vptr = &decimalval;
-      push(stack, new_object_by_type(vptr, DECIMAL));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (--)!\n");
@@ -1585,29 +1585,29 @@ RunCode op_inc(Stack* stack)
 
   switch(operand->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       byteval = *(Byte *)get_object_value(operand);
       byteval++;
       vptr = &byteval;
-      push(stack, new_object_by_type(vptr, BYTE));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       numval = *(Number *)get_object_value(operand);
       numval++;
       vptr = &numval;
-      push(stack, new_object_by_type(vptr, NUMBER));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       bignumval = *(BigNum *)get_object_value(operand);
       bignumval++;
       vptr = &bignumval;
-      push(stack, new_object_by_type(vptr, BIGNUM));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       decimalval = *(Decimal *)get_object_value(operand);
       decimalval++;
       vptr = &decimalval;
-      push(stack, new_object_by_type(vptr, DECIMAL));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (++)!\n");
@@ -1643,34 +1643,34 @@ RunCode op_add(Stack* stack)
   if(binary_operand_check_str(operand1, operand2, "+") == RUN_ERROR)
     return RUN_ERROR;
 
-  if(operand1->datatype == STRING && operand2->datatype == STRING) // string concatenation
+  if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING) // string concatenation
     push(stack, new_object(strcat(operand1->value.strobj.strval, operand2->value.strobj.strval)));
   else
   {
     switch(operand1->datatype)
     {
-      case BYTE:
+      case CCT_TYPE_BYTE:
         switch(operand2->datatype)
         {
-          case BYTE:
+          case CCT_TYPE_BYTE:
             byteval = *(Byte *)get_object_value(operand1) + *(Byte *)get_object_value(operand2);
             vptr = &byteval;
-            push(stack, new_object_by_type(vptr, BYTE));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
             break;
-          case NUMBER:
+          case CCT_TYPE_NUMBER:
             numval = *(Byte *)get_object_value(operand1) + *(Number *)get_object_value(operand2);
             vptr = &numval;
-            push(stack, new_object_by_type(vptr, NUMBER));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
             break;
-          case BIGNUM:
+          case CCT_TYPE_BIGNUM:
             bignumval = *(Byte *)get_object_value(operand1) + *(BigNum *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case DECIMAL:
+          case CCT_TYPE_DECIMAL:
             decimalval = *(Byte *)get_object_value(operand1) + *(Decimal *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (+)!\n");
@@ -1678,28 +1678,28 @@ RunCode op_add(Stack* stack)
             break;
         }
         break;
-      case NUMBER:
+      case CCT_TYPE_NUMBER:
         switch(operand2->datatype)
         {
-          case BYTE:
+          case CCT_TYPE_BYTE:
             numval = *(Number *)get_object_value(operand1) + *(Byte *)get_object_value(operand2);
             vptr = &numval;
-            push(stack, new_object_by_type(vptr, NUMBER));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
             break;
-          case NUMBER:
+          case CCT_TYPE_NUMBER:
             numval = *(Number *)get_object_value(operand1) + *(Number *)get_object_value(operand2);
             vptr = &numval;
-            push(stack, new_object_by_type(vptr, NUMBER));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
             break;
-          case BIGNUM:
+          case CCT_TYPE_BIGNUM:
             bignumval = *(Number *)get_object_value(operand1) + *(BigNum *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case DECIMAL:
+          case CCT_TYPE_DECIMAL:
             decimalval = *(Number *)get_object_value(operand1) + *(Decimal *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (+)!\n");
@@ -1707,28 +1707,28 @@ RunCode op_add(Stack* stack)
             break;
         }
         break;
-      case BIGNUM:
+      case CCT_TYPE_BIGNUM:
         switch(operand2->datatype)
         {
-          case BYTE:
+          case CCT_TYPE_BYTE:
             bignumval = *(BigNum *)get_object_value(operand1) + *(Byte *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case NUMBER:
+          case CCT_TYPE_NUMBER:
             bignumval = *(BigNum *)get_object_value(operand1) + *(Number *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case BIGNUM:
+          case CCT_TYPE_BIGNUM:
             bignumval = *(BigNum *)get_object_value(operand1) + *(BigNum *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case DECIMAL:
+          case CCT_TYPE_DECIMAL:
             decimalval = *(BigNum *)get_object_value(operand1) + *(Decimal *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (+)!\n");
@@ -1736,28 +1736,28 @@ RunCode op_add(Stack* stack)
             break;
         }
         break;
-      case DECIMAL:
+      case CCT_TYPE_DECIMAL:
         switch(operand2->datatype)
         {
-          case BYTE:
+          case CCT_TYPE_BYTE:
             decimalval = *(Decimal *)get_object_value(operand1) + *(Byte *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
-          case NUMBER:
+          case CCT_TYPE_NUMBER:
             decimalval = *(Decimal *)get_object_value(operand1) + *(Number *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
-          case BIGNUM:
+          case CCT_TYPE_BIGNUM:
             decimalval = *(Decimal *)get_object_value(operand1) + *(BigNum *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
-          case DECIMAL:
+          case CCT_TYPE_DECIMAL:
             decimalval = *(Decimal *)get_object_value(operand1) + *(Decimal *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (+)!\n");
@@ -1802,28 +1802,28 @@ RunCode op_sub(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           byteval = *(Byte *)get_object_value(operand1) - *(Byte *)get_object_value(operand2);
           vptr = &byteval;
-          push(stack, new_object_by_type(vptr, BYTE));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Byte *)get_object_value(operand1) - *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Byte *)get_object_value(operand1) - *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Byte *)get_object_value(operand1) - *(Decimal *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (-)!\n");
@@ -1831,28 +1831,28 @@ RunCode op_sub(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           numval = *(Number *)get_object_value(operand1) - *(Byte *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Number *)get_object_value(operand1) - *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Number *)get_object_value(operand1) - *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Number *)get_object_value(operand1) - *(Decimal *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (-)!\n");
@@ -1860,28 +1860,28 @@ RunCode op_sub(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           bignumval = *(BigNum *)get_object_value(operand1) - *(Byte *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           bignumval = *(BigNum *)get_object_value(operand1) - *(Number *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(BigNum *)get_object_value(operand1) - *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(BigNum *)get_object_value(operand1) - *(Decimal *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (-)!\n");
@@ -1889,28 +1889,28 @@ RunCode op_sub(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           decimalval = *(Decimal *)get_object_value(operand1) - *(Byte *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           decimalval = *(Decimal *)get_object_value(operand1) - *(Number *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           decimalval = *(Decimal *)get_object_value(operand1) - *(BigNum *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Decimal *)get_object_value(operand1) - *(Decimal *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (-)!\n");
@@ -1952,19 +1952,19 @@ RunCode op_div(Stack* stack)
 
   switch(operand2->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       if(*(Byte *)get_object_value(operand2) == 0)
         div_by_zero = true;
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       if(*(Number *)get_object_value(operand2) == 0)
         div_by_zero = true;
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       if(*(BigNum *)get_object_value(operand2) == 0)
         div_by_zero = true;
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       if(*(Decimal *)get_object_value(operand2) == 0.0)
         div_by_zero = true;
       break;
@@ -1982,28 +1982,28 @@ RunCode op_div(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           byteval = *(Byte *)get_object_value(operand1) / *(Byte *)get_object_value(operand2);
           vptr = &byteval;
-          push(stack, new_object_by_type(vptr, BYTE));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Byte *)get_object_value(operand1) / *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Byte *)get_object_value(operand1) / *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Byte *)get_object_value(operand1) / *(Decimal *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (/)!\n");
@@ -2011,28 +2011,28 @@ RunCode op_div(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           numval = *(Number *)get_object_value(operand1) / *(Byte *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Number *)get_object_value(operand1) / *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Number *)get_object_value(operand1) / *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Number *)get_object_value(operand1) / *(Decimal *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (/)!\n");
@@ -2040,28 +2040,28 @@ RunCode op_div(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           bignumval = *(BigNum *)get_object_value(operand1) / *(Byte *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           bignumval = *(BigNum *)get_object_value(operand1) / *(Number *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(BigNum *)get_object_value(operand1) / *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(BigNum *)get_object_value(operand1) / *(Decimal *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (/)!\n");
@@ -2069,28 +2069,28 @@ RunCode op_div(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           decimalval = *(Decimal *)get_object_value(operand1) / *(Byte *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           decimalval = *(Decimal *)get_object_value(operand1) / *(Number *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           decimalval = *(Decimal *)get_object_value(operand1) / *(BigNum *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Decimal *)get_object_value(operand1) / *(Decimal *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (/)!\n");
@@ -2134,9 +2134,9 @@ RunCode op_mul(Stack* stack)
     return RUN_ERROR;
 
   // string multiplication
-  if((operand1->datatype == STRING && operand2->datatype == NUMBER) || (operand1->datatype == NUMBER && operand2->datatype == STRING))
+  if((operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_NUMBER) || (operand1->datatype == CCT_TYPE_NUMBER && operand2->datatype == CCT_TYPE_STRING))
   {
-    if(operand1->datatype == STRING)
+    if(operand1->datatype == CCT_TYPE_STRING)
     {
       multstr = malloc(operand1->value.strobj.length * *(Number *)get_object_value(operand2) + *(Number *)get_object_value(operand2));
       if(multstr == NULL)
@@ -2144,7 +2144,7 @@ RunCode op_mul(Stack* stack)
         fprintf(stderr, "Unable to allocate memory for string during MUL operation.\n");
         return RUN_ERROR;
       }
-      for(int i = 0; i < *(Number *)get_object_value(operand2); i++)
+      for(int i = 0; i < abs(*(Number *)get_object_value(operand2)); i++)
         strcat(multstr, operand1->value.strobj.strval);
     }
     else
@@ -2155,7 +2155,7 @@ RunCode op_mul(Stack* stack)
         fprintf(stderr, "Unable to allocate memory for string during MUL operation.\n");
         return RUN_ERROR;
       }
-      for(int i = 0; i < *(Number *)get_object_value(operand1); i++)
+      for(int i = 0; i < abs(*(Number *)get_object_value(operand1)); i++)
         strcat(multstr, operand2->value.strobj.strval);
     }
     push(stack, new_object(multstr));
@@ -2165,28 +2165,28 @@ RunCode op_mul(Stack* stack)
   {
     switch(operand1->datatype)
     {
-      case BYTE:
+      case CCT_TYPE_BYTE:
         switch(operand2->datatype)
         {
-          case BYTE:
+          case CCT_TYPE_BYTE:
             byteval = *(Byte *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
             vptr = &byteval;
-            push(stack, new_object_by_type(vptr, BYTE));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
             break;
-          case NUMBER:
+          case CCT_TYPE_NUMBER:
             numval = *(Byte *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
             vptr = &numval;
-            push(stack, new_object_by_type(vptr, NUMBER));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
             break;
-          case BIGNUM:
+          case CCT_TYPE_BIGNUM:
             bignumval = *(Byte *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case DECIMAL:
+          case CCT_TYPE_DECIMAL:
             decimalval = *(Byte *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
@@ -2194,28 +2194,28 @@ RunCode op_mul(Stack* stack)
             break;
         }
         break;
-      case NUMBER:
+      case CCT_TYPE_NUMBER:
         switch(operand2->datatype)
         {
-          case BYTE:
+          case CCT_TYPE_BYTE:
             numval = *(Number *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
             vptr = &numval;
-            push(stack, new_object_by_type(vptr, NUMBER));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
             break;
-          case NUMBER:
+          case CCT_TYPE_NUMBER:
             numval = *(Number *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
             vptr = &numval;
-            push(stack, new_object_by_type(vptr, NUMBER));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
             break;
-          case BIGNUM:
+          case CCT_TYPE_BIGNUM:
             bignumval = *(Number *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case DECIMAL:
+          case CCT_TYPE_DECIMAL:
             decimalval = *(Number *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
@@ -2223,28 +2223,28 @@ RunCode op_mul(Stack* stack)
             break;
         }
         break;
-      case BIGNUM:
+      case CCT_TYPE_BIGNUM:
         switch(operand2->datatype)
         {
-          case BYTE:
+          case CCT_TYPE_BYTE:
             bignumval = *(BigNum *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case NUMBER:
+          case CCT_TYPE_NUMBER:
             bignumval = *(BigNum *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case BIGNUM:
+          case CCT_TYPE_BIGNUM:
             bignumval = *(BigNum *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
             vptr = &bignumval;
-            push(stack, new_object_by_type(vptr, BIGNUM));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
             break;
-          case DECIMAL:
+          case CCT_TYPE_DECIMAL:
             decimalval = *(BigNum *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
@@ -2252,28 +2252,28 @@ RunCode op_mul(Stack* stack)
             break;
         }
         break;
-      case DECIMAL:
+      case CCT_TYPE_DECIMAL:
         switch(operand2->datatype)
         {
-          case BYTE:
+          case CCT_TYPE_BYTE:
             decimalval = *(Decimal *)get_object_value(operand1) * *(Byte *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
-          case NUMBER:
+          case CCT_TYPE_NUMBER:
             decimalval = *(Decimal *)get_object_value(operand1) * *(Number *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
-          case BIGNUM:
+          case CCT_TYPE_BIGNUM:
             decimalval = *(Decimal *)get_object_value(operand1) * *(BigNum *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
-          case DECIMAL:
+          case CCT_TYPE_DECIMAL:
             decimalval = *(Decimal *)get_object_value(operand1) * *(Decimal *)get_object_value(operand2);
             vptr = &decimalval;
-            push(stack, new_object_by_type(vptr, DECIMAL));
+            push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
             break;
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
@@ -2319,28 +2319,28 @@ RunCode op_mod(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           byteval = *(Byte *)get_object_value(operand1) % *(Byte *)get_object_value(operand2);
           vptr = &byteval;
-          push(stack, new_object_by_type(vptr, BYTE));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Byte *)get_object_value(operand1) % *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Byte *)get_object_value(operand1) % *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Decimal)(*(Byte *)get_object_value(operand1) % (BigNum)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (%%)!\n");
@@ -2348,28 +2348,28 @@ RunCode op_mod(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           numval = *(Number *)get_object_value(operand1) % *(Byte *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Number *)get_object_value(operand1) % *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Number *)get_object_value(operand1) % *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Decimal)(*(Number *)get_object_value(operand1) % (BigNum)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (%%)!\n");
@@ -2377,28 +2377,28 @@ RunCode op_mod(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           bignumval = *(BigNum *)get_object_value(operand1) % *(Byte *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           bignumval = *(BigNum *)get_object_value(operand1) % *(Number *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(BigNum *)get_object_value(operand1) % *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) % (BigNum)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (%%)!\n");
@@ -2406,28 +2406,28 @@ RunCode op_mod(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           decimalval = (Decimal)((BigNum)(*(Decimal *)get_object_value(operand1)) % *(Byte *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           decimalval = (Decimal)((BigNum)(*(Decimal *)get_object_value(operand1)) % *(Number *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           decimalval = (Decimal)((BigNum)(*(Decimal *)get_object_value(operand1)) % *(BigNum *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Decimal)((BigNum)(*(Decimal *)get_object_value(operand1)) % (BigNum)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (%%)!\n");
@@ -2471,28 +2471,28 @@ RunCode op_pow(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           byteval = (Byte)(pow(*(Byte *)get_object_value(operand1), *(Byte *)get_object_value(operand2)));
           vptr = &byteval;
-          push(stack, new_object_by_type(vptr, BYTE));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = (Number)(pow(*(Byte *)get_object_value(operand1), *(Number *)get_object_value(operand2)));
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = (BigNum)(pow(*(Byte *)get_object_value(operand1), (double)(*(BigNum *)get_object_value(operand2))));
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = pow(*(Byte *)get_object_value(operand1), *(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
@@ -2500,28 +2500,28 @@ RunCode op_pow(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           numval = (Number)(pow(*(Number *)get_object_value(operand1), *(Byte *)get_object_value(operand2)));
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = (Number)(pow(*(Number *)get_object_value(operand1), *(Number *)get_object_value(operand2)));
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = (Number)(pow(*(Number *)get_object_value(operand1), (double)(*(BigNum *)get_object_value(operand2))));
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = pow(*(Number *)get_object_value(operand1), *(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
@@ -2529,28 +2529,28 @@ RunCode op_pow(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           bignumval = (BigNum)(pow((double)(*(BigNum *)get_object_value(operand1)), *(Byte *)get_object_value(operand2)));
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           bignumval = (BigNum)(pow((double)(*(BigNum *)get_object_value(operand1)), *(Number *)get_object_value(operand2)));
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = (BigNum)(pow((double)(*(BigNum *)get_object_value(operand1)), (double)(*(BigNum *)get_object_value(operand2))));
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Decimal)(pow((double)(*(BigNum *)get_object_value(operand1)), *(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
@@ -2558,28 +2558,28 @@ RunCode op_pow(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           decimalval = pow(*(Decimal *)get_object_value(operand1), *(Byte *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           decimalval = pow(*(Decimal *)get_object_value(operand1), *(Number *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           decimalval = pow(*(Decimal *)get_object_value(operand1), (double)(*(BigNum *)get_object_value(operand2)));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = pow(*(Decimal *)get_object_value(operand1), *(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
@@ -2623,28 +2623,28 @@ RunCode op_bnd(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           byteval = *(Byte *)get_object_value(operand1) & *(Byte *)get_object_value(operand2);
           vptr = &byteval;
-          push(stack, new_object_by_type(vptr, BYTE));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Byte *)get_object_value(operand1) & *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Byte *)get_object_value(operand1) & *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Byte *)get_object_value(operand1) & (Number)(*(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
@@ -2652,28 +2652,28 @@ RunCode op_bnd(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           numval = *(Number *)get_object_value(operand1) & *(Byte *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Number *)get_object_value(operand1) & *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Number *)get_object_value(operand1) & *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Number *)get_object_value(operand1) & (Number)(*(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
@@ -2681,28 +2681,28 @@ RunCode op_bnd(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           bignumval = *(BigNum *)get_object_value(operand1) & *(Byte *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           bignumval = *(BigNum *)get_object_value(operand1) & *(Number *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(BigNum *)get_object_value(operand1) & *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) & (Number)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
@@ -2710,28 +2710,28 @@ RunCode op_bnd(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           decimalval = (Number)(*(Decimal *)get_object_value(operand1)) & *(Byte *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           decimalval = (Number)(*(Decimal *)get_object_value(operand1)) & *(Number *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           decimalval = (Decimal)((Number)(*(Decimal *)get_object_value(operand1)) & *(BigNum *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Number)(*(Decimal *)get_object_value(operand1)) & (Number)(*(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
@@ -2775,28 +2775,28 @@ RunCode op_bor(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           byteval = *(Byte *)get_object_value(operand1) | *(Byte *)get_object_value(operand2);
           vptr = &byteval;
-          push(stack, new_object_by_type(vptr, BYTE));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Byte *)get_object_value(operand1) | *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Byte *)get_object_value(operand1) | *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Byte *)get_object_value(operand1) | (Number)(*(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
@@ -2804,28 +2804,28 @@ RunCode op_bor(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           numval = *(Number *)get_object_value(operand1) | *(Byte *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Number *)get_object_value(operand1) | *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Number *)get_object_value(operand1) | *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Number *)get_object_value(operand1) | (Number)(*(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
@@ -2833,28 +2833,28 @@ RunCode op_bor(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           bignumval = *(BigNum *)get_object_value(operand1) | *(Byte *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           bignumval = *(BigNum *)get_object_value(operand1) | *(Number *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(BigNum *)get_object_value(operand1) | *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) | (Number)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
@@ -2862,28 +2862,28 @@ RunCode op_bor(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           decimalval = (Number)(*(Decimal *)get_object_value(operand1)) | *(Byte *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           decimalval = (Number)(*(Decimal *)get_object_value(operand1)) | *(Number *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           decimalval = (Decimal)((Number)(*(Decimal *)get_object_value(operand1)) | *(BigNum *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Number)(*(Decimal *)get_object_value(operand1)) | (Number)(*(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
@@ -2927,28 +2927,28 @@ RunCode op_xor(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           byteval = *(Byte *)get_object_value(operand1) ^ *(Byte *)get_object_value(operand2);
           vptr = &byteval;
-          push(stack, new_object_by_type(vptr, BYTE));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Byte *)get_object_value(operand1) ^ *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Byte *)get_object_value(operand1) ^ *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Byte *)get_object_value(operand1) ^ (Number)(*(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
@@ -2956,28 +2956,28 @@ RunCode op_xor(Stack* stack)
           break;
       }
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           numval = *(Number *)get_object_value(operand1) ^ *(Byte *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           numval = *(Number *)get_object_value(operand1) ^ *(Number *)get_object_value(operand2);
           vptr = &numval;
-          push(stack, new_object_by_type(vptr, NUMBER));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(Number *)get_object_value(operand1) ^ *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = *(Number *)get_object_value(operand1) ^ (Number)(*(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
@@ -2985,28 +2985,28 @@ RunCode op_xor(Stack* stack)
           break;
       }
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           bignumval = *(BigNum *)get_object_value(operand1) ^ *(Byte *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           bignumval = *(BigNum *)get_object_value(operand1) ^ *(Number *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           bignumval = *(BigNum *)get_object_value(operand1) ^ *(BigNum *)get_object_value(operand2);
           vptr = &bignumval;
-          push(stack, new_object_by_type(vptr, BIGNUM));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Decimal)(*(BigNum *)get_object_value(operand1) ^ (Number)(*(Decimal *)get_object_value(operand2)));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
@@ -3014,28 +3014,28 @@ RunCode op_xor(Stack* stack)
           break;
       }
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       switch(operand2->datatype)
       {
-        case BYTE:
+        case CCT_TYPE_BYTE:
           decimalval = (Number)(*(Decimal *)get_object_value(operand1)) ^ *(Byte *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           decimalval = (Number)(*(Decimal *)get_object_value(operand1)) ^ *(Number *)get_object_value(operand2);
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           decimalval = (Decimal)((Number)(*(Decimal *)get_object_value(operand1)) ^ *(BigNum *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           decimalval = (Number)(*(Decimal *)get_object_value(operand1)) ^ (Number)(*(Decimal *)get_object_value(operand2));
           vptr = &decimalval;
-          push(stack, new_object_by_type(vptr, DECIMAL));
+          push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
           break;
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
@@ -3073,29 +3073,29 @@ RunCode op_bnt(Stack* stack)
 
   switch(operand->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       byteval = *(Byte *)get_object_value(operand);
       byteval = ~byteval;
       vptr = &byteval;
-      push(stack, new_object_by_type(vptr, BYTE));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       numval = *(Number *)get_object_value(operand);
       numval = ~numval;
       vptr = &numval;
-      push(stack, new_object_by_type(vptr, NUMBER));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       bignumval = *(BigNum *)get_object_value(operand);
       bignumval = ~bignumval;
       vptr = &bignumval;
-      push(stack, new_object_by_type(vptr, BIGNUM));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       decimalval = *(Decimal *)get_object_value(operand);
       decimalval = ~(Number)decimalval;
       vptr = &decimalval;
-      push(stack, new_object_by_type(vptr, DECIMAL));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (~)!\n");
@@ -3133,32 +3133,32 @@ RunCode op_shl(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       byteval = *(Byte *)get_object_value(operand1);
       byteval = byteval << *(Number *)get_object_value(operand2);
       vptr = &byteval;
-      push(stack, new_object_by_type(vptr, BYTE));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       numval = *(Number *)get_object_value(operand1);
       numval = numval << *(Number *)get_object_value(operand2);
       vptr = &numval;
       vptr = &numval;
-      push(stack, new_object_by_type(vptr, NUMBER));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       bignumval = *(BigNum *)get_object_value(operand1);
       bignumval = bignumval << *(Number *)get_object_value(operand2);
       vptr = &bignumval;
       vptr = &bignumval;
-      push(stack, new_object_by_type(vptr, BIGNUM));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       decimalval = *(Decimal *)get_object_value(operand1);
       decimalval = (Number)decimalval << *(Number *)get_object_value(operand2);
       vptr = &decimalval;
       vptr = &decimalval;
-      push(stack, new_object_by_type(vptr, DECIMAL));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (<<)!\n");
@@ -3196,32 +3196,32 @@ RunCode op_shr(Stack* stack)
 
   switch(operand1->datatype)
   {
-    case BYTE:
+    case CCT_TYPE_BYTE:
       byteval = *(Byte *)get_object_value(operand1);
       byteval = byteval >> *(Number *)get_object_value(operand2);
       vptr = &byteval;
-      push(stack, new_object_by_type(vptr, BYTE));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BYTE));
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       numval = *(Number *)get_object_value(operand1);
       numval = numval >> *(Number *)get_object_value(operand2);
       vptr = &numval;
       vptr = &numval;
-      push(stack, new_object_by_type(vptr, NUMBER));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       bignumval = *(BigNum *)get_object_value(operand1);
       bignumval = bignumval >> *(Number *)get_object_value(operand2);
       vptr = &bignumval;
       vptr = &bignumval;
-      push(stack, new_object_by_type(vptr, BIGNUM));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       decimalval = *(Decimal *)get_object_value(operand1);
       decimalval = (Number)decimalval >> *(Number *)get_object_value(operand2);
       vptr = &decimalval;
       vptr = &decimalval;
-      push(stack, new_object_by_type(vptr, DECIMAL));
+      push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (>>)!\n");

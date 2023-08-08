@@ -28,10 +28,11 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#include <stdint.h>      // uint8_t
 #include "char_stream.h"
 
-#define MAX_TOKEN_TEXT_LENGTH 1024
-#define MAX_ERROR_STRING_LENGTH 64
+#define MAX_TOKEN_TEXT_LENGTH ((size_t)1024)
+#define MAX_ERROR_STRING_LENGTH ((uint8_t)64)
 
 typedef enum concoct_token_type
 {
@@ -108,7 +109,7 @@ typedef enum concoct_token_type
   CCT_TOKEN_ERROR,
 } ConcoctTokenType;
 
-#define CCT_KEYWORD_COUNT 23
+#define CCT_KEYWORD_COUNT ((uint8_t)23)
 extern const char* cct_keywords[CCT_KEYWORD_COUNT];
 
 extern ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT];

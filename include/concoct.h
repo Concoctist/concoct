@@ -29,9 +29,9 @@
 #define CONCOCT_H
 
 #ifdef _WIN32
-  static const char ARG_PREFIX = '/';
+static const char ARG_PREFIX = '/';
 #else
-  static const char ARG_PREFIX = '-';
+static const char ARG_PREFIX = '-';
 #endif
 
 // Used to flag unused variables and silence compiler warnings

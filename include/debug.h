@@ -28,9 +28,11 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include <stdbool.h> // bool
+#include "types.h"
 
 extern bool debug_mode;
+
+#define TIMESTAMP_LENGTH ((uint8_t)64)
 
 void debug_print(const char* message, ...);
 

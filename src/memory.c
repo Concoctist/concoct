@@ -114,7 +114,7 @@ size_t get_store_used_slots()
 size_t get_object_size(Object* object)
 {
   size_t obj_size = sizeof(Object);
-  if(object->datatype == STRING)
+  if(object->datatype == CCT_TYPE_STRING)
   {
     obj_size += sizeof(object->value.strobj);
     obj_size += object->value.strobj.length + 1; // +1 for null terminator
@@ -315,42 +315,42 @@ Object* new_object_by_type(void* data, DataType datatype)
   }
   switch(datatype)
   {
-    case NIL:
+    case CCT_TYPE_NIL:
       object->datatype = datatype;
       if(debug_mode)
         debug_print("Object of type %s created with value: null", get_type(datatype), stdout);
       break;
-    case STRING:
+    case CCT_TYPE_STRING:
       object->datatype = datatype;
       new_string(&object->value.strobj, data);
       if(debug_mode)
         debug_print("Object of type %s created with value: %s", get_type(datatype), (char *)data, stdout);
       break;
-    case BOOL:
+    case CCT_TYPE_BOOL:
       object->datatype = datatype;
       object->value.boolval = *(Bool *)data;
       if(debug_mode)
         debug_print("Object of type %s created with value: %s", get_type(datatype), *(Bool *)data ? "true" : "false", stdout);
       break;
-    case BYTE:
+    case CCT_TYPE_BYTE:
       object->datatype = datatype;
       object->value.byteval = *(Byte *)data;
       if(debug_mode)
         debug_print("Object of type %s created with value: %u", get_type(datatype), *(Byte *)data);
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       object->datatype = datatype;
       object->value.numval = *(Number *)data;
       if(debug_mode)
         debug_print("Object of type %s created with value: %" PRId32, get_type(datatype), *(Number *)data);
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       object->datatype = datatype;
       object->value.bignumval = *(BigNum *)data;
       if(debug_mode)
         debug_print("Object of type %s created with value: %" PRId64, get_type(datatype), *(BigNum *)data);
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       object->datatype = datatype;
       object->value.decimalval = *(Decimal *)data;
       if(debug_mode)
@@ -366,7 +366,7 @@ Object* new_object_by_type(void* data, DataType datatype)
   object->is_flagged = false;
   object->is_global = false;
   object->const_name = NULL;
-  if(object->datatype != STRING) // new_string() already adds object to store
+  if(object->datatype != CCT_TYPE_STRING) // new_string() already adds object to store
     add_store_object(object);
   return object;
 }
@@ -374,7 +374,7 @@ Object* new_object_by_type(void* data, DataType datatype)
 // Frees object
 void free_object(Object** object)
 {
-  if((*object)->datatype == STRING)
+  if((*object)->datatype == CCT_TYPE_STRING)
     free_string(&(*object)->value.strobj);
   free(*object);
   *object = NULL;
@@ -394,7 +394,7 @@ Object* clone_object(Object* object)
   }
   memcpy(new_object, object, sizeof(Object));
 
-  if(object->datatype == STRING)
+  if(object->datatype == CCT_TYPE_STRING)
   {
     new_string(&new_object->value.strobj, object->value.strobj.strval);
     if(new_object->value.strobj.strval == NULL)
@@ -418,7 +418,7 @@ void stringify(char** str, void* data, DataType datatype)
   char* boolstr = NULL;
   switch(datatype)
   {
-    case NIL:
+    case CCT_TYPE_NIL:
       nullstr = "null";
       length = strlen(nullstr);
       *str = (char *)malloc(length + 1);
@@ -429,7 +429,7 @@ void stringify(char** str, void* data, DataType datatype)
       }
       strcpy(*str, nullstr);
       break;
-    case BOOL:
+    case CCT_TYPE_BOOL:
       boolstr = *(Bool *)data ? "true" : "false";
       length = strlen(boolstr);
       *str = (char *)malloc(length + 1);
@@ -440,7 +440,7 @@ void stringify(char** str, void* data, DataType datatype)
       }
       strcpy(*str, boolstr);
       break;
-    case STRING:
+    case CCT_TYPE_STRING:
       length = strlen(*(char **)data);
       *str = (char *)malloc(length + 1);
       if(*str == NULL)
@@ -450,7 +450,7 @@ void stringify(char** str, void* data, DataType datatype)
       }
       strcpy(*str, *(char **)data);
       break;
-    case BYTE:
+    case CCT_TYPE_BYTE:
       length = snprintf(NULL, 0, "%u", *(Byte *)data);
       *str = (char *)malloc(length + 1);
       if(*str == NULL)
@@ -460,7 +460,7 @@ void stringify(char** str, void* data, DataType datatype)
       }
       snprintf(*str, length + 1, "%u", *(Byte *)data);
       break;
-    case NUMBER:
+    case CCT_TYPE_NUMBER:
       length = snprintf(NULL, 0, "%" PRId32, *(Number *)data);
       *str = (char *)malloc(length + 1);
       if(*str == NULL)
@@ -470,7 +470,7 @@ void stringify(char** str, void* data, DataType datatype)
       }
       snprintf(*str, length + 1, "%" PRId32, *(Number *)data);
       break;
-    case BIGNUM:
+    case CCT_TYPE_BIGNUM:
       length = snprintf(NULL, 0, "%" PRId64, *(BigNum *)data);
       *str = (char *)malloc(length + 1);
       if(*str == NULL)
@@ -480,7 +480,7 @@ void stringify(char** str, void* data, DataType datatype)
       }
       snprintf(*str, length + 1, "%" PRId64, *(BigNum *)data);
       break;
-    case DECIMAL:
+    case CCT_TYPE_DECIMAL:
       length = snprintf(NULL, 0, "%f", *(Decimal *)data);
       *str = (char *)malloc(length + 1);
       if(*str == NULL)

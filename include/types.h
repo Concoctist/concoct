@@ -46,13 +46,13 @@ typedef struct cct_string  // string
 
 typedef enum data_type
 {
-  NIL,
-  BOOL,
-  BYTE,
-  NUMBER,
-  BIGNUM,
-  DECIMAL,
-  STRING
+  CCT_TYPE_NIL,
+  CCT_TYPE_BOOL,
+  CCT_TYPE_BYTE,
+  CCT_TYPE_NUMBER,
+  CCT_TYPE_BIGNUM,
+  CCT_TYPE_DECIMAL,
+  CCT_TYPE_STRING
 } DataType;
 
 // Concoct object
