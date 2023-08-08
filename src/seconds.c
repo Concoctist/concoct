@@ -27,16 +27,6 @@
 
 #include "seconds.h"
 
-// Returns delta of 2 timevals
-long double microdelta(time_t startsec, suseconds_t startusec, struct timeval* stop)
-{
-  long double start_total = startsec + (long double)startusec / MICROSECONDS_PER_SECOND;
-  long double stop_total = stop->tv_sec + (long double)stop->tv_usec / MICROSECONDS_PER_SECOND;
-  if(start_total == 0.0)
-    return 0.0;
-  return stop_total - start_total;
-}
-
 #ifdef _WIN32
 /*
   Since this project conforms to the C99 standard, portable gettimeofday() functionality is necessary for Windows.
@@ -77,3 +67,13 @@ int gettimeofday(struct timeval* tv, struct timezone* tz)
   return 0;
 }
 #endif // _WIN32
+
+// Returns delta of 2 timevals
+long double microdelta(time_t startsec, suseconds_t startusec, struct timeval* stop)
+{
+  long double start_total = startsec + (long double)startusec / MICROSECONDS_PER_SECOND;
+  long double stop_total = stop->tv_sec + (long double)stop->tv_usec / MICROSECONDS_PER_SECOND;
+  if(start_total == 0.0)
+    return 0.0;
+  return stop_total - start_total;
+}

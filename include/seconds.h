@@ -35,9 +35,6 @@
 
 static const uint32_t MICROSECONDS_PER_SECOND = 1000000ULL;
 
-// Returns delta of 2 timevals
-long double microdelta(time_t startsec, suseconds_t startusec, struct timeval* stop);
-
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -68,5 +65,8 @@ struct timezone
 // Fills timeval structure with the number of seconds and microseconds since the Unix epoch
 int gettimeofday(struct timeval* tv, struct timezone* tz);
 #endif // _WIN32
+
+// Returns delta of 2 timevals
+long double microdelta(time_t startsec, suseconds_t startusec, struct timeval* stop);
 
 #endif // SECONDS_H
