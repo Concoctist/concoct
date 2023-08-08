@@ -130,36 +130,36 @@ int main()
   char* str = NULL;
   Number numval = 42;
   void* vptr = &numval;
-  stringify(&str, vptr, NUMBER);
+  stringify(&str, vptr, CCT_TYPE_NUMBER);
   printf("%s\n", str);
   free(str);
   Decimal decimalval = 57.05;
   vptr = &decimalval;
-  stringify(&str, vptr, DECIMAL);
+  stringify(&str, vptr, CCT_TYPE_DECIMAL);
   printf("%s\n", str);
   free(str);
 
   char* testval = "Foo bar baz";
   vptr = &testval;
-  stringify(&str, vptr, STRING);
+  stringify(&str, vptr, CCT_TYPE_STRING);
   printf("%s\n", str);
   free(str);
 
   Bool boolval = false;
   vptr = &boolval;
-  stringify(&str, vptr, BOOL);
+  stringify(&str, vptr, CCT_TYPE_BOOL);
   printf("%s\n", str);
   free(str);
 
   boolval = true;
   vptr = &boolval;
-  stringify(&str, vptr, BOOL);
+  stringify(&str, vptr, CCT_TYPE_BOOL);
   printf("%s\n", str);
   free(str);
 
   char* nullval = NULL;
   vptr = &nullval;
-  stringify(&str, vptr, NIL);
+  stringify(&str, vptr, CCT_TYPE_NIL);
   printf("%s\n", str);
   free(str);
 

@@ -145,7 +145,7 @@ void compile(ConcoctNodeTree* tree)
         ic++;
         break;
       case CCT_TOKEN_CHAR:
-        push(vm.sp, new_object_by_type(current->text, BYTE));
+        push(vm.sp, new_object_by_type(current->text, CCT_TYPE_BYTE));
         break;
       case CCT_TOKEN_DEC:
         vm.instructions[ic] = OP_DEC;
@@ -174,7 +174,7 @@ void compile(ConcoctNodeTree* tree)
         ic++;
         break;
       case CCT_TOKEN_FLOAT:
-        push(vm.sp, new_object_by_type(current->text, DECIMAL));
+        push(vm.sp, new_object_by_type(current->text, CCT_TYPE_DECIMAL));
         break;
       case CCT_TOKEN_GREATER:
         vm.instructions[ic] = OP_GT;
@@ -232,7 +232,7 @@ void compile(ConcoctNodeTree* tree)
         ic++;
         break;
       case CCT_TOKEN_STRING:
-        push(vm.sp, new_object_by_type(current->text, STRING));
+        push(vm.sp, new_object_by_type(current->text, CCT_TYPE_STRING));
         break;
       case CCT_TOKEN_STRLEN_EQUAL:
         vm.instructions[ic] = OP_SLE;

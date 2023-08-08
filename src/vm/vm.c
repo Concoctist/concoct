@@ -119,32 +119,32 @@ void print_registers()
     {
       switch(object->datatype)
       {
-        case NIL:
+        case CCT_TYPE_NIL:
           strval = "null";
           break;
-        case BOOL:
+        case CCT_TYPE_BOOL:
           vptr = &object->value.boolval;
-          stringify(&strval, vptr, BOOL);
+          stringify(&strval, vptr, CCT_TYPE_BOOL);
           break;
-        case BYTE:
+        case CCT_TYPE_BYTE:
           vptr = &object->value.byteval;
-          stringify(&strval, vptr, BYTE);
+          stringify(&strval, vptr, CCT_TYPE_BYTE);
           break;
-        case NUMBER:
+        case CCT_TYPE_NUMBER:
           vptr = &object->value.numval;
-          stringify(&strval, vptr, NUMBER);
+          stringify(&strval, vptr, CCT_TYPE_NUMBER);
           break;
-        case BIGNUM:
+        case CCT_TYPE_BIGNUM:
           vptr = &object->value.bignumval;
-          stringify(&strval, vptr, BIGNUM);
+          stringify(&strval, vptr, CCT_TYPE_BIGNUM);
           break;
-        case DECIMAL:
+        case CCT_TYPE_DECIMAL:
           vptr = &object->value.decimalval;
-          stringify(&strval, vptr, DECIMAL);
+          stringify(&strval, vptr, CCT_TYPE_DECIMAL);
           break;
-        case STRING:
+        case CCT_TYPE_STRING:
           vptr = &object->value.strobj.strval;
-          stringify(&strval, vptr, STRING);
+          stringify(&strval, vptr, CCT_TYPE_STRING);
           break;
         default:
           strval = "Unknown";
@@ -173,32 +173,32 @@ void print_registers()
     object = (*SP)->objects[(*SP)->top];
     switch(object->datatype)
     {
-      case NIL:
+      case CCT_TYPE_NIL:
         strval = "null";
         break;
-      case BOOL:
+      case CCT_TYPE_BOOL:
         vptr = &object->value.boolval;
-        stringify(&strval, vptr, BOOL);
+        stringify(&strval, vptr, CCT_TYPE_BOOL);
         break;
-      case BYTE:
+      case CCT_TYPE_BYTE:
         vptr = &object->value.byteval;
-        stringify(&strval, vptr, BYTE);
+        stringify(&strval, vptr, CCT_TYPE_BYTE);
         break;
-      case NUMBER:
+      case CCT_TYPE_NUMBER:
         vptr = &object->value.numval;
-        stringify(&strval, vptr, NUMBER);
+        stringify(&strval, vptr, CCT_TYPE_NUMBER);
         break;
-      case BIGNUM:
+      case CCT_TYPE_BIGNUM:
         vptr = &object->value.bignumval;
-        stringify(&strval, vptr, BIGNUM);
+        stringify(&strval, vptr, CCT_TYPE_BIGNUM);
         break;
-      case DECIMAL:
+      case CCT_TYPE_DECIMAL:
         vptr = &object->value.decimalval;
-        stringify(&strval, vptr, DECIMAL);
+        stringify(&strval, vptr, CCT_TYPE_DECIMAL);
         break;
-      case STRING:
+      case CCT_TYPE_STRING:
         vptr = &object->value.strobj.strval;
-        stringify(&strval, vptr, STRING);
+        stringify(&strval, vptr, CCT_TYPE_STRING);
         break;
       default:
         strval = "Unknown";
