@@ -28,8 +28,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include <stdint.h> // uint8_t
-#include <stdio.h>  // FILE
+#include "char_stream.h"
 
 #define MAX_TOKEN_TEXT_LENGTH ((size_t)1024)
 #define MAX_ERROR_STRING_LENGTH ((uint8_t)64)
@@ -70,6 +69,7 @@ typedef enum concoct_token_type
   CCT_TOKEN_BIN_AND,
   CCT_TOKEN_BIN_OR,
   CCT_TOKEN_BIN_XOR,
+  CCT_TOKEN_BIN_NOT,
   CCT_TOKEN_SHL,
   CCT_TOKEN_SHR,
   CCT_TOKEN_DOT,
@@ -119,22 +119,7 @@ typedef struct concoct_token
   int line_number;
 } ConcoctToken;
 
-typedef enum concoct_char_stream_type
-{
-  CCT_CHAR_STREAM_FILE,
-  CCT_CHAR_STREAM_STRING
-} ConcoctCharStreamType;
 
-typedef struct concoct_char_stream
-{
-  ConcoctCharStreamType type;
-  union
-  {
-    FILE* file_input;
-    const char* string_input;
-  } input;
-  int index;
-} ConcoctCharStream;
 
 typedef struct concoct_lexer
 {
@@ -159,12 +144,5 @@ void cct_set_error(ConcoctLexer* lexer, const char* message);
 
 char cct_next_char(ConcoctLexer* lexer);
 ConcoctToken cct_next_token(ConcoctLexer* lexer);
-
-
-ConcoctCharStream* cct_new_file_char_stream(FILE* in_file);
-ConcoctCharStream* cct_new_string_char_stream(const char* in_string);
-char cct_get_char_from_stream(ConcoctCharStream* stream);
-int cct_char_stream_eof(ConcoctCharStream* stream);
-void cct_delete_char_stream(ConcoctCharStream* stream);
 
 #endif // LEXER_H

@@ -132,68 +132,6 @@ void cct_set_error(ConcoctLexer* lexer, const char* message)
   strcpy(lexer->error, message);
 }
 
-ConcoctCharStream* cct_new_file_char_stream(FILE* in_file)
-{
-  ConcoctCharStream* stream = malloc(sizeof(ConcoctCharStream));
-
-  if(stream == NULL)
-  {
-    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
-    return NULL;
-  }
-
-  stream->type = CCT_CHAR_STREAM_FILE;
-  stream->input.file_input = in_file;
-  stream->index = 0;
-  return stream;
-}
-
-ConcoctCharStream* cct_new_string_char_stream(const char* in_string)
-{
-  ConcoctCharStream* stream = malloc(sizeof(ConcoctCharStream));
-
-  if(stream == NULL)
-  {
-    fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
-    return NULL;
-  }
-
-  stream->type = CCT_CHAR_STREAM_STRING;
-  stream->input.string_input = in_string;
-  stream->index = 0;
-  return stream;
-}
-
-char cct_get_char_from_stream(ConcoctCharStream* stream)
-{
-  if(!cct_char_stream_eof(stream))
-  {
-    stream->index += 1;
-    if(stream->type == CCT_CHAR_STREAM_STRING)
-    {
-      char ch = stream->input.string_input[stream->index - 1];
-
-      return ch;
-    }
-    return (char)getc(stream->input.file_input);
-  }
-  return '\0';
-}
-
-int cct_char_stream_eof(ConcoctCharStream* stream)
-{
-  if(stream->type == CCT_CHAR_STREAM_STRING)
-  {
-    return stream->input.string_input[stream->index] == '\0';
-  }
-  return feof(stream->input.file_input);
-}
-
-void cct_delete_char_stream(ConcoctCharStream* stream)
-{
-  free(stream);
-}
-
 ConcoctToken cct_new_token(ConcoctTokenType type, int line_number)
 {
   ConcoctToken token;
@@ -576,6 +514,10 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
         cct_next_char(lexer);
         type = CCT_TOKEN_COMMA;
         break;
+      case '~':
+        cct_next_char(lexer);
+        type = CCT_TOKEN_BIN_NOT;
+        break;
       default:
         // cct_set_error is called to allocate memory for storing the error message; need a better way of doing this
         cct_set_error(lexer, "");
@@ -637,6 +579,7 @@ const char* cct_token_type_to_string(ConcoctTokenType type)
     case CCT_TOKEN_BIN_AND:          return "&";
     case CCT_TOKEN_BIN_OR:           return "|";
     case CCT_TOKEN_BIN_XOR:          return "^";
+    case CCT_TOKEN_BIN_NOT:          return "~";
     case CCT_TOKEN_SHL:              return "<<";
     case CCT_TOKEN_SHR:              return ">>";
     case CCT_TOKEN_DOT:              return ".";
