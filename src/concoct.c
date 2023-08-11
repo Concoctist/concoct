@@ -160,10 +160,10 @@ void parse_string(const char* input_string)
     fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   cct_delete_parser(parser);
   if(debug_mode)
-    debug_print("Freed parser\n");
+    debug_print("Freed parser.");
   cct_delete_node_tree(node_tree);
   if(debug_mode)
-    debug_print("Freed node tree\n");
+    debug_print("Freed node tree.");
   cct_delete_char_stream(char_stream);
   return;
 }
@@ -199,7 +199,8 @@ void lex_file(const char* file_name)
       fprintf(stderr, "%s\n", file_lexer->error);
       break;
     }
-    printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
+    if(debug_mode)
+      printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
     token = cct_next_token(file_lexer);
   }
   fclose(input_file);
@@ -232,7 +233,8 @@ void lex_string(const char* input_string)
       fprintf(stderr, "%s\n", string_lexer->error);
       break;
     }
-    printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
+    if(debug_mode)
+      printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
     token = cct_next_token(string_lexer);
   }
   cct_delete_lexer(string_lexer);
