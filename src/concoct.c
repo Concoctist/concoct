@@ -319,6 +319,7 @@ void print_usage()
   puts("Options:");
   printf("%cd: debug mode\n", ARG_PREFIX);
   printf("%ch: print usage\n", ARG_PREFIX);
+  printf("%cl: print license\n", ARG_PREFIX);
   printf("%cv: print version\n", ARG_PREFIX);
   return;
 }
