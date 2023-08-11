@@ -302,7 +302,19 @@ void interactive_mode()
   {
     memset(input, 0, sizeof(input)); // reset input every iteration
     printf("> ");
-    fgets(input, 1024, stdin);
+    if(fgets(input, 1024, stdin) == NULL)
+    {
+      puts("");
+      if(debug_mode)
+      {
+#ifdef _WIN32
+        debug_print("ctrl+z (EOT) detected.");
+#else
+        debug_print("ctrl+d (EOT) detected.");
+#endif // _WIN32
+      }
+      clean_exit(EXIT_SUCCESS); // ctrl+d (Unix) or ctrl+z (Windows) EOT detected
+    }
 
     // Check if input is just whitespace
     bool blank = false;
