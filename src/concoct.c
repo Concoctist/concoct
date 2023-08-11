@@ -252,6 +252,10 @@ void handle_options(int argc, char *argv[])
           print_usage();
           exit(EXIT_SUCCESS);
           break;
+        case 'l':
+          print_license();
+          exit(EXIT_SUCCESS);
+          break;
         case 'v':
           print_version();
           exit(EXIT_SUCCESS);
@@ -270,6 +274,32 @@ void handle_options(int argc, char *argv[])
       exit(EXIT_FAILURE);
     }
   }
+  return;
+}
+
+void print_license()
+{
+  puts("\nBSD 2-Clause License\n");
+  puts("Copyright (c) 2020-2023 BlakeTheBlock and Lloyd Dilley");
+  puts("All rights reserved.\n");
+  puts("Redistribution and use in source and binary forms, with or without");
+  puts("modification, are permitted provided that the following conditions are met:\n");
+  puts("1. Redistributions of source code must retain the above copyright notice, this");
+  puts("list of conditions and the following disclaimer.\n");
+  puts("2. Redistributions in binary form must reproduce the above copyright notice,");
+  puts("this list of conditions and the following disclaimer in the documentation");
+  puts("and/or other materials provided with the distribution.\n");
+
+  puts("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"");
+  puts("AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE");
+  puts("IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE");
+  puts("DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE");
+  puts("FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL");
+  puts("DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR");
+  puts("SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER");
+  puts("CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,");
+  puts("OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE");
+  puts("OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n");
   return;
 }
 
