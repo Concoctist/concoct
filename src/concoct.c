@@ -279,7 +279,7 @@ void handle_options(int argc, char *argv[])
 
 void print_license()
 {
-  puts("\nBSD 2-Clause License\n");
+  puts("BSD 2-Clause License\n");
   puts("Copyright (c) 2020-2023 BlakeTheBlock and Lloyd Dilley");
   puts("All rights reserved.\n");
   puts("Redistribution and use in source and binary forms, with or without");
@@ -299,7 +299,7 @@ void print_license()
   puts("SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER");
   puts("CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,");
   puts("OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE");
-  puts("OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n");
+  puts("OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.");
   return;
 }
 
@@ -387,6 +387,11 @@ void interactive_mode()
     }
     if(compare_input(input, "quit"))
       clean_exit(EXIT_SUCCESS);
+    if(compare_input(input, "version"))
+    {
+      print_version();
+      continue;
+    }
 
     lex_string(input);
     parse_string(input);
