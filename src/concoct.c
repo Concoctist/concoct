@@ -130,7 +130,8 @@ void parse_file(const char* file_name)
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
   if(parser->error == NULL)
   {
-    cct_print_node(node_tree->root, 0);
+    if(debug_mode)
+      cct_print_node(node_tree->root, 0);
     compile(node_tree);
   }
   else
@@ -151,15 +152,18 @@ void parse_string(const char* input_string)
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
   if(parser->error == NULL)
   {
-    cct_print_node(node_tree->root, 0);
+    if(debug_mode)
+      cct_print_node(node_tree->root, 0);
     compile(node_tree);
   }
   else
     fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   cct_delete_parser(parser);
-  printf("Freed parser\n");
+  if(debug_mode)
+    debug_print("Freed parser\n");
   cct_delete_node_tree(node_tree);
-  printf("Freed node tree\n");
+  if(debug_mode)
+    debug_print("Freed node tree\n");
   cct_delete_char_stream(char_stream);
   return;
 }
