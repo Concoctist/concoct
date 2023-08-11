@@ -27,9 +27,10 @@
 
 #include <ctype.h>       // isspace()
 #include <errno.h>       // errno
+#include <signal.h>      // signal(), SIGINT
 #include <stdbool.h>     // false, true
 #include <stddef.h>      // size_t
-#include <stdio.h>       // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin, stderr
+#include <stdio.h>       // FILE, fclose(), fflush(), fgets(), fprintf(), printf(), puts(), stdin, stderr, stdout
 #include <stdlib.h>      // exit(), EXIT_FAILURE, EXIT_SUCCESS
 #include <string.h>      // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
 #include "char_stream.h"
@@ -283,6 +284,7 @@ void handle_options(int argc, char *argv[])
   return;
 }
 
+// Displays license
 void print_license()
 {
   puts("BSD 2-Clause License\n");
@@ -309,6 +311,7 @@ void print_license()
   return;
 }
 
+// Displays usage
 void print_usage()
 {
   print_version();
@@ -320,6 +323,7 @@ void print_usage()
   return;
 }
 
+// Displays version
 void print_version()
 {
   if(strlen(GIT_REV) == 0) // git not detected in path
@@ -329,6 +333,7 @@ void print_version()
   return;
 }
 
+// Compares command input
 bool compare_input(const char* input, const char* command)
 {
   bool is_match = false;
@@ -342,9 +347,22 @@ bool compare_input(const char* input, const char* command)
   return is_match;
 }
 
+// Catches interrupt
+void handle_sigint(int sig)
+{
+  signal(SIGINT, handle_sigint);
+  puts("");
+  if(debug_mode)
+    debug_print("Caught interrupt signal: %d", sig);
+  printf("> ");
+  fflush(stdout);
+  return;
+}
+
 // Interactive mode
 void interactive_mode()
 {
+  signal(SIGINT, handle_sigint);
   char input[1024];
   puts("Warning: Expect things to break.");
   while(true)

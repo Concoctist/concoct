@@ -49,6 +49,7 @@ bool compare_input(const char* input, const char* command);
 void print_license();
 void print_usage();
 void print_version();
+void handle_sigint(int sig);
 void interactive_mode();
 
 #endif // CONCOCT_H
