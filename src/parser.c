@@ -99,7 +99,7 @@ ConcoctNodeTree* cct_parse_program(ConcoctParser* parser)
   }
 
   tree->node_count = 0;
-  tree->node_max = 256;
+  tree->node_max = CCT_NODE_COUNT_PER_BLOCK;
   tree->nodes = malloc(tree->node_max * sizeof(ConcoctNode*));
 
   if(tree->nodes == NULL)
