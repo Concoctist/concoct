@@ -323,6 +323,19 @@ void print_version()
   return;
 }
 
+bool compare_input(const char* input, const char* command)
+{
+  bool is_match = false;
+#ifdef _WIN32
+  if(_stricmp(input, command) == 0)
+    is_match = true;
+#else
+  if(strcasecmp(input, command) == 0)
+    is_match = true;
+#endif
+  return is_match;
+}
+
 // Interactive mode
 void interactive_mode()
 {
@@ -365,13 +378,16 @@ void interactive_mode()
     // Check if string is empty
     if(input[0] == '\0')
       continue;
-#ifdef _WIN32
-    if(_stricmp(input, "quit") == 0)
+
+    // Check for valid commands
+    if(compare_input(input, "license"))
+    {
+      print_license();
+      continue;
+    }
+    if(compare_input(input, "quit"))
       clean_exit(EXIT_SUCCESS);
-#else
-    if(strcasecmp(input, "quit") == 0)
-      clean_exit(EXIT_SUCCESS);
-#endif
+
     lex_string(input);
     parse_string(input);
   }

@@ -28,6 +28,8 @@
 #ifndef CONCOCT_H
 #define CONCOCT_H
 
+#include <stdbool.h> // bool
+
 #ifdef _WIN32
 static const char ARG_PREFIX = '/';
 #else
@@ -43,6 +45,7 @@ void lex_string(const char* input_string);
 void parse_file(const char* file_name);
 void parse_string(const char* input_string);
 void handle_options(int argc, char *argv[]);
+bool compare_input(const char* input, const char* command);
 void print_license();
 void print_usage();
 void print_version();
