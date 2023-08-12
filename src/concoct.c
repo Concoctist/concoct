@@ -27,9 +27,10 @@
 
 #include <ctype.h>       // isspace()
 #include <errno.h>       // errno
+#include <signal.h>      // signal(), SIGINT
 #include <stdbool.h>     // false, true
 #include <stddef.h>      // size_t
-#include <stdio.h>       // FILE, fclose(), fgets(), fprintf(), printf(), puts(), stdin, stderr
+#include <stdio.h>       // FILE, fclose(), fflush(), fgets(), fprintf(), printf(), puts(), stdin, stderr, stdout
 #include <stdlib.h>      // exit(), EXIT_FAILURE, EXIT_SUCCESS
 #include <string.h>      // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
 #include "char_stream.h"
@@ -129,11 +130,14 @@ void parse_file(const char* file_name)
   ConcoctParser* parser = cct_new_parser(file_lexer);
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
   if(parser->error == NULL)
-    cct_print_node(node_tree->root, 0);
+  {
+    if(debug_mode)
+      cct_print_node(node_tree->root, 0);
+    compile(node_tree);
+  }
   else
     fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   fclose(input_file);
-  compile(node_tree);
   cct_delete_parser(parser);
   cct_delete_char_stream(char_stream);
   cct_delete_node_tree(node_tree);
@@ -148,14 +152,19 @@ void parse_string(const char* input_string)
   ConcoctParser* parser = cct_new_parser(string_lexer);
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
   if(parser->error == NULL)
-    cct_print_node(node_tree->root, 0);
+  {
+    if(debug_mode)
+      cct_print_node(node_tree->root, 0);
+    compile(node_tree);
+  }
   else
     fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
-  compile(node_tree);
   cct_delete_parser(parser);
-  printf("Freed parser\n");
+  if(debug_mode)
+    debug_print("Freed parser.");
   cct_delete_node_tree(node_tree);
-  printf("Freed node tree\n");
+  if(debug_mode)
+    debug_print("Freed node tree.");
   cct_delete_char_stream(char_stream);
   return;
 }
@@ -191,7 +200,8 @@ void lex_file(const char* file_name)
       fprintf(stderr, "%s\n", file_lexer->error);
       break;
     }
-    printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
+    if(debug_mode)
+      printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
     token = cct_next_token(file_lexer);
   }
   fclose(input_file);
@@ -224,7 +234,8 @@ void lex_string(const char* input_string)
       fprintf(stderr, "%s\n", string_lexer->error);
       break;
     }
-    printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
+    if(debug_mode)
+      printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
     token = cct_next_token(string_lexer);
   }
   cct_delete_lexer(string_lexer);
@@ -248,6 +259,10 @@ void handle_options(int argc, char *argv[])
           print_usage();
           exit(EXIT_SUCCESS);
           break;
+        case 'l':
+          print_license();
+          exit(EXIT_SUCCESS);
+          break;
         case 'v':
           print_version();
           exit(EXIT_SUCCESS);
@@ -269,6 +284,34 @@ void handle_options(int argc, char *argv[])
   return;
 }
 
+// Displays license
+void print_license()
+{
+  puts("BSD 2-Clause License\n");
+  puts("Copyright (c) 2020-2023 BlakeTheBlock and Lloyd Dilley");
+  puts("All rights reserved.\n");
+  puts("Redistribution and use in source and binary forms, with or without");
+  puts("modification, are permitted provided that the following conditions are met:\n");
+  puts("1. Redistributions of source code must retain the above copyright notice, this");
+  puts("list of conditions and the following disclaimer.\n");
+  puts("2. Redistributions in binary form must reproduce the above copyright notice,");
+  puts("this list of conditions and the following disclaimer in the documentation");
+  puts("and/or other materials provided with the distribution.\n");
+
+  puts("THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"");
+  puts("AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE");
+  puts("IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE");
+  puts("DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE");
+  puts("FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL");
+  puts("DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR");
+  puts("SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER");
+  puts("CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,");
+  puts("OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE");
+  puts("OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.");
+  return;
+}
+
+// Displays usage
 void print_usage()
 {
   print_version();
@@ -276,10 +319,12 @@ void print_usage()
   puts("Options:");
   printf("%cd: debug mode\n", ARG_PREFIX);
   printf("%ch: print usage\n", ARG_PREFIX);
+  printf("%cl: print license\n", ARG_PREFIX);
   printf("%cv: print version\n", ARG_PREFIX);
   return;
 }
 
+// Displays version
 void print_version()
 {
   if(strlen(GIT_REV) == 0) // git not detected in path
@@ -289,16 +334,55 @@ void print_version()
   return;
 }
 
+// Compares command input
+bool compare_input(const char* input, const char* command)
+{
+  bool is_match = false;
+#ifdef _WIN32
+  if(_stricmp(input, command) == 0)
+    is_match = true;
+#else
+  if(strcasecmp(input, command) == 0)
+    is_match = true;
+#endif
+  return is_match;
+}
+
+// Catches interrupt
+void handle_sigint(int sig)
+{
+  signal(SIGINT, handle_sigint);
+  puts("");
+  if(debug_mode)
+    debug_print("Caught interrupt signal: %d", sig);
+  printf("> ");
+  fflush(stdout);
+  return;
+}
+
 // Interactive mode
 void interactive_mode()
 {
+  signal(SIGINT, handle_sigint);
   char input[1024];
   puts("Warning: Expect things to break.");
   while(true)
   {
     memset(input, 0, sizeof(input)); // reset input every iteration
     printf("> ");
-    fgets(input, 1024, stdin);
+    if(fgets(input, 1024, stdin) == NULL)
+    {
+      puts("");
+      if(debug_mode)
+      {
+#ifdef _WIN32
+        debug_print("ctrl+z (EOT) detected.");
+#else
+        debug_print("ctrl+d (EOT) detected.");
+#endif // _WIN32
+      }
+      clean_exit(EXIT_SUCCESS); // ctrl+d (Unix) or ctrl+z (Windows) EOT detected
+    }
 
     // Check if input is just whitespace
     bool blank = false;
@@ -319,13 +403,21 @@ void interactive_mode()
     // Check if string is empty
     if(input[0] == '\0')
       continue;
-#ifdef _WIN32
-    if(_stricmp(input, "quit") == 0)
+
+    // Check for valid commands
+    if(compare_input(input, "license"))
+    {
+      print_license();
+      continue;
+    }
+    if(compare_input(input, "quit"))
       clean_exit(EXIT_SUCCESS);
-#else
-    if(strcasecmp(input, "quit") == 0)
-      clean_exit(EXIT_SUCCESS);
-#endif
+    if(compare_input(input, "version"))
+    {
+      print_version();
+      continue;
+    }
+
     lex_string(input);
     parse_string(input);
   }
