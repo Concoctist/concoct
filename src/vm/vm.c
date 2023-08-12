@@ -166,6 +166,9 @@ void print_registers()
       else
         printf("R%u: %.64s (%s)\n", i, strval, get_data_type(object));
     }
+
+    if(strval)
+      free(strval);
   }
 
   if((*SP)->count > 0)

@@ -366,8 +366,7 @@ Object* new_object_by_type(void* data, DataType datatype)
   object->is_flagged = false;
   object->is_global = false;
   object->const_name = NULL;
-  if(object->datatype != CCT_TYPE_STRING) // new_string() already adds object to store
-    add_store_object(object);
+  add_store_object(object);
   return object;
 }
 
