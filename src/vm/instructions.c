@@ -1626,6 +1626,7 @@ RunCode op_add(Stack* stack)
   Number numval = 0;
   BigNum bignumval = 0;
   Decimal decimalval = 0.0;
+  char* addstr = NULL;
   void* vptr = NULL;
 
   if(operand1 == NULL)
@@ -1644,7 +1645,17 @@ RunCode op_add(Stack* stack)
     return RUN_ERROR;
 
   if(operand1->datatype == CCT_TYPE_STRING && operand2->datatype == CCT_TYPE_STRING) // string concatenation
-    push(stack, new_object(strcat(operand1->value.strobj.strval, operand2->value.strobj.strval)));
+  {
+    addstr = malloc(operand1->value.strobj.length + operand2->value.strobj.length + 1);
+    if(addstr == NULL)
+    {
+      fprintf(stderr, "Unable to allocate memory for string during ADD operation.\n");
+      return RUN_ERROR;
+    }
+    strcpy(addstr, operand1->value.strobj.strval);
+    push(stack, new_object(strcat(addstr, operand2->value.strobj.strval)));
+    free(addstr);
+  }
   else
   {
     switch(operand1->datatype)
@@ -2144,7 +2155,9 @@ RunCode op_mul(Stack* stack)
         fprintf(stderr, "Unable to allocate memory for string during MUL operation.\n");
         return RUN_ERROR;
       }
-      for(int i = 0; i < abs(*(Number *)get_object_value(operand2)); i++)
+      strcpy(multstr, operand1->value.strobj.strval);
+      // start counter at 1 since we already called strcpy() above to null terminate multstr
+      for(int i = 1; i < abs(*(Number *)get_object_value(operand2)); i++)
         strcat(multstr, operand1->value.strobj.strval);
     }
     else
@@ -2155,7 +2168,9 @@ RunCode op_mul(Stack* stack)
         fprintf(stderr, "Unable to allocate memory for string during MUL operation.\n");
         return RUN_ERROR;
       }
-      for(int i = 0; i < abs(*(Number *)get_object_value(operand1)); i++)
+      strcpy(multstr, operand2->value.strobj.strval);
+      // start counter at 1 since we already called strcpy() above to null terminate multstr
+      for(int i = 1; i < abs(*(Number *)get_object_value(operand1)); i++)
         strcat(multstr, operand2->value.strobj.strval);
     }
     push(stack, new_object(multstr));
