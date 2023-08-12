@@ -16,13 +16,13 @@ assignees: ''
 * 
 
 ### Concoct Version
-*
+* 
 
 ### Compiler Version
 * 
 
 ### Operating System
-*
+* 
 
 ### Output/Screenshot(s)
 
