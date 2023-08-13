@@ -12,9 +12,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: CMake
-    - run: |
-      mkdir bld
-      cd bld
-      cmake
-      cd ..
-      cmake --build bld --config Debug
+      run: |
+        mkdir bld
+        cd bld
+        cmake
+        cd ..
+        cmake --build bld --config Debug
