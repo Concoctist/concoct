@@ -136,7 +136,7 @@ void parse_file(const char* file_name)
     compile(node_tree);
   }
   else
-    fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
+    fprintf(stderr, "Parsing error: [%zu] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   fclose(input_file);
   cct_delete_parser(parser);
   cct_delete_char_stream(char_stream);
@@ -158,7 +158,7 @@ void parse_string(const char* input_string)
     compile(node_tree);
   }
   else
-    fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
+    fprintf(stderr, "Parsing error: [%zu] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   cct_delete_parser(parser);
   if(debug_mode)
     debug_print("Freed parser.");

@@ -129,7 +129,7 @@ typedef struct concoct_lexer
   char* error;
 } ConcoctLexer;
 
-ConcoctToken cct_new_token(ConcoctTokenType type, int line_number);
+ConcoctToken cct_new_token(ConcoctTokenType type, size_t line_number);
 
 // Helper function for getting type names
 const char* cct_token_type_to_string(ConcoctTokenType type);

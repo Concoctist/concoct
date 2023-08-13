@@ -54,7 +54,7 @@ typedef struct concoct_parser
   ConcoctLexer* lexer;
   ConcoctNodeTree* tree;
   ConcoctToken current_token;
-  int error_line;
+  size_t error_line;
   const char* error;
 } ConcoctParser;
 
