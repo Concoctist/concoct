@@ -33,6 +33,7 @@
 extern bool debug_mode;
 
 #define TIMESTAMP_LENGTH ((uint8_t)64)
+#define TIMEZONE_LENGTH ((uint8_t)64)
 
 void debug_print(const char* message, ...);
 
