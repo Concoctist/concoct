@@ -54,10 +54,10 @@ bool is_full(const Queue* queue);
 size_t size(const Queue* queue);
 
 // Returns node at the back of queue
-ConcoctNode* back(Queue* queue);
+ConcoctNode* back(const Queue* queue);
 
 // Returns node at the front of queue
-ConcoctNode* front(Queue* queue);
+ConcoctNode* front(const Queue* queue);
 
 // Returns and removes next node from queue
 void dequeue(Queue* queue, ConcoctNode** node);

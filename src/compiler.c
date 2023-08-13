@@ -61,7 +61,7 @@ size_t size(const Queue* queue)
 }
 
 // Returns node at the back of queue
-ConcoctNode* back(Queue* queue)
+ConcoctNode* back(const Queue* queue)
 {
   if(is_empty(queue))
     return NULL;
@@ -69,7 +69,7 @@ ConcoctNode* back(Queue* queue)
 }
 
 // Returns node at the front of queue
-ConcoctNode* front(Queue* queue)
+ConcoctNode* front(const Queue* queue)
 {
   if(is_empty(queue))
     return NULL;
