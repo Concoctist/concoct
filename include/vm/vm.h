@@ -33,7 +33,6 @@
 #include "vm/stack.h"   // Stack
 
 #define REGISTER_AMOUNT ((uint8_t)17)
-//static const uint8_t REGISTER_AMOUNT = 16;
 static const uint8_t REGISTER_EMPTY = 127;
 static const size_t INSTRUCTION_STORE_SIZE = 128;
 

@@ -60,7 +60,6 @@ void realloc_store(size_t new_size)
   if(new_store == NULL)
   {
     fprintf(stderr, "Error reallocating memory for object store: %s\n", strerror(errno));
-    //clean_exit(EXIT_FAILURE);
     return;
   }
   // Initialize new space
@@ -111,7 +110,7 @@ size_t get_store_used_slots()
 }
 
 // Returns size of object in bytes
-size_t get_object_size(Object* object)
+size_t get_object_size(const Object* object)
 {
   size_t obj_size = sizeof(Object);
   if(object->datatype == CCT_TYPE_STRING)
@@ -413,8 +412,8 @@ Object* clone_object(Object* object)
 void stringify(char** str, void* data, DataType datatype)
 {
   size_t length = 0;
-  char* nullstr = NULL;
-  char* boolstr = NULL;
+  const char* nullstr = NULL;
+  const char* boolstr = NULL;
   switch(datatype)
   {
     case CCT_TYPE_NIL:

@@ -51,7 +51,7 @@ const char* get_type(DataType datatype)
 }
 
 // Returns string representation of data type from object
-const char* get_data_type(Object* object)
+const char* get_data_type(const Object* object)
 {
   switch(object->datatype)
   {
@@ -73,25 +73,18 @@ void* get_object_value(Object* object)
   {
     case CCT_TYPE_NIL:
       return NULL;
-      break;
     case CCT_TYPE_BOOL:
       return &object->value.boolval;
-      break;
     case CCT_TYPE_BYTE:
       return &object->value.byteval;
-      break;
     case CCT_TYPE_NUMBER:
       return &object->value.numval;
-      break;
     case CCT_TYPE_BIGNUM:
       return &object->value.bignumval;
-      break;
     case CCT_TYPE_DECIMAL:
       return &object->value.decimalval;
-      break;
     case CCT_TYPE_STRING:
       return object->value.strobj.strval;
-      break;
   }
   return NULL;
 }
@@ -111,7 +104,7 @@ void print_object_value(Object* object)
         puts("true");
       break;
     case CCT_TYPE_BYTE:
-      printf("%u\n", (Byte)object->value.byteval);
+      printf("%u\n", object->value.byteval);
       break;
     case CCT_TYPE_NUMBER:
       printf("%" PRId32 "\n", object->value.numval);

@@ -228,7 +228,7 @@ RunCode interpret()
   {
     if(debug_mode)
       printf("Instruction: %s (0x%02X)\n", get_mnemonic(*vm.ip), *vm.ip);
-    switch((*vm.ip))
+    switch(*vm.ip)
     {
       case OP_ADD:
         op_add(vm.sp);
@@ -459,7 +459,6 @@ RunCode interpret()
       default:
         fprintf(stderr, "Illegal instruction: %s (0x%02X)\n", get_mnemonic(*vm.ip), *vm.ip);
         return RUN_ERROR;
-        break;
     }
     (vm.ip)++;
   }

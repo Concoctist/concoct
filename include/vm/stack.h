@@ -32,7 +32,6 @@
 #include "types.h"
 
 #define MAX_STACK_CAPACITY ((size_t)64)
-//static const size_t MAX_STACK_CAPACITY = 64;
 
 typedef struct vm_stack
 {
@@ -45,7 +44,7 @@ typedef struct vm_stack
 void init_stack(Stack* stack);
 
 // Returns object at top of stack without removal
-Object* peek(Stack* stack);
+Object* peek(const Stack* stack);
 
 // Returns and removes object at top of stack
 Object* pop(Stack* stack);

@@ -74,7 +74,7 @@ size_t get_store_free_slots();
 size_t get_store_used_slots();
 
 // Returns size of object in bytes
-size_t get_object_size(Object* object);
+size_t get_object_size(const Object* object);
 
 // Returns total size of objects in object store in bytes
 size_t get_store_objects_size();
