@@ -196,12 +196,12 @@ void lex_file(const char* file_name)
   {
     if(file_lexer->error != NULL)
     {
-      fprintf(stderr, "Error on line %i:\n", token.line_number);
+      fprintf(stderr, "Error on line %zu:\n", token.line_number);
       fprintf(stderr, "%s\n", file_lexer->error);
       break;
     }
     if(debug_mode)
-      printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
+      printf("[%zu] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
     token = cct_next_token(file_lexer);
   }
   fclose(input_file);
@@ -230,12 +230,12 @@ void lex_string(const char* input_string)
   {
     if(string_lexer->error != NULL)
     {
-      fprintf(stderr, "Error on line %i:\n", token.line_number);
+      fprintf(stderr, "Error on line %zu:\n", token.line_number);
       fprintf(stderr, "%s\n", string_lexer->error);
       break;
     }
     if(debug_mode)
-      printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
+      printf("[%zu] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
     token = cct_next_token(string_lexer);
   }
   cct_delete_lexer(string_lexer);

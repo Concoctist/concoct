@@ -117,16 +117,14 @@ extern ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT];
 typedef struct concoct_token
 {
   ConcoctTokenType type;
-  int line_number;
+  size_t line_number;
 } ConcoctToken;
-
-
 
 typedef struct concoct_lexer
 {
   ConcoctCharStream* source;
   char next_char;
-  int line_number;
+  size_t line_number;
   char* token_text;
   char* error;
 } ConcoctLexer;
