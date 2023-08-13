@@ -13,6 +13,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: CMake
       run: |
+        pwd
+        ls -la
         cd concoct
         mkdir bld
         cd bld
