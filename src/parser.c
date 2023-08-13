@@ -63,18 +63,18 @@ void cct_set_parser_error(ConcoctParser* parser, const char* text)
 /*
 Prints a node and it's children, using indents to show relationship
 */
-void cct_print_node(const ConcoctNode* node, int tab_level)
+void cct_print_node(const ConcoctNode* node, size_t tab_level)
 {
   const char* text = "";
 
   if(node->text != NULL)
     text = node->text;
 
-  for(int i = 0; i < tab_level; i++)
+  for(size_t i = 0; i < tab_level; i++)
     printf("  ");
   printf("%s (%s)\n", cct_token_type_to_string(node->token.type), text);
 
-  for(int i = 0; i < node->child_count; i++)
+  for(size_t i = 0; i < node->child_count; i++)
     cct_print_node(node->children[i], tab_level + 1);
 }
 
@@ -942,7 +942,7 @@ ConcoctNode* cct_new_node(ConcoctNodeTree* tree, ConcoctToken token, const char*
 
 void cct_delete_node_tree(ConcoctNodeTree* tree)
 {
-  for(int i = 0; i < tree->node_count; i++)
+  for(size_t i = 0; i < tree->node_count; i++)
   {
     ConcoctNode* node = tree->nodes[i];
     free(node->text);

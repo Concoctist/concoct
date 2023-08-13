@@ -133,7 +133,7 @@ void cct_set_error(ConcoctLexer* lexer, const char* message)
   strcpy(lexer->error, message);
 }
 
-ConcoctToken cct_new_token(ConcoctTokenType type, int line_number)
+ConcoctToken cct_new_token(ConcoctTokenType type, size_t line_number)
 {
   ConcoctToken token;
   token.type = type;

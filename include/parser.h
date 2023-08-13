@@ -37,15 +37,15 @@ typedef struct ConcoctNode
   ConcoctToken token;
   char* text;
   struct ConcoctNode* parent;
-  int child_count;
+  size_t child_count;
   struct ConcoctNode** children;
 } ConcoctNode;
 
 typedef struct concoct_node_tree
 {
   ConcoctNode** nodes;
-  int node_count;
-  int node_max;
+  size_t node_count;
+  size_t node_max;
   ConcoctNode* root;
 } ConcoctNodeTree;
 
@@ -54,7 +54,7 @@ typedef struct concoct_parser
   ConcoctLexer* lexer;
   ConcoctNodeTree* tree;
   ConcoctToken current_token;
-  int error_line;
+  size_t error_line;
   const char* error;
 } ConcoctParser;
 
@@ -67,6 +67,6 @@ ConcoctNodeTree* cct_parse_program(ConcoctParser* parser);
 ConcoctNode* cct_parse_stat(ConcoctParser* parser);
 ConcoctNode* cct_parse_expr(ConcoctParser* parser);
 ConcoctToken cct_next_parser_token(ConcoctParser* parser);
-void cct_print_node(const ConcoctNode* node, int tab_level);
+void cct_print_node(const ConcoctNode* node, size_t tab_level);
 
 #endif // PARSER_H

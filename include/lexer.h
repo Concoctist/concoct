@@ -117,21 +117,19 @@ extern ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT];
 typedef struct concoct_token
 {
   ConcoctTokenType type;
-  int line_number;
+  size_t line_number;
 } ConcoctToken;
-
-
 
 typedef struct concoct_lexer
 {
   ConcoctCharStream* source;
   char next_char;
-  int line_number;
+  size_t line_number;
   char* token_text;
   char* error;
 } ConcoctLexer;
 
-ConcoctToken cct_new_token(ConcoctTokenType type, int line_number);
+ConcoctToken cct_new_token(ConcoctTokenType type, size_t line_number);
 
 // Helper function for getting type names
 const char* cct_token_type_to_string(ConcoctTokenType type);

@@ -136,7 +136,7 @@ void parse_file(const char* file_name)
     compile(node_tree);
   }
   else
-    fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
+    fprintf(stderr, "Parsing error: [%zu] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   fclose(input_file);
   cct_delete_parser(parser);
   cct_delete_char_stream(char_stream);
@@ -158,7 +158,7 @@ void parse_string(const char* input_string)
     compile(node_tree);
   }
   else
-    fprintf(stderr, "Parsing error: [%i] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
+    fprintf(stderr, "Parsing error: [%zu] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
   cct_delete_parser(parser);
   if(debug_mode)
     debug_print("Freed parser.");
@@ -196,12 +196,12 @@ void lex_file(const char* file_name)
   {
     if(file_lexer->error != NULL)
     {
-      fprintf(stderr, "Error on line %i:\n", token.line_number);
+      fprintf(stderr, "Error on line %zu:\n", token.line_number);
       fprintf(stderr, "%s\n", file_lexer->error);
       break;
     }
     if(debug_mode)
-      printf("[%i] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
+      printf("[%zu] %s : %s\n", token.line_number, file_lexer->token_text, cct_token_type_to_string(token.type));
     token = cct_next_token(file_lexer);
   }
   fclose(input_file);
@@ -230,12 +230,12 @@ void lex_string(const char* input_string)
   {
     if(string_lexer->error != NULL)
     {
-      fprintf(stderr, "Error on line %i:\n", token.line_number);
+      fprintf(stderr, "Error on line %zu:\n", token.line_number);
       fprintf(stderr, "%s\n", string_lexer->error);
       break;
     }
     if(debug_mode)
-      printf("[%i] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
+      printf("[%zu] %s : %s\n", token.line_number, string_lexer->token_text, cct_token_type_to_string(token.type));
     token = cct_next_token(string_lexer);
   }
   cct_delete_lexer(string_lexer);
