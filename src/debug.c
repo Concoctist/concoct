@@ -28,6 +28,7 @@
 #include <inttypes.h> // PRId64
 #include <stdarg.h>   // va_end, va_list, va_start, vprintf()
 #include <stdio.h>    // printf()
+#include <string.h>   // strlen()
 #include <time.h>     // strftime(), time(), time_t, tm
 #include "debug.h"    // debug_print(), debug_mode, TIMESTAMP_LENGTH
 #include "seconds.h"  // gettimeofday(), microdelta()
@@ -38,6 +39,7 @@ bool debug_mode = false;
 void debug_print(const char* message, ...)
 {
   char timestamp[TIMESTAMP_LENGTH];
+  char timezone[TIMEZONE_LENGTH];
   time_t rawtime;
   struct tm* timedata;
   struct timeval tv;
@@ -49,8 +51,12 @@ void debug_print(const char* message, ...)
   time(&rawtime);
   timedata = localtime(&rawtime);
   va_start(args, message);
-  strftime(timestamp, TIMESTAMP_LENGTH, "[%d/%m/%Y %H:%M:%S %Z", timedata);
-  printf("Debug: %s (%" PRId64 ".%06" PRId64 ") +/-%0.6f] - ", timestamp, (int64_t)tv.tv_sec, (int64_t)tv.tv_usec, microdelta(oldtvsec, oldtvusec, &tv));
+  strftime(timestamp, TIMESTAMP_LENGTH, "[%F %T", timedata);
+  strftime(timezone, TIMEZONE_LENGTH, "%z", timedata);
+  if(strlen(timezone) > 0) // time zone may be 0 bytes
+    printf("Debug: %s.%06" PRId64 " %s +/-%0.6f] - ", timestamp, (int64_t)tv.tv_usec, timezone, microdelta(oldtvsec, oldtvusec, &tv));
+  else
+    printf("Debug: %s.%06" PRId64 " +/-%0.6f] - ", timestamp, (int64_t)tv.tv_usec, microdelta(oldtvsec, oldtvusec, &tv));
   oldtvsec = tv.tv_sec;
   oldtvusec = tv.tv_usec;
   vprintf(message, args);
