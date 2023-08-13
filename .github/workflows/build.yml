@@ -15,6 +15,6 @@ jobs:
       run: |
         mkdir bld
         cd bld
-        cmake
+        cmake ..
         cd ..
         cmake --build bld --config Debug
