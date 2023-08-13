@@ -170,24 +170,20 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
       if(cct_next_char(lexer) == '#')
       {
         // Multi-line comment
-        while(true)
+        while(cct_next_char(lexer) != '#' && !cct_lexer_is_eof(lexer))
         {
-          while(cct_next_char(lexer) != '#' && !cct_lexer_is_eof(lexer))
-          {
-            // Registers new lines even in a comment
-            if(lexer->next_char == '\n')
-              lexer->line_number++;
-          }
-          if(cct_lexer_is_eof(lexer))
-          {
-            cct_set_error(lexer, "Reached EOF during multi-line comment");
-            ConcoctToken eof_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
-            return eof_token;
-          }
-          // End of comment
-          cct_next_char(lexer);
-          break;
+          // Registers new lines even in a comment
+          if(lexer->next_char == '\n')
+            lexer->line_number++;
         }
+        if(cct_lexer_is_eof(lexer))
+        {
+          cct_set_error(lexer, "Reached EOF during multi-line comment");
+          ConcoctToken eof_token = cct_new_token(CCT_TOKEN_ERROR, lexer->line_number);
+          return eof_token;
+        }
+        // End of comment
+        cct_next_char(lexer);
       }
       else
       {
