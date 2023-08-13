@@ -33,16 +33,16 @@
 
 #define OP_NOOP (void)0
 
-RunCode unary_operand_check(Object* operand, char* operator);
-RunCode binary_operand_check(Object* operand1, Object* operand2, char operator);
-RunCode binary_operand_check_str(Object* operand1, Object* operand2, char operator);
+RunCode unary_operand_check(const Object* operand, char* operator);
+RunCode binary_operand_check(const Object* operand1, const Object* operand2, char operator);
+RunCode binary_operand_check_str(const Object* operand1, const Object* operand2, char operator);
 RunCode op_clr(Object** rp);
 RunCode op_cls(Stack* stack);
 RunCode op_lod(Object** rp, Stack* stack, Byte dst_reg);
 RunCode op_mov(Object** rp, Object* object, Byte src_reg, Byte dst_reg);
 RunCode op_str(Object** rp, Stack* stack, Byte src_reg);
 RunCode op_xcg(Object** rp, Byte reg1, Byte reg2);
-RunCode op_pop(Stack* stack, Object* object);
+RunCode op_pop(Stack* stack, const Object* object);
 RunCode op_psh(Stack* stack, char* value);
 RunCode op_fls(Stack* stack);
 RunCode op_tru(Stack* stack);

@@ -139,7 +139,7 @@ const char* cct_token_type_to_string(ConcoctTokenType type);
 ConcoctLexer* cct_new_lexer(ConcoctCharStream* source);
 void cct_delete_lexer(ConcoctLexer* lexer);
 
-int cct_lexer_is_eof(ConcoctLexer* lexer);
+int cct_lexer_is_eof(const ConcoctLexer* lexer);
 
 void cct_set_error(ConcoctLexer* lexer, const char* message);
 

@@ -34,7 +34,7 @@
 #include "vm/vm.h"
 
 // Validates unary operand
-RunCode unary_operand_check(Object* operand, char* operator)
+RunCode unary_operand_check(const Object* operand, char* operator)
 {
   if(operand->datatype == CCT_TYPE_NIL)
   {
@@ -55,7 +55,7 @@ RunCode unary_operand_check(Object* operand, char* operator)
 }
 
 // Validates binary operands
-RunCode binary_operand_check(Object* operand1, Object* operand2, char* operator)
+RunCode binary_operand_check(const Object* operand1, const Object* operand2, char* operator)
 {
   if(operand1->datatype == CCT_TYPE_NIL || operand2->datatype == CCT_TYPE_NIL)
   {
@@ -67,7 +67,7 @@ RunCode binary_operand_check(Object* operand1, Object* operand2, char* operator)
     fprintf(stderr, "Invalid operation (%s) for object of type \"boolean\"!\n", operator);
     return RUN_ERROR;
   }
-  if((operand1->datatype == CCT_TYPE_STRING || operand2->datatype == CCT_TYPE_STRING))
+  if(operand1->datatype == CCT_TYPE_STRING || operand2->datatype == CCT_TYPE_STRING)
   {
     fprintf(stderr, "Invalid operation (%s) for object of type \"string\"!\n", operator);
     return RUN_ERROR;
@@ -76,7 +76,7 @@ RunCode binary_operand_check(Object* operand1, Object* operand2, char* operator)
 }
 
 // Validates binary operands for operations that allow a pair of strings (+ and *)
-RunCode binary_operand_check_str(Object* operand1, Object* operand2, char* operator)
+RunCode binary_operand_check_str(const Object* operand1, const Object* operand2, char* operator)
 {
   if(operand1->datatype == CCT_TYPE_NIL || operand2->datatype == CCT_TYPE_NIL)
   {
@@ -107,7 +107,7 @@ RunCode op_clr(Object** rp)
 // Clear stack
 RunCode op_cls(Stack* stack)
 {
-  Object* object = NULL;
+  const Object* object = NULL;
   UNUSED(object);
   while(stack->count > 0)
     object = pop(stack);
@@ -170,7 +170,7 @@ RunCode op_xcg(Object** rp, Byte reg1, Byte reg2)
 }
 
 // Pop
-RunCode op_pop(Stack* stack, Object* object)
+RunCode op_pop(Stack* stack, const Object* object)
 {
   UNUSED(object);
   object = pop(stack);
@@ -371,7 +371,6 @@ RunCode op_eql(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -404,7 +403,6 @@ RunCode op_eql(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -437,7 +435,6 @@ RunCode op_eql(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -470,13 +467,11 @@ RunCode op_eql(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (==)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -555,7 +550,6 @@ RunCode op_neq(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -588,7 +582,6 @@ RunCode op_neq(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -621,7 +614,6 @@ RunCode op_neq(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -654,13 +646,11 @@ RunCode op_neq(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (!=)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -668,8 +658,8 @@ RunCode op_neq(Stack* stack)
 // String length equal to ($=)
 RunCode op_sle(Stack* stack)
 {
-  Object* operand2 = pop(stack);
-  Object* operand1 = pop(stack);
+  const Object* operand2 = pop(stack);
+  const Object* operand1 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -701,8 +691,8 @@ RunCode op_sle(Stack* stack)
 // String length not equal to ($!)
 RunCode op_sln(Stack* stack)
 {
-  Object* operand2 = pop(stack);
-  Object* operand1 = pop(stack);
+  const Object* operand2 = pop(stack);
+  const Object* operand1 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -793,7 +783,6 @@ RunCode op_gt(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -826,7 +815,6 @@ RunCode op_gt(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -859,7 +847,6 @@ RunCode op_gt(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -892,13 +879,11 @@ RunCode op_gt(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (>)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -965,7 +950,6 @@ RunCode op_gte(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -998,7 +982,6 @@ RunCode op_gte(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -1031,7 +1014,6 @@ RunCode op_gte(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -1064,13 +1046,11 @@ RunCode op_gte(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (>=)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -1137,7 +1117,6 @@ RunCode op_lt(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -1170,7 +1149,6 @@ RunCode op_lt(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -1203,7 +1181,6 @@ RunCode op_lt(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -1236,13 +1213,11 @@ RunCode op_lt(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (<)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -1309,7 +1284,6 @@ RunCode op_lte(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -1342,7 +1316,6 @@ RunCode op_lte(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -1375,7 +1348,6 @@ RunCode op_lte(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -1408,13 +1380,11 @@ RunCode op_lte(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (<=)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -1460,7 +1430,6 @@ RunCode op_neg(Stack* stack)
     default:
       fprintf(stderr, "Invalid operand type encountered during NEG operation!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -1506,7 +1475,6 @@ RunCode op_pos(Stack* stack)
     default:
       fprintf(stderr, "Invalid operand type encountered during POS operation!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -1559,7 +1527,6 @@ RunCode op_dec(Stack* stack)
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (--)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -1612,7 +1579,6 @@ RunCode op_inc(Stack* stack)
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (++)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -1686,7 +1652,6 @@ RunCode op_add(Stack* stack)
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (+)!\n");
             return RUN_ERROR;
-            break;
         }
         break;
       case CCT_TYPE_NUMBER:
@@ -1715,7 +1680,6 @@ RunCode op_add(Stack* stack)
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (+)!\n");
             return RUN_ERROR;
-            break;
         }
         break;
       case CCT_TYPE_BIGNUM:
@@ -1744,7 +1708,6 @@ RunCode op_add(Stack* stack)
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (+)!\n");
             return RUN_ERROR;
-            break;
         }
         break;
       case CCT_TYPE_DECIMAL:
@@ -1773,13 +1736,11 @@ RunCode op_add(Stack* stack)
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (+)!\n");
             return RUN_ERROR;
-            break;
         }
         break;
       default:
         fprintf(stderr, "Invalid operand type encountered during operation (+)!\n");
         return RUN_ERROR;
-        break;
     }
   }
   return RUN_SUCCESS;
@@ -1839,7 +1800,6 @@ RunCode op_sub(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (-)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -1868,7 +1828,6 @@ RunCode op_sub(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (-)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -1897,7 +1856,6 @@ RunCode op_sub(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (-)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -1926,13 +1884,11 @@ RunCode op_sub(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (-)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (-)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -2019,7 +1975,6 @@ RunCode op_div(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (/)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -2048,7 +2003,6 @@ RunCode op_div(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (/)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -2077,7 +2031,6 @@ RunCode op_div(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (/)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -2106,13 +2059,11 @@ RunCode op_div(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (/)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (/)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -2206,7 +2157,6 @@ RunCode op_mul(Stack* stack)
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
             return RUN_ERROR;
-            break;
         }
         break;
       case CCT_TYPE_NUMBER:
@@ -2235,7 +2185,6 @@ RunCode op_mul(Stack* stack)
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
             return RUN_ERROR;
-            break;
         }
         break;
       case CCT_TYPE_BIGNUM:
@@ -2264,7 +2213,6 @@ RunCode op_mul(Stack* stack)
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
             return RUN_ERROR;
-            break;
         }
         break;
       case CCT_TYPE_DECIMAL:
@@ -2293,13 +2241,11 @@ RunCode op_mul(Stack* stack)
           default:
             fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
             return RUN_ERROR;
-            break;
         }
         break;
       default:
         fprintf(stderr, "Invalid operand type encountered during operation (*)!\n");
         return RUN_ERROR;
-        break;
     }
   }
   return RUN_SUCCESS;
@@ -2360,7 +2306,6 @@ RunCode op_mod(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (%%)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -2389,7 +2334,6 @@ RunCode op_mod(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (%%)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -2418,7 +2362,6 @@ RunCode op_mod(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (%%)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -2447,13 +2390,11 @@ RunCode op_mod(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (%%)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (%%)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -2512,7 +2453,6 @@ RunCode op_pow(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -2541,7 +2481,6 @@ RunCode op_pow(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -2570,7 +2509,6 @@ RunCode op_pow(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -2599,13 +2537,11 @@ RunCode op_pow(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (**)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -2664,7 +2600,6 @@ RunCode op_bnd(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -2693,7 +2628,6 @@ RunCode op_bnd(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -2722,7 +2656,6 @@ RunCode op_bnd(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -2751,13 +2684,11 @@ RunCode op_bnd(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (&)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -2816,7 +2747,6 @@ RunCode op_bor(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -2845,7 +2775,6 @@ RunCode op_bor(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -2874,7 +2803,6 @@ RunCode op_bor(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -2903,13 +2831,11 @@ RunCode op_bor(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (|)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -2968,7 +2894,6 @@ RunCode op_xor(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_NUMBER:
@@ -2997,7 +2922,6 @@ RunCode op_xor(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_BIGNUM:
@@ -3026,7 +2950,6 @@ RunCode op_xor(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     case CCT_TYPE_DECIMAL:
@@ -3055,13 +2978,11 @@ RunCode op_xor(Stack* stack)
         default:
           fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
           return RUN_ERROR;
-          break;
       }
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (^)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -3115,7 +3036,6 @@ RunCode op_bnt(Stack* stack)
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (~)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -3158,13 +3078,11 @@ RunCode op_shl(Stack* stack)
       numval = *(Number *)get_object_value(operand1);
       numval = numval << *(Number *)get_object_value(operand2);
       vptr = &numval;
-      vptr = &numval;
       push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
       break;
     case CCT_TYPE_BIGNUM:
       bignumval = *(BigNum *)get_object_value(operand1);
       bignumval = bignumval << *(Number *)get_object_value(operand2);
-      vptr = &bignumval;
       vptr = &bignumval;
       push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
       break;
@@ -3172,13 +3090,11 @@ RunCode op_shl(Stack* stack)
       decimalval = *(Decimal *)get_object_value(operand1);
       decimalval = (Number)decimalval << *(Number *)get_object_value(operand2);
       vptr = &decimalval;
-      vptr = &decimalval;
       push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (<<)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }
@@ -3221,13 +3137,11 @@ RunCode op_shr(Stack* stack)
       numval = *(Number *)get_object_value(operand1);
       numval = numval >> *(Number *)get_object_value(operand2);
       vptr = &numval;
-      vptr = &numval;
       push(stack, new_object_by_type(vptr, CCT_TYPE_NUMBER));
       break;
     case CCT_TYPE_BIGNUM:
       bignumval = *(BigNum *)get_object_value(operand1);
       bignumval = bignumval >> *(Number *)get_object_value(operand2);
-      vptr = &bignumval;
       vptr = &bignumval;
       push(stack, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
       break;
@@ -3235,13 +3149,11 @@ RunCode op_shr(Stack* stack)
       decimalval = *(Decimal *)get_object_value(operand1);
       decimalval = (Number)decimalval >> *(Number *)get_object_value(operand2);
       vptr = &decimalval;
-      vptr = &decimalval;
       push(stack, new_object_by_type(vptr, CCT_TYPE_DECIMAL));
       break;
     default:
       fprintf(stderr, "Invalid operand type encountered during operation (>>)!\n");
       return RUN_ERROR;
-      break;
   }
   return RUN_SUCCESS;
 }

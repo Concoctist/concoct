@@ -77,7 +77,7 @@ typedef struct object
 const char* get_type(DataType datatype);
 
 // Returns string representation of data type from object
-const char* get_data_type(Object* object);
+const char* get_data_type(const Object* object);
 
 // Returns value of object
 void* get_object_value(Object* object);

@@ -40,7 +40,7 @@ void init_stack(Stack* stack)
 }
 
 // Returns object at top of stack without removal
-Object* peek(Stack* stack)
+Object* peek(const Stack* stack)
 {
   if(stack->top == -1)
   {

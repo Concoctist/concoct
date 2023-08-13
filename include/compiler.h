@@ -32,7 +32,6 @@
 #include "parser.h"
 
 #define MAX_QUEUE_CAPACITY ((size_t)256)
-//static const size_t MAX_QUEUE_CAPACITY = CCT_NODE_COUNT_PER_BLOCK;
 
 typedef struct node_queue
 {
@@ -46,13 +45,13 @@ typedef struct node_queue
 void init_queue(Queue* queue);
 
 // Is queue empty?
-bool is_empty(Queue* queue);
+bool is_empty(const Queue* queue);
 
 // Is queue full?
-bool is_full(Queue* queue);
+bool is_full(const Queue* queue);
 
 // Returns size of queue
-size_t size(Queue* queue);
+size_t size(const Queue* queue);
 
 // Returns node at the back of queue
 ConcoctNode* back(Queue* queue);

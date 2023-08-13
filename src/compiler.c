@@ -43,19 +43,19 @@ void init_queue(Queue* queue)
 }
 
 // Is queue empty?
-bool is_empty(Queue* queue)
+bool is_empty(const Queue* queue)
 {
   return queue->count == 0;
 }
 
 // Is queue full?
-bool is_full(Queue* queue)
+bool is_full(const Queue* queue)
 {
   return queue->count == MAX_QUEUE_CAPACITY;
 }
 
 // Returns size of queue
-size_t size(Queue* queue)
+size_t size(const Queue* queue)
 {
   return queue->count;
 }
@@ -229,6 +229,14 @@ void compile(ConcoctNodeTree* tree)
         break;
       case CCT_TOKEN_OR:
         vm.instructions[ic] = OP_OR;
+        ic++;
+        break;
+      case CCT_TOKEN_SHL:
+        vm.instructions[ic] = OP_SHL;
+        ic++;
+        break;
+      case CCT_TOKEN_SHR:
+        vm.instructions[ic] = OP_SHR;
         ic++;
         break;
       case CCT_TOKEN_STRING:

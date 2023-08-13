@@ -39,9 +39,9 @@ bool debug_mode = false;
 void debug_print(const char* message, ...)
 {
   char timestamp[TIMESTAMP_LENGTH];
-  char timezone[TIMEZONE_LENGTH];
+  char time_zone[TIMEZONE_LENGTH];
   time_t rawtime;
-  struct tm* timedata;
+  const struct tm* timedata;
   struct timeval tv;
   static time_t oldtvsec = 0;
   static suseconds_t oldtvusec = 0;
@@ -52,9 +52,9 @@ void debug_print(const char* message, ...)
   timedata = localtime(&rawtime);
   va_start(args, message);
   strftime(timestamp, TIMESTAMP_LENGTH, "[%F %T", timedata);
-  strftime(timezone, TIMEZONE_LENGTH, "%z", timedata);
-  if(strlen(timezone) > 0) // time zone may be 0 bytes
-    printf("Debug: %s.%06" PRId64 " %s +/-%0.6f] - ", timestamp, (int64_t)tv.tv_usec, timezone, microdelta(oldtvsec, oldtvusec, &tv));
+  strftime(time_zone, TIMEZONE_LENGTH, "%z", timedata);
+  if(strlen(time_zone) > 0) // time zone may be 0 bytes
+    printf("Debug: %s.%06" PRId64 " %s +/-%0.6f] - ", timestamp, (int64_t)tv.tv_usec, time_zone, microdelta(oldtvsec, oldtvusec, &tv));
   else
     printf("Debug: %s.%06" PRId64 " +/-%0.6f] - ", timestamp, (int64_t)tv.tv_usec, microdelta(oldtvsec, oldtvusec, &tv));
   oldtvsec = tv.tv_sec;

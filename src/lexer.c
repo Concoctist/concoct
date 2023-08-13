@@ -27,6 +27,7 @@
 
 #include <ctype.h>
 #include <errno.h>
+#include <stdbool.h> // true
 #include <stdlib.h>
 #include <string.h>
 #include "lexer.h"
@@ -118,7 +119,7 @@ char cct_next_char(ConcoctLexer* lexer)
   return lexer->next_char;
 }
 
-int cct_lexer_is_eof(ConcoctLexer* lexer)
+int cct_lexer_is_eof(const ConcoctLexer* lexer)
 {
   return lexer->next_char == '\0';
 }
@@ -149,7 +150,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
   // Default to an empty string
   lexer->token_text[0] = '\0';
   // Skips whitespace and comments, repeatedly
-  while(1)
+  while(true)
   {
     if(!isspace(lexer->next_char) && lexer->next_char != '#')
       break;
@@ -169,7 +170,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
       if(cct_next_char(lexer) == '#')
       {
         // Multi-line comment
-        while(1)
+        while(true)
         {
           while(cct_next_char(lexer) != '#' && !cct_lexer_is_eof(lexer))
           {
@@ -387,28 +388,22 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
         }
         break;
       case '/':
-        switch(cct_next_char(lexer))
+        if(cct_next_char(lexer) == '=')
         {
-          case '=':
-            cct_next_char(lexer);
-            type = CCT_TOKEN_DIV_ASSIGN;
-            break;
-          default:
-            type = CCT_TOKEN_DIV;
-            break;
+          cct_next_char(lexer);
+          type = CCT_TOKEN_DIV_ASSIGN;
         }
+        else
+          type = CCT_TOKEN_DIV;
         break;
       case '%':
-        switch(cct_next_char(lexer))
+        if(cct_next_char(lexer) == '=')
         {
-          case '=':
-            cct_next_char(lexer);
-            type = CCT_TOKEN_MOD_ASSIGN;
-            break;
-          default:
-            type = CCT_TOKEN_MOD;
-            break;
+          cct_next_char(lexer);
+          type = CCT_TOKEN_MOD_ASSIGN;
         }
+        else
+          type = CCT_TOKEN_MOD;
         break;
       case '>':
         switch(cct_next_char(lexer))
@@ -443,40 +438,31 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
         }
         break;
       case '!':
-        switch(cct_next_char(lexer))
+        if(cct_next_char(lexer) == '=')
         {
-          case '=':
-            cct_next_char(lexer);
-            type = CCT_TOKEN_NOT_EQUAL;
-            break;
-          default:
-            type = CCT_TOKEN_NOT;
-            break;
+          cct_next_char(lexer);
+          type = CCT_TOKEN_NOT_EQUAL;
         }
+        else
+          type = CCT_TOKEN_NOT;
         break;
       case '&':
-        switch(cct_next_char(lexer))
+        if(cct_next_char(lexer) == '&')
         {
-          case '&':
-            cct_next_char(lexer);
-            type = CCT_TOKEN_AND;
-            break;
-          default:
-            type = CCT_TOKEN_BIN_AND;
-            break;
+          cct_next_char(lexer);
+          type = CCT_TOKEN_AND;
         }
+        else
+          type = CCT_TOKEN_BIN_AND;
         break;
       case '|':
-        switch(cct_next_char(lexer))
+        if(cct_next_char(lexer) == '|')
         {
-          case '|':
-            cct_next_char(lexer);
-            type = CCT_TOKEN_OR;
-            break;
-          default:
-            type = CCT_TOKEN_BIN_OR;
-            break;
+          cct_next_char(lexer);
+          type = CCT_TOKEN_OR;
         }
+        else
+          type = CCT_TOKEN_BIN_OR;
         break;
       case '^':
         cct_next_char(lexer);

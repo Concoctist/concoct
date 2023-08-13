@@ -67,6 +67,6 @@ ConcoctNodeTree* cct_parse_program(ConcoctParser* parser);
 ConcoctNode* cct_parse_stat(ConcoctParser* parser);
 ConcoctNode* cct_parse_expr(ConcoctParser* parser);
 ConcoctToken cct_next_parser_token(ConcoctParser* parser);
-void cct_print_node(ConcoctNode* node, int tab_level);
+void cct_print_node(const ConcoctNode* node, int tab_level);
 
 #endif // PARSER_H
