@@ -143,7 +143,7 @@ unsigned int cct_get_hash_code(const char* str)
   char* first_byte = (char*)&hash;
   
   size_t str_length = strlen(str);
-  for(int i = 0; i < str_length; i++)
+  for(size_t i = 0; i < str_length; i++)
   {
     *first_byte ^= str[i];
     hash *= CCT_HASH_PRIME;
