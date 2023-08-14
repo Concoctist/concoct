@@ -1,7 +1,5 @@
 #include "hash_map.h"
 
-#include <stdio.h>
-
 #define KEYWORD_COUNT 23
 #define HASH_MAP_BUCKET_COUNT 24
 

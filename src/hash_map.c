@@ -3,13 +3,25 @@
 ConcoctHashMap* cct_new_hash_map(int bucket_count)
 {
   ConcoctHashMap* map = malloc(sizeof(ConcoctHashMap));
+  if(map == NULL)
+  {
+    printf("Failed to allocate memory for a hash map.");
+    abort();
+  }
+
   map->bucket_count = bucket_count;
-  map->buckets = malloc(bucket_count*sizeof(ConcoctHashMapNode*));
+  map->buckets = malloc(bucket_count * sizeof(ConcoctHashMapNode*));
+  if(map->buckets == NULL)
+  {
+    printf("Failed to allocate memory for a hash map buckets.");
+    abort();
+  }
+
   for(int i = 0; i < bucket_count; i++)
   {
-    map->buckets[i] = NULL;
+    ConcoctHashMapNode** bucket = map->buckets + i;
+    *bucket = NULL;
   }
-  
   return map;
 }
 
@@ -30,6 +42,12 @@ void cct_delete_hash_map(ConcoctHashMap* map)
 ConcoctHashMapNode* cct_new_hash_map_node(const char* key, void* value, unsigned int hash)
 {
   ConcoctHashMapNode* node = malloc(sizeof(ConcoctHashMapNode));
+  if(node == NULL)
+  {
+    printf("Failed to allocate memory for a hash map key.");
+    abort();
+  }
+
   node->hash = hash;
   node->key = key;
   node->value = value;

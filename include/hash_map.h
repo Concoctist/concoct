@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define CCT_HASH_OFFSET 2166136261
 #define CCT_HASH_PRIME 16777619
