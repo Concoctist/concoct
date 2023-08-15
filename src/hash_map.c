@@ -1,3 +1,30 @@
+/*
+ * Concoct - An imperative, dynamically-typed, interpreted, general-purpose programming language
+ * Copyright (c) 2020-2023 BlakeTheBlock and Lloyd Dilley
+ * http://concoct.ist/
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 #include "hash_map.h"
 
 ConcoctHashMap* cct_new_hash_map(int bucket_count)
@@ -33,7 +60,6 @@ void cct_delete_hash_map(ConcoctHashMap* map)
     {
       cct_delete_hash_map_node(map->buckets[i]);
     }
-    
   }
   free(map->buckets);
   free(map);
@@ -64,7 +90,6 @@ void cct_delete_hash_map_node(ConcoctHashMapNode* node)
   free(node);
 }
 
-
 int cct_hash_map_has_key(ConcoctHashMap* map, const char* key)
 {
   // Finds the bucket that this key could be in and checks each entry in it
@@ -82,7 +107,6 @@ int cct_hash_map_has_key(ConcoctHashMap* map, const char* key)
   }
   return 0;
 }
-
 
 void cct_hash_map_set(ConcoctHashMap* map, const char* key, void* value)
 {
@@ -123,6 +147,7 @@ void* cct_hash_map_get(ConcoctHashMap* map, const char* key)
   }
   return NULL;
 }
+
 void cct_hash_map_delete_entry(ConcoctHashMap* map, const char* key)
 {
   unsigned int hash = cct_get_hash_code(key);
@@ -151,6 +176,7 @@ void cct_hash_map_delete_entry(ConcoctHashMap* map, const char* key)
     node = node->next;
   }
 }
+
 ConcoctHashMapNode* get_first_node_in_bucket(ConcoctHashMap* map, int bucket)
 {
   return map->buckets[bucket];
@@ -159,7 +185,7 @@ unsigned int cct_get_hash_code(const char* str)
 {
   unsigned int hash = CCT_HASH_OFFSET;
   char* first_byte = (char*)&hash;
-  
+
   size_t str_length = strlen(str);
   for(size_t i = 0; i < str_length; i++)
   {
