@@ -25,43 +25,67 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CCT_HASH_MAP_H
-#define CCT_HASH_MAP_H
+#include <assert.h> // assert()
+#include <stdlib.h> // free()
+#include <string.h> // strcmp(), strncpy()
+#include "memory.h" // stringify()
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+void test_stringify()
+{
+  char* str = NULL;
 
-#define CCT_HASH_OFFSET 2166136261
-#define CCT_HASH_PRIME 16777619
+  Byte byteval = 128;
+  void* vptr = &byteval;
+  stringify(&str, vptr, CCT_TYPE_BYTE);
+  assert(strcmp(str, "128") == 0);
+  free(str);
 
-typedef struct ConcoctHashMapNode ConcoctHashMapNode;
+  Number numval = 42;
+  vptr = &numval;
+  stringify(&str, vptr, CCT_TYPE_NUMBER);
+  assert(strcmp(str, "42") == 0);
+  free(str);
 
-struct ConcoctHashMapNode {
-  unsigned int hash;
-  const char* key;
-  void* value;
-  ConcoctHashMapNode* next;
-};
+  Decimal decimalval = 57.05;
+  char dec[16];
+  vptr = &decimalval;
+  stringify(&str, vptr, CCT_TYPE_DECIMAL);
+  if(str && strlen(str) > 5)
+  {
+    strncpy(dec, str, 5);
+    assert(strcmp(dec, "57.05") == 0);
+  }
+  free(str);
 
-typedef struct concoct_hash_map {
-  ConcoctHashMapNode** buckets;
-  int bucket_count;
-} ConcoctHashMap;
+  char* testval = "Foo bar baz";
+  vptr = &testval;
+  stringify(&str, vptr, CCT_TYPE_STRING);
+  assert(strcmp(str, "Foo bar baz") == 0);
+  free(str);
 
-ConcoctHashMapNode* cct_new_hash_map_node(const char* key, void* value, unsigned int hash);
-void cct_delete_hash_map_node(ConcoctHashMapNode* map);
+  Bool boolval = false;
+  vptr = &boolval;
+  stringify(&str, vptr, CCT_TYPE_BOOL);
+  assert(strcmp(str, "false") == 0);
+  free(str);
 
-ConcoctHashMap* cct_new_hash_map(int bucket_count);
-void cct_delete_hash_map(ConcoctHashMap* map);
+  boolval = true;
+  vptr = &boolval;
+  stringify(&str, vptr, CCT_TYPE_BOOL);
+  assert(strcmp(str, "true") == 0);
+  free(str);
 
-int cct_hash_map_has_key(ConcoctHashMap* map, const char* key);
-void cct_hash_map_set(ConcoctHashMap* map, const char* key, void* value);
-void* cct_hash_map_get(ConcoctHashMap* map, const char* key);
-void cct_hash_map_delete_entry(ConcoctHashMap* map, const char* key);
+  char* nullval = NULL;
+  vptr = &nullval;
+  stringify(&str, vptr, CCT_TYPE_NIL);
+  assert(strcmp(str, "null") == 0);
+  free(str);
 
-ConcoctHashMapNode* get_first_node_in_bucket(ConcoctHashMap* map, int bucket);
+  return;
+}
 
-unsigned int cct_get_hash_code(const char* str);
-
-#endif
+int main()
+{
+  test_stringify();
+  return 0;
+}

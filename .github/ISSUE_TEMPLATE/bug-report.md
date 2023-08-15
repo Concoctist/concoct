@@ -9,10 +9,10 @@ assignees: ''
 ### Expected Behavior
 * 
 
-### Actual Behavior/Symptoms
+### Actual Behavior/Symptom(s)
 * 
 
-### How to Reproduce Behavior/Symptoms
+### How to Reproduce Behavior/Symptom(s)
 * 
 
 ### Concoct Version
