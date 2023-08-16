@@ -53,6 +53,7 @@ void test_stringify()
   if(str && strlen(str) > 5)
   {
     strncpy(dec, str, 5);
+    dec[5] = '\0';
     assert(strcmp(dec, "57.05") == 0);
   }
   free(str);
