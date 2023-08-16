@@ -25,26 +25,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <errno.h>    // errno
+#include <stdio.h>    // fprintf(), stderr
+#include <stdlib.h>   // free(), malloc()
+#include <string.h>   // strcmp(), strerror(), strlen()
 #include "hash_map.h"
 
-ConcoctHashMap* cct_new_hash_map(int bucket_count)
+ConcoctHashMap* cct_new_hash_map(uint32_t bucket_count)
 {
   ConcoctHashMap* map = malloc(sizeof(ConcoctHashMap));
   if(map == NULL)
   {
-    printf("Failed to allocate memory for a hash map.");
-    abort();
+    fprintf(stderr, "Failed to allocate memory for a hash map: %s\n", strerror(errno));
+    return NULL;
   }
 
   map->bucket_count = bucket_count;
   map->buckets = malloc(bucket_count * sizeof(ConcoctHashMapNode*));
   if(map->buckets == NULL)
   {
-    printf("Failed to allocate memory for a hash map buckets.");
-    abort();
+    fprintf(stderr, "Failed to allocate memory for hash map buckets: %s\n", strerror(errno));
+    return NULL;
   }
 
-  for(int i = 0; i < bucket_count; i++)
+  for(size_t i = 0; i < bucket_count; i++)
   {
     ConcoctHashMapNode** bucket = map->buckets + i;
     *bucket = NULL;
@@ -54,7 +58,7 @@ ConcoctHashMap* cct_new_hash_map(int bucket_count)
 
 void cct_delete_hash_map(ConcoctHashMap* map)
 {
-  for(int i = 0; i < map->bucket_count; i++)
+  for(size_t i = 0; i < map->bucket_count; i++)
   {
     if(map->buckets[i] != NULL)
     {
@@ -63,15 +67,16 @@ void cct_delete_hash_map(ConcoctHashMap* map)
   }
   free(map->buckets);
   free(map);
+  return;
 }
 
-ConcoctHashMapNode* cct_new_hash_map_node(const char* key, void* value, unsigned int hash)
+ConcoctHashMapNode* cct_new_hash_map_node(const char* key, void* value, uint32_t hash)
 {
   ConcoctHashMapNode* node = malloc(sizeof(ConcoctHashMapNode));
   if(node == NULL)
   {
-    printf("Failed to allocate memory for a hash map key.");
-    abort();
+    fprintf(stderr, "Failed to allocate memory for hash map key: %s\n", strerror(errno));
+    return NULL;
   }
 
   node->hash = hash;
@@ -88,24 +93,23 @@ void cct_delete_hash_map_node(ConcoctHashMapNode* node)
     cct_delete_hash_map_node(node->next);
   }
   free(node);
+  return;
 }
 
-int cct_hash_map_has_key(ConcoctHashMap* map, const char* key)
+bool cct_hash_map_has_key(const ConcoctHashMap* map, const char* key)
 {
   // Finds the bucket that this key could be in and checks each entry in it
-  unsigned int hash = cct_get_hash_code(key);
-  int bucket_index = hash % map->bucket_count;
+  uint32_t hash = cct_get_hash_code(key);
+  uint32_t bucket_index = hash % map->bucket_count;
   ConcoctHashMapNode* node = map->buckets[bucket_index];
   while(node != NULL)
   {
     // Checks hash first for efficiency. Checks the string itself in case of hash collisions
     if(node->hash == hash && strcmp(node->key, key) == 0)
-    {
-      return 1;
-    }
+      return true;
     node = node->next;
   }
-  return 0;
+  return false;
 }
 
 void cct_hash_map_set(ConcoctHashMap* map, const char* key, void* value)
@@ -128,13 +132,14 @@ void cct_hash_map_set(ConcoctHashMap* map, const char* key, void* value)
     }
     node->next = cct_new_hash_map_node(key, value, hash);
   }
+  return;
 }
 
-void* cct_hash_map_get(ConcoctHashMap* map, const char* key)
+void* cct_hash_map_get(const ConcoctHashMap* map, const char* key)
 {
   // Finds the bucket that this key could be in and checks each entry in it
-  unsigned int hash = cct_get_hash_code(key);
-  int bucket_index = hash % map->bucket_count;
+  uint32_t hash = cct_get_hash_code(key);
+  uint32_t bucket_index = hash % map->bucket_count;
   ConcoctHashMapNode* node = map->buckets[bucket_index];
   while(node != NULL)
   {
@@ -150,8 +155,8 @@ void* cct_hash_map_get(ConcoctHashMap* map, const char* key)
 
 void cct_hash_map_delete_entry(ConcoctHashMap* map, const char* key)
 {
-  unsigned int hash = cct_get_hash_code(key);
-  int bucket_index = hash % map->bucket_count;
+  uint32_t hash = cct_get_hash_code(key);
+  uint32_t bucket_index = hash % map->bucket_count;
   ConcoctHashMapNode* node = map->buckets[bucket_index];
   ConcoctHashMapNode* previous_node = NULL;
   while(node)
@@ -175,15 +180,17 @@ void cct_hash_map_delete_entry(ConcoctHashMap* map, const char* key)
     previous_node = node;
     node = node->next;
   }
+  return;
 }
 
-ConcoctHashMapNode* get_first_node_in_bucket(ConcoctHashMap* map, int bucket)
+ConcoctHashMapNode* get_first_node_in_bucket(const ConcoctHashMap* map, uint32_t bucket)
 {
   return map->buckets[bucket];
 }
-unsigned int cct_get_hash_code(const char* str)
+
+uint32_t cct_get_hash_code(const char* str)
 {
-  unsigned int hash = CCT_HASH_OFFSET;
+  uint32_t hash = CCT_HASH_OFFSET;
   char* first_byte = (char*)&hash;
 
   size_t str_length = strlen(str);
