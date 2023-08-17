@@ -26,6 +26,7 @@
  */
 
 #include <stdio.h>    // printf()
+#include "debug.h"    // debug_mode, debug_print()
 #include "hash_map.h"
 
 #define KEYWORD_COUNT ((uint8_t)23)
@@ -59,10 +60,13 @@ const char* cct_keywords[KEYWORD_COUNT] = {
 
 int main()
 {
+  debug_mode = true;
   ConcoctHashMap* map = cct_new_hash_map(HASH_MAP_BUCKET_COUNT);
+
   // Print out the results of hashing
   printf("\nHASH MAP TEST\n\n");
   printf("%-9s : %-10s : %s\n\n", "KEY", "HASH_CODE", "BUCKET_INDEX");
+
   for(size_t i = 0; i < KEYWORD_COUNT; i++)
   {
     const char* key = cct_keywords[i];
@@ -91,5 +95,6 @@ int main()
     printf("TEST 5 FAILED: Error while retrieving value\n");
   else
     printf("ALL TESTS PASSED\n");
+
   cct_delete_hash_map(map);
 }

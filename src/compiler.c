@@ -27,7 +27,7 @@
 
 #include <stdio.h>    // fprintf()
 #include "compiler.h"
-#include "debug.h"    // debug_print()
+#include "debug.h"    // debug_mode, debug_print()
 #include "memory.h"   // new_object(), new_object_by_type()
 #include "vm/vm.h"    // interpret(), reverse_instructions()
 
