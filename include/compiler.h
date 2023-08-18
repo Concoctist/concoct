@@ -28,7 +28,8 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#include <stdbool.h> // bool
+#include <stdbool.h>  // bool
+#include "hash_map.h"
 #include "parser.h"
 
 #define MAX_QUEUE_CAPACITY ((size_t)256)
@@ -66,6 +67,6 @@ void dequeue(Queue* queue, ConcoctNode** node);
 void enqueue(Queue* queue, ConcoctNode* node);
 
 // Translates lexer/parser tokens to VM instructions
-void compile(ConcoctNodeTree* tree);
+void compile(ConcoctNodeTree* tree, ConcoctHashMap* map);
 
 #endif // COMPILER_H

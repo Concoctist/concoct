@@ -34,6 +34,8 @@
 #define CCT_HASH_OFFSET ((uint32_t)2166136261)
 #define CCT_HASH_PRIME ((uint32_t)16777619)
 
+#define INITIAL_BUCKET_AMOUNT ((uint16_t)128)
+
 typedef struct ConcoctHashMapNode ConcoctHashMapNode;
 
 struct ConcoctHashMapNode

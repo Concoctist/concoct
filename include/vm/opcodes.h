@@ -33,6 +33,7 @@ typedef enum opcode
 {
   OP_ADD, // add (+)
   OP_AND, // logical and (&&)
+  OP_ASN, // assign (=)
   OP_BND, // bitwise and (&)
   OP_BNT, // bitwise not/ones' complement (~)
   OP_BOR, // bitwise or (|)

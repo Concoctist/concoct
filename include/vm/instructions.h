@@ -28,14 +28,15 @@
 #ifndef INSTRUCTIONS_H
 #define INSTRUCTIONS_H
 
+#include "hash_map.h"
 #include "vm/stack.h"
 #include "vm/vm.h"
 
 #define OP_NOOP (void)0
 
 RunCode unary_operand_check(const Object* operand, char* operator);
-RunCode binary_operand_check(const Object* operand1, const Object* operand2, char operator);
-RunCode binary_operand_check_str(const Object* operand1, const Object* operand2, char operator);
+RunCode binary_operand_check(const Object* operand1, const Object* operand2, char* operator);
+RunCode binary_operand_check_str(const Object* operand1, const Object* operand2, char* operator);
 RunCode op_clr(Object** rp);
 RunCode op_cls(Stack* stack);
 RunCode op_lod(Object** rp, Stack* stack, Byte dst_reg);
@@ -44,6 +45,7 @@ RunCode op_str(Object** rp, Stack* stack, Byte src_reg);
 RunCode op_xcg(Object** rp, Byte reg1, Byte reg2);
 RunCode op_pop(Stack* stack, const Object* object);
 RunCode op_psh(Stack* stack, char* value);
+RunCode op_asn(Stack* stack, ConcoctHashMap* map);
 RunCode op_fls(Stack* stack);
 RunCode op_tru(Stack* stack);
 RunCode op_and(Stack* stack);

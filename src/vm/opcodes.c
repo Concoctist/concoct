@@ -34,6 +34,7 @@ const char* get_mnemonic(Opcode oc)
   {
     case OP_ADD: return "OP_ADD";    // add (+)
     case OP_AND: return "OP_AND";    // logical and (&&)
+    case OP_ASN: return "OP_ASN";    // assign (=)
     case OP_BND: return "OP_BND";    // bitwise and (&)
     case OP_BNT: return "OP_BNT";    // bitwise not/ones' complement (~)
     case OP_BOR: return "OP_BOR";    // bitwise or (|)

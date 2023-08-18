@@ -25,12 +25,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <math.h>    // pow()
-#include <stdio.h>   // fprintf(), stderr
-#include <stdlib.h>  // malloc()
-#include <string.h>  // strcat(), strcmp()
+#include <math.h>            // pow()
+#include <stdio.h>           // fprintf(), stderr
+#include <stdlib.h>          // malloc()
+#include <string.h>          // strcat(), strcmp()
 #include "concoct.h"
+#include "debug.h"
 #include "memory.h"
+#include "vm/instructions.h"
 #include "vm/vm.h"
 
 // Validates unary operand
@@ -187,6 +189,28 @@ RunCode op_psh(Stack* stack, char* value)
     return RUN_ERROR;
   }
   push(stack, operand);
+  return RUN_SUCCESS;
+}
+
+// Assign (=)
+RunCode op_asn(Stack* stack, ConcoctHashMap* map)
+{
+  Object* val = pop(stack); // value
+  Object* key = pop(stack); // identifier used as a key
+  if(key == NULL || key->datatype != CCT_TYPE_STRING)
+  {
+    fprintf(stderr, "Identifier is not a string that can be used as a key during ASN operation.\n");
+    return RUN_ERROR;
+  }
+  if(val == NULL)
+  {
+    fprintf(stderr, "Value is NULL during ASN operation.\n");
+    return RUN_ERROR;
+  }
+  cct_hash_map_set(map, key->value.strobj.strval, (Object *)val);
+  if(debug_mode)
+    print_object_value((Object *)cct_hash_map_get(map, key->value.strobj.strval));
+  key->is_flagged = true; // throw away the key since we have it in the map
   return RUN_SUCCESS;
 }
 

@@ -37,6 +37,7 @@
 #include "compiler.h"
 #include "concoct.h"
 #include "debug.h"
+#include "hash_map.h"
 #include "lexer.h"
 #include "parser.h"
 #include "types.h"
@@ -129,11 +130,12 @@ void parse_file(const char* file_name)
   ConcoctLexer* file_lexer = cct_new_lexer(char_stream);
   ConcoctParser* parser = cct_new_parser(file_lexer);
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
+  ConcoctHashMap* map = cct_new_hash_map(INITIAL_BUCKET_AMOUNT);
   if(parser->error == NULL)
   {
     if(debug_mode)
       cct_print_node(node_tree->root, 0);
-    compile(node_tree);
+    compile(node_tree, map);
   }
   else
     fprintf(stderr, "Parsing error: [%zu] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
@@ -141,6 +143,7 @@ void parse_file(const char* file_name)
   cct_delete_parser(parser);
   cct_delete_char_stream(char_stream);
   cct_delete_node_tree(node_tree);
+  cct_delete_hash_map(map);
   return;
 }
 
@@ -151,11 +154,12 @@ void parse_string(const char* input_string)
   ConcoctLexer* string_lexer = cct_new_lexer(char_stream);
   ConcoctParser* parser = cct_new_parser(string_lexer);
   ConcoctNodeTree* node_tree = cct_parse_program(parser);
+  ConcoctHashMap* map = cct_new_hash_map(INITIAL_BUCKET_AMOUNT);
   if(parser->error == NULL)
   {
     if(debug_mode)
       cct_print_node(node_tree->root, 0);
-    compile(node_tree);
+    compile(node_tree, map);
   }
   else
     fprintf(stderr, "Parsing error: [%zu] %s, got %s\n", parser->error_line, parser->error, cct_token_type_to_string(parser->current_token.type));
@@ -166,6 +170,7 @@ void parse_string(const char* input_string)
   if(debug_mode)
     debug_print("Freed node tree.");
   cct_delete_char_stream(char_stream);
+  cct_delete_hash_map(map);
   return;
 }
 
