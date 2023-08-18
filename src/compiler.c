@@ -27,7 +27,7 @@
 
 #include <stdio.h>    // fprintf()
 #include "compiler.h"
-#include "debug.h"    // debug_print()
+#include "debug.h"    // debug_mode, debug_print()
 #include "memory.h"   // new_object(), new_object_by_type()
 #include "vm/vm.h"    // interpret(), reverse_instructions()
 
@@ -99,7 +99,7 @@ void enqueue(Queue* queue, ConcoctNode* node)
 }
 
 // Translates lexer/parser tokens to VM instructions
-void compile(ConcoctNodeTree* tree)
+void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
 {
   ConcoctNode* root = tree->root;
   Queue queue;
@@ -131,6 +131,8 @@ void compile(ConcoctNodeTree* tree)
         ic++;
         break;
       case CCT_TOKEN_ASSIGN:
+        vm.instructions[ic] = OP_ASN; // this operation should precede an identifier (CCT_TOKEN_IDENTIFIER)
+        ic++;
         break;
       case CCT_TOKEN_BIN_AND:
         vm.instructions[ic] = OP_BND;
@@ -185,7 +187,17 @@ void compile(ConcoctNodeTree* tree)
         ic++;
         break;
       case CCT_TOKEN_IDENTIFIER:
-        // ToDo: handle vars (associative array?)
+        if(!cct_hash_map_has_key(map, current->text))
+        {
+          push(vm.sp, new_object_by_type(current->text, CCT_TYPE_STRING));
+        }
+        else
+        {
+          // Identifier already exists. Flag the original object for garbage collection and delete the value.
+          Object* object = cct_hash_map_get(map, current->text);
+          object->is_flagged=true;
+          cct_hash_map_delete_entry(map, current->text);
+        }
         break;
       case CCT_TOKEN_INC:
         vm.instructions[ic] = OP_INC;
@@ -271,7 +283,7 @@ void compile(ConcoctNodeTree* tree)
 
   reverse_instructions(ic);
   vm.instructions[ic] = OP_END; // append end instruction
-  interpret();
+  interpret(map);
 
   return;
 }

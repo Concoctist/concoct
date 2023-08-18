@@ -217,7 +217,7 @@ void print_registers()
 }
 
 // Interprets code
-RunCode interpret()
+RunCode interpret(ConcoctHashMap* map)
 {
   char* value = NULL;
   Object* object = NULL;
@@ -239,6 +239,9 @@ RunCode interpret()
         op_and(vm.sp);
         if(debug_mode)
           print_object_value(peek(vm.sp));
+        break;
+      case OP_ASN:
+        op_asn(vm.sp, map);
         break;
       case OP_BND:
         op_bnd(vm.sp);

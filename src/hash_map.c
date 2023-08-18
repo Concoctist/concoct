@@ -26,9 +26,11 @@
  */
 
 #include <errno.h>    // errno
+#include <inttypes.h> // PRIu32
 #include <stdio.h>    // fprintf(), stderr
 #include <stdlib.h>   // free(), malloc()
 #include <string.h>   // strcmp(), strerror(), strlen()
+#include "debug.h"    // debug_mode, debug_print()
 #include "hash_map.h"
 
 ConcoctHashMap* cct_new_hash_map(uint32_t bucket_count)
@@ -53,6 +55,10 @@ ConcoctHashMap* cct_new_hash_map(uint32_t bucket_count)
     ConcoctHashMapNode** bucket = map->buckets + i;
     *bucket = NULL;
   }
+
+  if(debug_mode)
+    debug_print("Hash map created with %zu buckets.", bucket_count);
+
   return map;
 }
 
@@ -67,6 +73,10 @@ void cct_delete_hash_map(ConcoctHashMap* map)
   }
   free(map->buckets);
   free(map);
+
+  if(debug_mode)
+    debug_print("Freed hash map.");
+
   return;
 }
 
@@ -83,6 +93,10 @@ ConcoctHashMapNode* cct_new_hash_map_node(const char* key, void* value, uint32_t
   node->key = key;
   node->value = value;
   node->next = NULL;
+
+  if(debug_mode)
+    debug_print("Hash map node created with key: %s (hash: %" PRIu32 ")", key, hash);
+
   return node;
 }
 
@@ -93,6 +107,7 @@ void cct_delete_hash_map_node(ConcoctHashMapNode* node)
     cct_delete_hash_map_node(node->next);
   }
   free(node);
+
   return;
 }
 
@@ -102,6 +117,7 @@ bool cct_hash_map_has_key(const ConcoctHashMap* map, const char* key)
   uint32_t hash = cct_get_hash_code(key);
   uint32_t bucket_index = hash % map->bucket_count;
   ConcoctHashMapNode* node = map->buckets[bucket_index];
+
   while(node != NULL)
   {
     // Checks hash first for efficiency. Checks the string itself in case of hash collisions
@@ -109,6 +125,7 @@ bool cct_hash_map_has_key(const ConcoctHashMap* map, const char* key)
       return true;
     node = node->next;
   }
+
   return false;
 }
 
@@ -132,6 +149,7 @@ void cct_hash_map_set(ConcoctHashMap* map, const char* key, void* value)
     }
     node->next = cct_new_hash_map_node(key, value, hash);
   }
+
   return;
 }
 
@@ -141,6 +159,7 @@ void* cct_hash_map_get(const ConcoctHashMap* map, const char* key)
   uint32_t hash = cct_get_hash_code(key);
   uint32_t bucket_index = hash % map->bucket_count;
   ConcoctHashMapNode* node = map->buckets[bucket_index];
+
   while(node != NULL)
   {
     // Checks hash first for efficiency. Checks the string itself in case of hash collisions
@@ -150,6 +169,7 @@ void* cct_hash_map_get(const ConcoctHashMap* map, const char* key)
     }
     node = node->next;
   }
+
   return NULL;
 }
 
@@ -159,6 +179,7 @@ void cct_hash_map_delete_entry(ConcoctHashMap* map, const char* key)
   uint32_t bucket_index = hash % map->bucket_count;
   ConcoctHashMapNode* node = map->buckets[bucket_index];
   ConcoctHashMapNode* previous_node = NULL;
+
   while(node)
   {
     if(node->hash == hash && strcmp(node->key, key) == 0)
@@ -180,6 +201,7 @@ void cct_hash_map_delete_entry(ConcoctHashMap* map, const char* key)
     previous_node = node;
     node = node->next;
   }
+
   return;
 }
 
@@ -192,12 +214,13 @@ uint32_t cct_get_hash_code(const char* str)
 {
   uint32_t hash = CCT_HASH_OFFSET;
   char* first_byte = (char*)&hash;
-
   size_t str_length = strlen(str);
+
   for(size_t i = 0; i < str_length; i++)
   {
     *first_byte ^= str[i];
     hash *= CCT_HASH_PRIME;
   }
+
   return hash;
 }
