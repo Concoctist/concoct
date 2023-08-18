@@ -75,7 +75,7 @@ void cct_delete_hash_map(ConcoctHashMap* map)
   free(map);
 
   if(debug_mode)
-    debug_print("Hash map freed.");
+    debug_print("Freed hash map.");
 
   return;
 }
