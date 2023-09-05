@@ -222,13 +222,14 @@ void lex_string(const char* input_string)
   //const char* input = "func test() { return a + b }";
   ConcoctCharStream* char_stream = cct_new_string_char_stream(input_string);
   ConcoctLexer* string_lexer = cct_new_lexer(char_stream);
-  ConcoctToken token = cct_next_token(string_lexer);
-
+  
   if(string_lexer == NULL)
   {
     fprintf(stderr, "String lexer is NULL!\n");
     return;
   }
+
+  ConcoctToken token = cct_next_token(string_lexer);
 
   //printf("Lexing string...\n");
   while(token.type != CCT_TOKEN_EOF)

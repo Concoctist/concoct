@@ -30,6 +30,7 @@
 
 #include <stdint.h>      // uint8_t
 #include "char_stream.h"
+#include "hash_map.h"
 
 #define MAX_TOKEN_TEXT_LENGTH ((size_t)1024)
 #define MAX_ERROR_STRING_LENGTH ((uint8_t)64)
@@ -123,6 +124,7 @@ typedef struct concoct_token
 typedef struct concoct_lexer
 {
   ConcoctCharStream* source;
+  ConcoctHashMap* keyword_map;
   char next_char;
   size_t line_number;
   char* token_text;

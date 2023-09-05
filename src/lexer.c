@@ -32,57 +32,32 @@
 #include <string.h>
 #include "lexer.h"
 
-const char* cct_keywords[CCT_KEYWORD_COUNT] = {
-  "break",
-  "continue",
-  "case",
-  "class",
-  "do",
-  "default",
-  "else",
-  "enum",
-  "false",
-  "for",
-  "func",
-  "goto",
-  "if",
-  "namespace",
-  "null",
-  "return",
-  "switch",
-  "super",
-  "true",
-  "use",
-  "var",
-  "while",
-  "in"
-};
-
-ConcoctTokenType cct_keyword_types[CCT_KEYWORD_COUNT] = {
-  CCT_TOKEN_BREAK,
-  CCT_TOKEN_CONTINUE,
-  CCT_TOKEN_CASE,
-  CCT_TOKEN_CLASS,
-  CCT_TOKEN_DO,
-  CCT_TOKEN_DEFAULT,
-  CCT_TOKEN_ELSE,
-  CCT_TOKEN_ENUM,
-  CCT_TOKEN_FALSE,
-  CCT_TOKEN_FOR,
-  CCT_TOKEN_FUNC,
-  CCT_TOKEN_GOTO,
-  CCT_TOKEN_IF,
-  CCT_TOKEN_NAMESPACE,
-  CCT_TOKEN_NULL,
-  CCT_TOKEN_RETURN,
-  CCT_TOKEN_SWITCH,
-  CCT_TOKEN_SUPER,
-  CCT_TOKEN_TRUE,
-  CCT_TOKEN_USE,
-  CCT_TOKEN_VAR,
-  CCT_TOKEN_WHILE,
-  CCT_TOKEN_IN
-};
+void cct_init_lexer_keyword_map(ConcoctHashMap* map)
+{
+  cct_hash_map_set(map, "break", (void*)CCT_TOKEN_BREAK);
+  cct_hash_map_set(map, "continue", (void*)CCT_TOKEN_CONTINUE);
+  cct_hash_map_set(map, "case", (void*)CCT_TOKEN_CASE);
+  cct_hash_map_set(map, "class", (void*)CCT_TOKEN_CLASS);
+  cct_hash_map_set(map, "do", (void*)CCT_TOKEN_DO);
+  cct_hash_map_set(map, "default", (void*)CCT_TOKEN_DEFAULT);
+  cct_hash_map_set(map, "else", (void*)CCT_TOKEN_ELSE);
+  cct_hash_map_set(map, "enum", (void*)CCT_TOKEN_ENUM);
+  cct_hash_map_set(map, "false", (void*)CCT_TOKEN_FALSE);
+  cct_hash_map_set(map, "for", (void*)CCT_TOKEN_FOR);
+  cct_hash_map_set(map, "func", (void*)CCT_TOKEN_FUNC);
+  cct_hash_map_set(map, "goto", (void*)CCT_TOKEN_GOTO);
+  cct_hash_map_set(map, "if", (void*)CCT_TOKEN_IF);
+  cct_hash_map_set(map, "namespace", (void*)CCT_TOKEN_NAMESPACE);
+  cct_hash_map_set(map, "null", (void*)CCT_TOKEN_NULL);
+  cct_hash_map_set(map, "return", (void*)CCT_TOKEN_RETURN);
+  cct_hash_map_set(map, "switch", (void*)CCT_TOKEN_SWITCH);
+  cct_hash_map_set(map, "super", (void*)CCT_TOKEN_SUPER);
+  cct_hash_map_set(map, "true", (void*)CCT_TOKEN_TRUE);
+  cct_hash_map_set(map, "use", (void*)CCT_TOKEN_CONTINUE);
+  cct_hash_map_set(map, "var", (void*)CCT_TOKEN_VAR);
+  cct_hash_map_set(map, "while", (void*)CCT_TOKEN_WHILE);
+  cct_hash_map_set(map, "in", (void*)CCT_TOKEN_IN);
+}
 
 ConcoctLexer* cct_new_lexer(ConcoctCharStream* source)
 {
@@ -93,6 +68,15 @@ ConcoctLexer* cct_new_lexer(ConcoctCharStream* source)
     fprintf(stderr, "Error allocating memory for lexer: %s\n", strerror(errno));
     return NULL;
   }
+
+  lexer->keyword_map = cct_new_hash_map(48);
+  if(lexer->keyword_map == NULL)
+  {
+    free(lexer);
+    return NULL;
+  }
+
+  cct_init_lexer_keyword_map(lexer->keyword_map);
   lexer->source = source;
   lexer->line_number = 1;
   lexer->error = NULL;
@@ -109,8 +93,10 @@ void cct_delete_lexer(ConcoctLexer* lexer)
   }
 
   free(lexer->token_text);
+  cct_delete_hash_map(lexer->keyword_map);
   free(lexer);
 }
+
 
 // Gets the next character in the lexing stream
 char cct_next_char(ConcoctLexer* lexer)
@@ -127,10 +113,10 @@ int cct_lexer_is_eof(const ConcoctLexer* lexer)
 void cct_set_error(ConcoctLexer* lexer, const char* message)
 {
   if(lexer->error == NULL)
-  {
     lexer->error = malloc(MAX_ERROR_STRING_LENGTH);
-  }
-  strcpy(lexer->error, message);
+
+  if(lexer->error != NULL)
+    strcpy(lexer->error, message);
 }
 
 ConcoctToken cct_new_token(ConcoctTokenType type, size_t line_number)
@@ -216,22 +202,19 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
       lexer->token_text[text_index++] = lexer->next_char;
       cct_next_char(lexer);
     }
-    // Null termination so strcmp works
+    // Null termination to make it a proper string
     lexer->token_text[text_index] = '\0';
-    // Goes trhough each keyword to see if this identifier is actually a keyword
-    // Should be optimized to a hash map
-    int is_keyword = 0;
-    for(uint8_t i = 0; i < CCT_KEYWORD_COUNT; i++)
+    // Determines if this identifier is a keyword or not
+    if(cct_hash_map_has_key(lexer->keyword_map, lexer->token_text))
     {
-      if(strcmp(cct_keywords[i], lexer->token_text) == 0)
-      {
-        type = cct_keyword_types[i];
-        is_keyword = 1;
-        break;
-      }
+      void* void_pointer = cct_hash_map_get(lexer->keyword_map, lexer->token_text);
+      int* pointer_to_type = (int*) (&void_pointer);
+      type = *pointer_to_type;
     }
-    if(!is_keyword)
+    else
+    {
       type = CCT_TOKEN_IDENTIFIER;
+    }
   }
   else if(isdigit(lexer->next_char))
   {
