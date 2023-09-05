@@ -223,6 +223,7 @@ ConcoctNode* cct_parse_unary_expr(ConcoctParser* parser)
     case CCT_TOKEN_NOT:
     case CCT_TOKEN_INC:
     case CCT_TOKEN_DEC:
+    case CCT_TOKEN_BIN_NOT:
       op_node = cct_new_node(parser->tree, parser->current_token, NULL);
       if(op_node == NULL)
       {
