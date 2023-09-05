@@ -530,6 +530,7 @@ const char* cct_token_type_to_string(ConcoctTokenType type)
     case CCT_TOKEN_ASSIGN:           return "=";
     case CCT_TOKEN_INC:              return "++";
     case CCT_TOKEN_DEC:              return "--";
+    case CCT_TOKEN_UNARY_MINUS:      return "- (Unary)";
     case CCT_TOKEN_EQUAL:            return "==";
     case CCT_TOKEN_NOT_EQUAL:        return "!=";
     case CCT_TOKEN_STRLEN_EQUAL:     return "$=";
