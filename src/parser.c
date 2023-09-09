@@ -219,7 +219,9 @@ ConcoctNode* cct_parse_unary_expr(ConcoctParser* parser)
     case CCT_TOKEN_SUB:
       // Change the token type so the compiler knows which operation it is
       parser->current_token.type = CCT_TOKEN_UNARY_MINUS;
+      goto TOK_ADD_LBL; // portable way to handle intentional fallthrough and silence -Wimplicit-fallthrough
     case CCT_TOKEN_ADD:
+      TOK_ADD_LBL:
     case CCT_TOKEN_NOT:
     case CCT_TOKEN_INC:
     case CCT_TOKEN_DEC:
