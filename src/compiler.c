@@ -276,6 +276,10 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
         vm.instructions[ic] = OP_TRU;
         ic++;
         break;
+      case CCT_TOKEN_UNARY_MINUS:
+        vm.instructions[ic] = OP_NEG;
+        ic++;
+        break;
       default:
         fprintf(stderr, "Unable to handle token: %s\n", cct_token_type_to_string(current->token.type));
         break;
