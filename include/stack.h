@@ -25,59 +25,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>    // fprintf(), stderr
-#include <stdlib.h>   // EXIT_FAILURE
-#include "debug.h"
-#include "vm/stack.h"
+#ifndef STACK_H
+#define STACK_H
 
-void init_stack(Stack* stack)
+#include <stddef.h> // NULL
+#include "types.h"
+
+#define MAX_STACK_CAPACITY ((size_t)128)
+
+typedef struct stack
 {
-  stack->count = 0;
-  stack->top = -1;
-  if(debug_mode)
-    debug_print("Stack initialized with %zu slots.", MAX_STACK_CAPACITY);
-  return;
-}
+  int16_t top;
+  size_t count;
+  void* objects[MAX_STACK_CAPACITY];
+} Stack;
+
+// Initializes stack
+void init_stack(Stack* stack);
 
 // Returns object at top of stack without removal
-Object* peek(const Stack* stack)
-{
-  if(stack->top == -1)
-  {
-    if(debug_mode)
-      debug_print("peek() called on empty stack!");
-    return NULL;
-  }
-  if(debug_mode)
-    debug_print("peek() called on stack for object of type %s. Stack currently contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
-  return stack->objects[stack->top];
-}
+void* peek(const Stack* stack);
 
 // Returns and removes object at top of stack
-Object* pop(Stack* stack)
-{
-  if(stack->top == -1)
-  {
-    fprintf(stderr, "Stack underflow occurred!\n");
-    return NULL;
-  }
-  stack->count--;
-  if(debug_mode)
-    debug_print("pop() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
-  return stack->objects[stack->top--];
-}
+void* pop(Stack* stack);
 
 // Pushes new object on top of stack
-void push(Stack* stack, Object* object)
-{
-  if(stack->top >= ((int)MAX_STACK_CAPACITY - 1))
-  {
-    fprintf(stderr, "Stack overflow occurred!\n");
-    return;
-  }
-  stack->count++;
-  stack->objects[++stack->top] = object;
-  if(debug_mode)
-    debug_print("push() called on stack for object of type %s. Stack now contains %zu objects.", get_data_type(stack->objects[stack->top]), stack->count);
-  return;
-}
+void push(Stack* stack, void* object);
+
+#endif // STACK_H

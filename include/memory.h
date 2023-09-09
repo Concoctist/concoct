@@ -29,7 +29,7 @@
 #define MEMORY_H
 
 #include "types.h"
-#include "vm/stack.h"
+#include "stack.h"
 
 // Initial free store capacity
 static const size_t INITIAL_STORE_CAPACITY = 128;

@@ -124,7 +124,10 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
         ic++;
         break;
       case CCT_TOKEN_ADD_ASSIGN:
-        // OP_ADD + OP_ASN
+        vm.instructions[ic] = OP_ADD;
+        ic++;
+        vm.instructions[ic] = OP_ASN;
+        ic++;
         break;
       case CCT_TOKEN_AND:
         vm.instructions[ic] = OP_AND;
