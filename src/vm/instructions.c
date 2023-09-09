@@ -207,7 +207,7 @@ RunCode op_asn(Stack* stack, ConcoctHashMap* map)
     fprintf(stderr, "Value is NULL during ASN operation.\n");
     return RUN_ERROR;
   }
-  cct_hash_map_set(map, key->value.strobj.strval, (Object *)val);
+  cct_hash_map_set(map, key->value.strobj.strval, val);
   if(debug_mode)
     print_object_value((Object *)cct_hash_map_get(map, key->value.strobj.strval));
   key->is_flagged = true; // throw away the key since we have it in the map

@@ -208,7 +208,7 @@ ConcoctToken cct_next_token(ConcoctLexer* lexer)
     if(cct_hash_map_has_key(lexer->keyword_map, lexer->token_text))
     {
       void* void_pointer = cct_hash_map_get(lexer->keyword_map, lexer->token_text);
-      int* pointer_to_type = (int*) (&void_pointer);
+      const int* pointer_to_type = (int *)(&void_pointer);
       type = *pointer_to_type;
     }
     else

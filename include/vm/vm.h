@@ -28,9 +28,9 @@
 #ifndef VM_H
 #define VM_H
 
+#include "stack.h"
 #include "types.h"      // BigNum, Byte
 #include "vm/opcodes.h" // Opcode
-#include "vm/stack.h"   // Stack
 
 #define REGISTER_AMOUNT ((uint8_t)17)
 static const uint8_t REGISTER_EMPTY = 127;

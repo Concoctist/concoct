@@ -29,7 +29,7 @@
 #define INSTRUCTIONS_H
 
 #include "hash_map.h"
-#include "vm/stack.h"
+#include "stack.h"
 #include "vm/vm.h"
 
 #define OP_NOOP (void)0

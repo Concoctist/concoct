@@ -28,9 +28,9 @@
 #include <stdio.h>
 #include "debug.h"
 #include "memory.h"
+#include "stack.h"
 #include "types.h"
 #include "vm/instructions.h"
-#include "vm/stack.h"
 
 int main()
 {

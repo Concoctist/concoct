@@ -124,7 +124,10 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
         ic++;
         break;
       case CCT_TOKEN_ADD_ASSIGN:
-        // OP_ADD + OP_ASN
+        vm.instructions[ic] = OP_ADD;
+        ic++;
+        vm.instructions[ic] = OP_ASN;
+        ic++;
         break;
       case CCT_TOKEN_AND:
         vm.instructions[ic] = OP_AND;
@@ -271,6 +274,10 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
         break;
       case CCT_TOKEN_TRUE:
         vm.instructions[ic] = OP_TRU;
+        ic++;
+        break;
+      case CCT_TOKEN_UNARY_MINUS:
+        vm.instructions[ic] = OP_NEG;
         ic++;
         break;
       default:
