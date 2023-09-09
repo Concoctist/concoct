@@ -216,11 +216,14 @@ ConcoctNode* cct_parse_unary_expr(ConcoctParser* parser)
 
   switch(parser->current_token.type)
   {
-    case CCT_TOKEN_ADD:
     case CCT_TOKEN_SUB:
+      // Change the token type so the compiler knows which operation it is
+      parser->current_token.type = CCT_TOKEN_UNARY_MINUS;
+    case CCT_TOKEN_ADD:
     case CCT_TOKEN_NOT:
     case CCT_TOKEN_INC:
     case CCT_TOKEN_DEC:
+    case CCT_TOKEN_BIN_NOT:
       op_node = cct_new_node(parser->tree, parser->current_token, NULL);
       if(op_node == NULL)
       {

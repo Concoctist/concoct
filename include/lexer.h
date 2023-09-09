@@ -30,6 +30,7 @@
 
 #include <stdint.h>      // uint8_t
 #include "char_stream.h"
+#include "hash_map.h"
 
 #define MAX_TOKEN_TEXT_LENGTH ((size_t)1024)
 #define MAX_ERROR_STRING_LENGTH ((uint8_t)64)
@@ -56,6 +57,7 @@ typedef enum concoct_token_type
   CCT_TOKEN_EXP,
   CCT_TOKEN_INC,
   CCT_TOKEN_DEC,
+  CCT_TOKEN_UNARY_MINUS,
   CCT_TOKEN_EQUAL,
   CCT_TOKEN_NOT_EQUAL,
   CCT_TOKEN_STRLEN_EQUAL,
@@ -123,6 +125,7 @@ typedef struct concoct_token
 typedef struct concoct_lexer
 {
   ConcoctCharStream* source;
+  ConcoctHashMap* keyword_map;
   char next_char;
   size_t line_number;
   char* token_text;
