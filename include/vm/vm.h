@@ -28,6 +28,7 @@
 #ifndef VM_H
 #define VM_H
 
+#include "hash_map.h"
 #include "stack.h"
 #include "types.h"      // BigNum, Byte
 #include "vm/opcodes.h" // Opcode
@@ -91,6 +92,6 @@ void init_vm();
 void stop_vm();
 
 // Interprets code
-RunCode interpret();
+RunCode interpret(ConcoctHashMap* map);
 
 #endif // VM_H

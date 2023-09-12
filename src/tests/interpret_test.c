@@ -26,6 +26,7 @@
  */
 
 #include "debug.h"
+#include "hash_map.h"
 #include "memory.h"
 #include "vm/vm.h"
 
@@ -34,6 +35,7 @@ int main()
   Object* object = NULL;
   void* vptr = NULL;
   BigNum numval = -8675309;
+  ConcoctHashMap* map = cct_new_hash_map(INITIAL_BUCKET_AMOUNT);
   debug_mode = true;
   init_vm();
 
@@ -81,7 +83,8 @@ int main()
   vm.instructions[17] = OP_CLS;
   vm.instructions[18] = OP_END;
 
-  interpret();
+  interpret(map);
+  cct_delete_hash_map(map);
   stop_vm();
 
   return 0;
