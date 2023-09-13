@@ -222,7 +222,7 @@ void lex_string(const char* input_string)
   //const char* input = "func test() { return a + b }";
   ConcoctCharStream* char_stream = cct_new_string_char_stream(input_string);
   ConcoctLexer* string_lexer = cct_new_lexer(char_stream);
-  
+
   if(string_lexer == NULL)
   {
     fprintf(stderr, "String lexer is NULL!\n");
@@ -376,6 +376,7 @@ void interactive_mode()
   {
     memset(input, 0, sizeof(input)); // reset input every iteration
     printf("> ");
+    fflush(stdout);
     if(fgets(input, 1024, stdin) == NULL)
     {
       puts("");
