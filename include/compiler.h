@@ -28,9 +28,10 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#include <stdbool.h>  // bool
+#include <stdbool.h>    // bool
 #include "hash_map.h"
 #include "parser.h"
+#include "vm/opcodes.h"
 
 #define MAX_QUEUE_CAPACITY ((size_t)256)
 
@@ -65,6 +66,9 @@ void dequeue(Queue* queue, ConcoctNode** node);
 
 // Inserts new node into queue
 void enqueue(Queue* queue, ConcoctNode* node);
+
+// Swap last 2 stack objects to fix order if first instruction is a binary operation
+void swap_last_operands(Opcode oc);
 
 // Translates lexer/parser tokens to VM instructions
 void compile(ConcoctNodeTree* tree, ConcoctHashMap* map);

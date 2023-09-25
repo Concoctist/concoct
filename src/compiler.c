@@ -98,6 +98,22 @@ void enqueue(Queue* queue, ConcoctNode* node)
   return;
 }
 
+// Swap last 2 stack objects to fix order if first instruction is a binary operation
+void swap_last_operands(Opcode oc)
+{
+  Object* object1 = NULL;
+  Object* object2 = NULL;
+  if(!is_binary_operation(oc))
+    return;
+  if(debug_mode)
+    debug_print("Swapping top 2 objects of stack...");
+  object1 = pop(vm.sp);
+  object2 = pop(vm.sp);
+  push(vm.sp, object1);
+  push(vm.sp, object2);
+  return;
+}
+
 // Translates lexer/parser tokens to VM instructions
 void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
 {
@@ -288,9 +304,13 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
       enqueue(pqueue, current->children[i]);
   }
 
-  reverse_instructions(ic);
-  vm.instructions[ic] = OP_END; // append end instruction
-  interpret(map);
+  if(ic > 0)
+  {
+    reverse_instructions(ic);
+    swap_last_operands(vm.instructions[0]);
+    vm.instructions[ic] = OP_END; // append end instruction
+    interpret(map);
+  }
 
   return;
 }

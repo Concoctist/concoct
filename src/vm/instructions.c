@@ -195,8 +195,8 @@ RunCode op_psh(Stack* stack, char* value)
 // Assign (=)
 RunCode op_asn(Stack* stack, ConcoctHashMap* map)
 {
-  Object* val = pop(stack); // value
   Object* key = pop(stack); // identifier used as a key
+  Object* val = pop(stack); // value
   if(key == NULL || key->datatype != CCT_TYPE_STRING)
   {
     fprintf(stderr, "Identifier is not a string that can be used as a key during ASN operation.\n");
@@ -231,8 +231,8 @@ RunCode op_tru(Stack* stack)
 // Logical and (&&)
 RunCode op_and(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
   Bool result = false;
   void* vptr = NULL;
 
@@ -291,8 +291,8 @@ RunCode op_not(Stack* stack)
 // Logical or (||)
 RunCode op_or(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
   Bool result = false;
   void* vptr = NULL;
 
@@ -324,8 +324,8 @@ RunCode op_or(Stack* stack)
 // Equal to (==)
 RunCode op_eql(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -503,8 +503,8 @@ RunCode op_eql(Stack* stack)
 // Not equal to (!=)
 RunCode op_neq(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -682,8 +682,8 @@ RunCode op_neq(Stack* stack)
 // String length equal to ($=)
 RunCode op_sle(Stack* stack)
 {
-  const Object* operand2 = pop(stack);
   const Object* operand1 = pop(stack);
+  const Object* operand2 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -715,8 +715,8 @@ RunCode op_sle(Stack* stack)
 // String length not equal to ($!)
 RunCode op_sln(Stack* stack)
 {
-  const Object* operand2 = pop(stack);
   const Object* operand1 = pop(stack);
+  const Object* operand2 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -748,8 +748,8 @@ RunCode op_sln(Stack* stack)
 // Greater than (>)
 RunCode op_gt(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -915,8 +915,8 @@ RunCode op_gt(Stack* stack)
 // Greater than or equal to (>=)
 RunCode op_gte(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -1082,8 +1082,8 @@ RunCode op_gte(Stack* stack)
 // Less than (<)
 RunCode op_lt(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -1249,8 +1249,8 @@ RunCode op_lt(Stack* stack)
 // Less than or equal to (<=)
 RunCode op_lte(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
 
   if(operand1 == NULL)
   {
@@ -1610,8 +1610,8 @@ RunCode op_inc(Stack* stack)
 // Addition (+)
 RunCode op_add(Stack* stack)
 {
-  Object* operand2 = pop(stack); // addend
   Object* operand1 = pop(stack); // augend
+  Object* operand2 = pop(stack); // addend
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -1773,8 +1773,8 @@ RunCode op_add(Stack* stack)
 // Subtraction (-)
 RunCode op_sub(Stack* stack)
 {
-  Object* operand2 = pop(stack); // subtrahend
   Object* operand1 = pop(stack); // minuend
+  Object* operand2 = pop(stack); // subtrahend
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -1920,8 +1920,8 @@ RunCode op_sub(Stack* stack)
 // Division (/)
 RunCode op_div(Stack* stack)
 {
-  Object* operand2 = pop(stack); // divisor
   Object* operand1 = pop(stack); // dividend
+  Object* operand2 = pop(stack); // divisor
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -2095,8 +2095,8 @@ RunCode op_div(Stack* stack)
 // Multiplication (*)
 RunCode op_mul(Stack* stack)
 {
-  Object* operand2 = pop(stack); // multiplicand
   Object* operand1 = pop(stack); // multiplier
+  Object* operand2 = pop(stack); // multiplicand
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -2279,8 +2279,8 @@ RunCode op_mul(Stack* stack)
 // Note: Modulo operates on integers. Decimal numbers are truncated.
 RunCode op_mod(Stack* stack)
 {
-  Object* operand2 = pop(stack); // divisor
   Object* operand1 = pop(stack); // dividend
+  Object* operand2 = pop(stack); // divisor
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -2426,8 +2426,8 @@ RunCode op_mod(Stack* stack)
 // Exponentiation (**)
 RunCode op_pow(Stack* stack)
 {
-  Object* operand2 = pop(stack); // exponent/power to raise by
   Object* operand1 = pop(stack); // base
+  Object* operand2 = pop(stack); // exponent/power to raise by
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -2573,8 +2573,8 @@ RunCode op_pow(Stack* stack)
 // Bitwise and (&)
 RunCode op_bnd(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -2720,8 +2720,8 @@ RunCode op_bnd(Stack* stack)
 // Bitwise or (|)
 RunCode op_bor(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -2867,8 +2867,8 @@ RunCode op_bor(Stack* stack)
 // Bitwise xor (^)
 RunCode op_xor(Stack* stack)
 {
-  Object* operand2 = pop(stack);
   Object* operand1 = pop(stack);
+  Object* operand2 = pop(stack);
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -3067,8 +3067,8 @@ RunCode op_bnt(Stack* stack)
 // Bit shift left (<<)
 RunCode op_shl(Stack* stack)
 {
-  Object* operand2 = pop(stack); // positions to shift
   Object* operand1 = pop(stack); // number to shift
+  Object* operand2 = pop(stack); // positions to shift
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
@@ -3126,8 +3126,8 @@ RunCode op_shl(Stack* stack)
 // Bit shift right (>>)
 RunCode op_shr(Stack* stack)
 {
-  Object* operand2 = pop(stack); // positions to shift
   Object* operand1 = pop(stack); // number to shift
+  Object* operand2 = pop(stack); // positions to shift
   Byte byteval = 0;
   Number numval = 0;
   BigNum bignumval = 0;
