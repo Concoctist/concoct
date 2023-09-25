@@ -28,6 +28,8 @@
 #ifndef OPCODES_H
 #define OPCODES_H
 
+#include <stdbool.h> // bool
+
 // Supported instruction set
 typedef enum opcode
 {
@@ -66,7 +68,7 @@ typedef enum opcode
   OP_MOD, // modulo (%)
   OP_MOV, // move (from register to register)
   OP_MUL, // multiply (*)
-  OP_NEG, // negative
+  OP_NEG, // negative (unary -)
   OP_NEQ, // not equal to (!=)
   OP_NOP, // no op
   OP_NOT, // logical not/negation (!)
@@ -92,5 +94,11 @@ typedef enum opcode
 
 // Returns opcode constant based on numeric ID
 const char* get_mnemonic(Opcode oc);
+
+// Returns true if opcode is a unary operation
+bool is_unary_operation(Opcode oc);
+
+// Returns true if opcode is a binary operation
+bool is_binary_operation(Opcode oc);
 
 #endif // OPCODES_H

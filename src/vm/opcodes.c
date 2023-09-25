@@ -67,7 +67,7 @@ const char* get_mnemonic(Opcode oc)
     case OP_MOD: return "OP_MOD";    // modulo (%)
     case OP_MOV: return "OP_MOV";    // move (from register to register)
     case OP_MUL: return "OP_MUL";    // multiply (*)
-    case OP_NEG: return "OP_NEG";    // negative
+    case OP_NEG: return "OP_NEG";    // negative (unary -)
     case OP_NEQ: return "OP_NEQ";    // not equal to (!=)
     case OP_NOP: return "OP_NOP";    // no op
     case OP_NOT: return "OP_NOT";    // logical not/negation (!)
@@ -90,5 +90,55 @@ const char* get_mnemonic(Opcode oc)
     case OP_XCG: return "OP_XCG";    // exchange/swap
     case OP_XOR: return "OP_XOR";    // bitwise exclusive or (^)
     default:     return "UNDEFINED"; // unsupported opcode
+  }
+}
+
+// Returns true if opcode is a unary operation
+bool is_unary_operation(Opcode oc)
+{
+  switch(oc)
+  {
+    case OP_BNT: // bitwise not/ones' complement (~)
+    case OP_DEC: // decrement (--)
+    case OP_INC: // increment (++)
+    case OP_NEG: // negative (unary -)
+    case OP_NOT: // logical not/negation (!)
+    case OP_POS: // positive
+      return true;
+    default:
+      return false;
+  }
+}
+
+// Returns true if opcode is a binary operation
+bool is_binary_operation(Opcode oc)
+{
+  switch(oc)
+  {
+    case OP_ADD: // add (+)
+    case OP_AND: // logical and (&&)
+    case OP_ASN: // assign (=)
+    case OP_BND: // bitwise and (&)
+    case OP_BOR: // bitwise or (|)
+    case OP_DIV: // divide (/)
+    case OP_EQL: // equal to (==)
+    case OP_GT:  // greater than (>)
+    case OP_GTE: // greater than or equal to (>=)
+    case OP_LT:  // less than (<)
+    case OP_LTE: // less than or equal to (<=)
+    case OP_MOD: // modulo (%)
+    case OP_MUL: // multiply (*)
+    case OP_NEQ: // not equal to (!=)
+    case OP_OR:  // logical or (||)
+    case OP_POW: // power/exponent (**)
+    case OP_SHL: // bitshift left (<<)
+    case OP_SHR: // bitshift right (>>)
+    case OP_SLE: // string length equal to ($=)
+    case OP_SLN: // string length not equal to ($!)
+    case OP_SUB: // subtract (-)
+    case OP_XOR: // bitwise exclusive or (^)
+      return true;
+    default:
+      return false;
   }
 }
