@@ -18,44 +18,44 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 
 #### Linux/Unix and Cygwin Steps
 1. Install prerequisites:
-
    Debian/Ubuntu:
-   ```sh
-   # apt-get install cmake gcc git make
+   ```
+   apt-get install cmake gcc git make
    ```
    CentOS/Fedora/RHEL:
-   ```sh
-   # yum install cmake gcc git make
+   ```
+   yum install cmake gcc git make
    ```
    FreeBSD:
-   ```sh
-   # pkg install clang cmake git make
    ```
-1. Obtain the source code via `git` or download a zip archive:
-   ```sh
-   $ git clone https://github.com/Concoctist/concoct.git
+   pkg install clang cmake git make
+   ```
+
+2. Obtain the source code via `git` or download a zip archive:
+   ```
+   git clone https://github.com/Concoctist/concoct.git
    ```
    Or:
-   ```sh
-   $ wget https://github.com/Concoctist/concoct/archive/master.zip && unzip master.zip
+   ```
+   wget https://github.com/Concoctist/concoct/archive/master.zip && unzip master.zip
    ```
 
-2. In the top-level directory where `CMakeLists.txt` exists, create a build directory:
-   ```sh
-   $ mkdir bld && cd bld
+3. In the top-level directory where `CMakeLists.txt` exists, create a build directory:
+   ```
+   mkdir bld && cd bld
    ```
 
-3. Generate the `Makefile` (you can alternatively use `ccmake` here if you prefer):
-   ```sh
-   $ cmake ..
+4. Generate the `Makefile` (you can alternatively use `ccmake` here if you prefer):
+   ```
+   cmake ..
    ```
 
-4. Build Concoct:
-   ```sh
-   $ make
+5. Build Concoct:
+   ```
+   make
    ```
 
-5. There should now be a `concoct` executable under the `bin` directory if the build was successful:
+6. There should now be a `concoct` executable under the `bin` directory if the build was successful:
    ```
    $ ./concoct -v
    Concoct v0.1.0 rev 148 (d976be2) (64-bit Linux) (Debug) built at 00:46 on 01-02-2022
@@ -88,6 +88,17 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 5. If the build was successful, `concoct.exe` should now exist in your output directory:
 
    ![image](https://user-images.githubusercontent.com/3323717/147864334-5c8d44f3-136f-47f9-a1d5-434826e6572d.png)
+
+#### Docker/Podman Steps
+1. Build image:
+   ```
+   podman build -t concoct -f Containerfile
+   ```
+
+2. Run container:
+   ```
+   podman run -it localhost/concoct
+   ```
 
 ### Contributing and Support :octocat:
 Feel free to [submit an issue](https://github.com/Concoctist/concoct/issues/new) if you require assistance or would like to
