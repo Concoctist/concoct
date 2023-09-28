@@ -25,31 +25,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef STACK_H
-#define STACK_H
+#ifndef QUEUE_H
+#define QUEUE_H
 
-#include <stddef.h> // NULL, size_t
-#include "types.h"
+#include <stdbool.h> // bool
+#include <stddef.h>  // size_t
 
-#define MAX_STACK_CAPACITY ((size_t)128)
+#define MAX_QUEUE_CAPACITY ((size_t)256)
 
-typedef struct stack
+typedef struct queue
 {
-  int16_t top;
+  int front;
+  int back;
   size_t count;
-  void* objects[MAX_STACK_CAPACITY];
-} Stack;
+  void* objects[MAX_QUEUE_CAPACITY];
+} Queue;
 
-// Initializes stack
-void init_stack(Stack* stack);
+// Initializes queue
+void init_queue(Queue* queue);
 
-// Returns object at top of stack without removal
-void* peek(const Stack* stack);
+// Returns true if queue is empty
+bool is_empty(const Queue* queue);
 
-// Returns and removes object at top of stack
-void* pop(Stack* stack);
+// Returns true if queue is full
+bool is_full(const Queue* queue);
 
-// Pushes new object on top of stack
-void push(Stack* stack, void* object);
+// Returns size of queue
+size_t size(const Queue* queue);
 
-#endif // STACK_H
+// Returns object at the back of queue
+void* back(const Queue* queue);
+
+// Returns object at the front of queue
+void* front(const Queue* queue);
+
+// Returns and removes next object from queue
+void dequeue(Queue* queue, void** object);
+
+// Inserts new object into queue
+void enqueue(Queue* queue, void* object);
+
+#endif // QUEUE_H

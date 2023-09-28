@@ -25,31 +25,72 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef STACK_H
-#define STACK_H
+#include "debug.h"
+#include "queue.h"
 
-#include <stddef.h> // NULL, size_t
-#include "types.h"
-
-#define MAX_STACK_CAPACITY ((size_t)128)
-
-typedef struct stack
+// Initializes queue
+void init_queue(Queue* queue)
 {
-  int16_t top;
-  size_t count;
-  void* objects[MAX_STACK_CAPACITY];
-} Stack;
+  queue->count = 0;
+  queue->back = MAX_QUEUE_CAPACITY - 1;
+  queue->front = 0;
+  if(debug_mode)
+    debug_print("Queue initialized with %zu slots.", MAX_QUEUE_CAPACITY);
+  return;
+}
 
-// Initializes stack
-void init_stack(Stack* stack);
+// Returns true if queue is empty
+bool is_empty(const Queue* queue)
+{
+  return queue->count == 0;
+}
 
-// Returns object at top of stack without removal
-void* peek(const Stack* stack);
+// Returns true if queue is full
+bool is_full(const Queue* queue)
+{
+  return queue->count == MAX_QUEUE_CAPACITY;
+}
 
-// Returns and removes object at top of stack
-void* pop(Stack* stack);
+// Returns size of queue
+size_t size(const Queue* queue)
+{
+  return queue->count;
+}
 
-// Pushes new object on top of stack
-void push(Stack* stack, void* object);
+// Returns object at the back of queue
+void* back(const Queue* queue)
+{
+  if(is_empty(queue))
+    return NULL;
+  return queue->objects[queue->back];
+}
 
-#endif // STACK_H
+// Returns object at the front of queue
+void* front(const Queue* queue)
+{
+  if(is_empty(queue))
+    return NULL;
+  return queue->objects[queue->front];
+}
+
+// Returns and removes next object from queue
+void dequeue(Queue* queue, void** object)
+{
+  if(is_empty(queue))
+    return;
+  *object = queue->objects[queue->front];
+  queue->front = (queue->front + 1) % MAX_QUEUE_CAPACITY;
+  queue->count--;
+  return;
+}
+
+// Inserts new object into queue
+void enqueue(Queue* queue, void* object)
+{
+  if(is_full(queue))
+    return;
+  queue->back = (queue->back + 1) % MAX_QUEUE_CAPACITY;
+  queue->objects[queue->back] = object;
+  queue->count++;
+  return;
+}

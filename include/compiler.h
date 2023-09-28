@@ -28,44 +28,10 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#include <stdbool.h>    // bool
 #include "hash_map.h"
 #include "parser.h"
+#include "queue.h"
 #include "vm/opcodes.h"
-
-#define MAX_QUEUE_CAPACITY ((size_t)256)
-
-typedef struct node_queue
-{
-  int front;
-  int back;
-  size_t count;
-  ConcoctNode* nodes[MAX_QUEUE_CAPACITY];
-} Queue;
-
-// Initializes queue
-void init_queue(Queue* queue);
-
-// Is queue empty?
-bool is_empty(const Queue* queue);
-
-// Is queue full?
-bool is_full(const Queue* queue);
-
-// Returns size of queue
-size_t size(const Queue* queue);
-
-// Returns node at the back of queue
-ConcoctNode* back(const Queue* queue);
-
-// Returns node at the front of queue
-ConcoctNode* front(const Queue* queue);
-
-// Returns and removes next node from queue
-void dequeue(Queue* queue, ConcoctNode** node);
-
-// Inserts new node into queue
-void enqueue(Queue* queue, ConcoctNode* node);
 
 // Swap last 2 stack objects to fix order if first instruction is a binary operation
 void swap_last_operands(Opcode oc);
