@@ -30,7 +30,7 @@
 #include "memory.h"
 #include "vm/vm.h"
 
-int main()
+int main(void)
 {
   Object* object = NULL;
   void* vptr = NULL;

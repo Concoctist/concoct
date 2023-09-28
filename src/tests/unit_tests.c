@@ -85,7 +85,7 @@ void test_stringify()
   return;
 }
 
-int main()
+int main(void)
 {
   test_stringify();
   return 0;

@@ -42,7 +42,7 @@ Object** RP;
 Stack** SP;
 
 // Initializes virtual machine
-void init_vm()
+void init_vm(void)
 {
   memset(vm.registers, 0, sizeof(vm.registers));
   vm.instructions = (Opcode *)malloc(INSTRUCTION_STORE_SIZE * sizeof(Opcode));
@@ -66,7 +66,7 @@ void init_vm()
 }
 
 // Stops virtual machine
-void stop_vm()
+void stop_vm(void)
 {
   free(vm.instructions);
   free_store();
@@ -76,7 +76,7 @@ void stop_vm()
 }
 
 // Clears instructions
-void clear_instructions()
+void clear_instructions(void)
 {
   for(size_t i = 0; i < INSTRUCTION_STORE_SIZE; i++)
     vm.instructions[i] = 0xFF;
@@ -101,7 +101,7 @@ void reverse_instructions(size_t ic)
 }
 
 // Prints register values
-void print_registers()
+void print_registers(void)
 {
   char* strval = NULL;
   void* vptr = NULL;

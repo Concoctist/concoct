@@ -32,7 +32,7 @@
 #include "types.h"
 #include "vm/instructions.h"
 
-int main()
+int main(void)
 {
   debug_mode = true;
   Stack stack;
