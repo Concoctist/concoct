@@ -46,8 +46,6 @@ RunCode op_xcg(Object** rp, Byte reg1, Byte reg2);
 RunCode op_pop(Stack* stack, const Object* object);
 RunCode op_psh(Stack* stack, char* value);
 RunCode op_asn(Stack* stack, ConcoctHashMap* map);
-RunCode op_fls(Stack* stack);
-RunCode op_tru(Stack* stack);
 RunCode op_and(Stack* stack);
 RunCode op_not(Stack* stack);
 RunCode op_or(Stack* stack);

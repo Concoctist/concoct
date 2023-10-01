@@ -293,11 +293,6 @@ RunCode interpret(ConcoctHashMap* map)
         break;
       case OP_EXT:
         break;
-      case OP_FLS:
-        op_fls(vm.sp);
-        if(debug_mode)
-          print_object_value(peek(vm.sp));
-        break;
       case OP_GT:
         op_gt(vm.sp);
         if(debug_mode)
@@ -441,11 +436,6 @@ RunCode interpret(ConcoctHashMap* map)
         //op_sys(vm.sp);
         //if(debug_mode)
         //  print_object_value(pop(vm.sp));
-        break;
-      case OP_TRU:
-        op_tru(vm.sp);
-        if(debug_mode)
-          print_object_value(peek(vm.sp));
         break;
       case OP_TST:
         break;

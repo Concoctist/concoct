@@ -125,8 +125,7 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
         // OP_POW + OP_ASN
         break;
       case CCT_TOKEN_FALSE:
-        vm.instructions[ic] = OP_FLS;
-        ic++;
+        push(vm.sp, new_object("false"));
         break;
       case CCT_TOKEN_FLOAT:
         push(vm.sp, new_object_by_type(current->text, CCT_TYPE_DECIMAL));
@@ -223,8 +222,7 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
         // OP_SUB + OP_ASN
         break;
       case CCT_TOKEN_TRUE:
-        vm.instructions[ic] = OP_TRU;
-        ic++;
+        push(vm.sp, new_object("true"));
         break;
       case CCT_TOKEN_UNARY_MINUS:
         vm.instructions[ic] = OP_NEG;

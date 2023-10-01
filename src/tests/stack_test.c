@@ -440,12 +440,14 @@ int main(void)
   puts("Value after bit shifting stack contents to the right:");
   print_object_value(pop(pstack));
 
-  op_fls(pstack);
-  puts("\nValue after calling op_fls():");
+  object = new_object("false");
+  push(pstack, object);
+  puts("\nValue after adding \"false\" to stack:");
   print_object_value(pop(pstack));
 
-  op_tru(pstack);
-  puts("\nValue after calling op_tru():");
+  object = new_object("true");
+  push(pstack, object);
+  puts("\nValue after adding \"true\" to stack:");
   print_object_value(pop(pstack));
 
   puts("\nAdding 327.98 to stack...");
@@ -463,9 +465,9 @@ int main(void)
   print_object_value(pop(pstack));
 
   puts("\nTesting string object addition of: \"Greetings, \" + \"Concocter!\"");
-  object = new_object("Greetings, ");
-  push(pstack, object);
   object = new_object("Concocter!");
+  push(pstack, object);
+  object = new_object("Greetings, ");
   push(pstack, object);
   op_add(pstack);
   puts("Result:");

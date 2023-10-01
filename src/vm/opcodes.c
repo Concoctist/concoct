@@ -48,7 +48,6 @@ const char* get_mnemonic(Opcode oc)
     case OP_ENT: return "OP_ENT";    // entry point
     case OP_EQL: return "OP_EQL";    // equal to (==)
     case OP_EXT: return "OP_EXT";    // exit
-    case OP_FLS: return "OP_FLS";    // false
     case OP_GT:  return "OP_GT";     // greater than (>)
     case OP_GTE: return "OP_GTE";    // greater than or equal to (>=)
     case OP_HLT: return "OP_HLT";    // halt
@@ -85,7 +84,6 @@ const char* get_mnemonic(Opcode oc)
     case OP_STR: return "OP_STR";    // store (to memory from register)
     case OP_SUB: return "OP_SUB";    // subtract (-)
     case OP_SYS: return "OP_SYS";    // system
-    case OP_TRU: return "OP_TRU";    // true
     case OP_TST: return "OP_TST";    // test
     case OP_XCG: return "OP_XCG";    // exchange/swap
     case OP_XOR: return "OP_XOR";    // bitwise exclusive or (^)

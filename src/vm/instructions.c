@@ -214,20 +214,6 @@ RunCode op_asn(Stack* stack, ConcoctHashMap* map)
   return RUN_SUCCESS;
 }
 
-// False
-RunCode op_fls(Stack* stack)
-{
-  push(stack, new_object("false"));
-  return RUN_SUCCESS;
-}
-
-// True
-RunCode op_tru(Stack* stack)
-{
-  push(stack, new_object("true"));
-  return RUN_SUCCESS;
-}
-
 // Logical and (&&)
 RunCode op_and(Stack* stack)
 {
