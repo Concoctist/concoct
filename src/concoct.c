@@ -39,6 +39,7 @@
 #include "debug.h"
 #include "hash_map.h"
 #include "lexer.h"
+#include "linenoise.h"
 #include "parser.h"
 #include "types.h"
 #include "version.h"     // VERSION
@@ -366,18 +367,350 @@ void handle_sigint(int sig)
   return;
 }
 
+void completion(const char *buf, linenoiseCompletions *lc)
+{
+  switch(buf[0])
+  {
+    case 'b':
+      linenoiseAddCompletion(lc, "break");
+      break;
+    case 'c':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'a')
+          linenoiseAddCompletion(lc, "case");
+        if(strlen(buf) >= 3)
+        {
+          if(buf[1] == 'l' && buf[2] == 'a')
+            linenoiseAddCompletion(lc, "class");
+          if(buf[1] == 'l' && buf[2] == 'e')
+            linenoiseAddCompletion(lc, "clear");
+        }
+        if(buf[1] == 'o')
+          linenoiseAddCompletion(lc, "continue");
+      }
+      break;
+    case 'd':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'e')
+          linenoiseAddCompletion(lc, "default");
+        if(buf[1] == 'o')
+          linenoiseAddCompletion(lc, "do");
+      }
+      break;
+    case 'e':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'l')
+          linenoiseAddCompletion(lc, "else");
+        if(buf[1] == 'n')
+          linenoiseAddCompletion(lc, "enum");
+      }
+      break;
+    case 'f':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'a')
+          linenoiseAddCompletion(lc, "false");
+        if(buf[1] == 'o')
+          linenoiseAddCompletion(lc, "for");
+        if(buf[1] == 'u')
+          linenoiseAddCompletion(lc, "func");
+      }
+      break;
+    case 'g':
+      linenoiseAddCompletion(lc, "goto");
+      break;
+    case 'i':
+      linenoiseAddCompletion(lc, "if");
+      break;
+    case 'l':
+      linenoiseAddCompletion(lc, "license");
+      break;
+    case 'n':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'a')
+          linenoiseAddCompletion(lc, "namespace");
+        if(buf[1] == 'u')
+          linenoiseAddCompletion(lc, "null");
+      }
+      break;
+    case 'q':
+      linenoiseAddCompletion(lc, "quit");
+      break;
+    case 'r':
+      linenoiseAddCompletion(lc, "return");
+      break;
+    case 's':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'u')
+          linenoiseAddCompletion(lc, "super");
+        if(buf[1] == 'w')
+          linenoiseAddCompletion(lc, "switch");
+      }
+      break;
+    case 't':
+      linenoiseAddCompletion(lc, "true");
+      break;
+    case 'u':
+      linenoiseAddCompletion(lc, "use");
+      break;
+    case 'v':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'a')
+          linenoiseAddCompletion(lc, "var");
+        if(buf[1] == 'e')
+          linenoiseAddCompletion(lc, "version");
+      }
+      break;
+    case 'w':
+      linenoiseAddCompletion(lc, "while");
+      break;
+    default:
+      break;
+  }
+  return;
+}
+
+char* hints(const char* buf, int* color, int* bold)
+{
+  *color = 35;
+  *bold = 1;
+
+  // break
+  if(!strcasecmp(buf, "b"))
+    return "reak";
+  if(!strcasecmp(buf, "br"))
+    return "eak";
+  if(!strcasecmp(buf, "bre"))
+    return "ak";
+  if(!strcasecmp(buf, "brea"))
+    return "k";
+
+  // case
+  if(!strcasecmp(buf, "ca"))
+    return "se";
+  if(!strcasecmp(buf, "cas"))
+    return "e";
+
+  // class
+  if(!strcasecmp(buf, "cla"))
+    return "ss";
+  if(!strcasecmp(buf, "clas"))
+    return "s";
+
+  // clear
+  if(!strcasecmp(buf, "cle"))
+    return "ar";
+  if(!strcasecmp(buf, "clea"))
+    return "r";
+
+  // continue
+  if(!strcasecmp(buf, "co"))
+    return "ntinue";
+  if(!strcasecmp(buf, "con"))
+    return "tinue";
+  if(!strcasecmp(buf, "cont"))
+    return "inue";
+  if(!strcasecmp(buf, "conti"))
+    return "nue";
+  if(!strcasecmp(buf, "contin"))
+    return "ue";
+  if(!strcasecmp(buf, "continu"))
+    return "e";
+
+  // default
+  if(!strcasecmp(buf, "de"))
+    return "fault";
+  if(!strcasecmp(buf, "def"))
+    return "ault";
+  if(!strcasecmp(buf, "defa"))
+    return "ult";
+  if(!strcasecmp(buf, "defau"))
+    return "lt";
+  if(!strcasecmp(buf, "defaul"))
+    return "t";
+
+  // else
+  if(!strcasecmp(buf, "el"))
+    return "se";
+  if(!strcasecmp(buf, "els"))
+    return "e";
+
+  // enum
+  if(!strcasecmp(buf, "en"))
+    return "um";
+  if(!strcasecmp(buf, "enu"))
+    return "m";
+
+  // false
+  if(!strcasecmp(buf, "fa"))
+    return "lse";
+  if(!strcasecmp(buf, "fal"))
+    return "se";
+  if(!strcasecmp(buf, "fals"))
+    return "e";
+
+  // for
+  if(!strcasecmp(buf, "fo"))
+    return "r";
+
+  // func
+  if(!strcasecmp(buf, "fu"))
+    return "nc";
+  if(!strcasecmp(buf, "fun"))
+    return "c";
+
+  // goto
+  if(!strcasecmp(buf, "g"))
+    return "oto";
+  if(!strcasecmp(buf, "go"))
+    return "to";
+  if(!strcasecmp(buf, "got"))
+    return "o";
+
+  // if
+  if(!strcasecmp(buf, "i"))
+    return "f";
+
+  // license
+  if(!strcasecmp(buf, "l"))
+    return "icense";
+  if(!strcasecmp(buf, "li"))
+    return "cense";
+  if(!strcasecmp(buf, "lic"))
+    return "ense";
+  if(!strcasecmp(buf, "lice"))
+    return "nse";
+  if(!strcasecmp(buf, "licen"))
+    return "se";
+  if(!strcasecmp(buf, "licens"))
+    return "e";
+
+  // namespace
+  if(!strcasecmp(buf, "na"))
+    return "mespace";
+  if(!strcasecmp(buf, "nam"))
+    return "espace";
+  if(!strcasecmp(buf, "name"))
+    return "space";
+  if(!strcasecmp(buf, "names"))
+    return "pace";
+  if(!strcasecmp(buf, "namesp"))
+    return "ace";
+  if(!strcasecmp(buf, "namespa"))
+    return "ce";
+  if(!strcasecmp(buf, "namespac"))
+    return "e";
+
+  // null
+  if(!strcasecmp(buf, "nu"))
+    return "ll";
+  if(!strcasecmp(buf, "nul"))
+    return "l";
+
+  // quit
+  if(!strcasecmp(buf, "q"))
+    return "uit";
+  if(!strcasecmp(buf, "qu"))
+    return "it";
+  if(!strcasecmp(buf, "qui"))
+    return "t";
+
+  // return
+  if(!strcasecmp(buf, "r"))
+    return "eturn";
+  if(!strcasecmp(buf, "re"))
+    return "turn";
+  if(!strcasecmp(buf, "ret"))
+    return "urn";
+  if(!strcasecmp(buf, "retu"))
+    return "rn";
+  if(!strcasecmp(buf, "retur"))
+    return "n";
+
+  // super
+  if(!strcasecmp(buf, "su"))
+    return "per";
+  if(!strcasecmp(buf, "sup"))
+    return "er";
+  if(!strcasecmp(buf, "supe"))
+    return "r";
+
+  // switch
+  if(!strcasecmp(buf, "sw"))
+    return "itch";
+  if(!strcasecmp(buf, "swi"))
+    return "tch";
+  if(!strcasecmp(buf, "swit"))
+    return "ch";
+  if(!strcasecmp(buf, "switc"))
+    return "h";
+
+  // true
+  if(!strcasecmp(buf, "t"))
+    return "rue";
+  if(!strcasecmp(buf, "tr"))
+    return "ue";
+  if(!strcasecmp(buf, "tru"))
+    return "e";
+
+  // use
+  if(!strcasecmp(buf, "u"))
+    return "se";
+  if(!strcasecmp(buf, "us"))
+    return "e";
+
+  // var
+  if(!strcasecmp(buf, "va"))
+    return "r";
+
+  // version
+  if(!strcasecmp(buf, "ve"))
+    return "rsion";
+  if(!strcasecmp(buf, "ver"))
+    return "sion";
+  if(!strcasecmp(buf, "vers"))
+    return "ion";
+  if(!strcasecmp(buf, "versi"))
+    return "on";
+  if(!strcasecmp(buf, "versio"))
+    return "n";
+
+  // while
+  if(!strcasecmp(buf, "w"))
+    return "hile";
+  if(!strcasecmp(buf, "wh"))
+    return "ile";
+  if(!strcasecmp(buf, "whi"))
+    return "le";
+  if(!strcasecmp(buf, "whil"))
+    return "e";
+
+  return NULL;
+}
+
 // Interactive mode
 void interactive_mode(void)
 {
   signal(SIGINT, handle_sigint);
-  char input[1024];
+  //char input[1024];
+  char* input = NULL;
   puts("Warning: Expect things to break.");
+  linenoiseSetCompletionCallback(completion);
+  linenoiseSetHintsCallback(hints);
   while(true)
   {
-    memset(input, 0, sizeof(input)); // reset input every iteration
-    printf("> ");
-    fflush(stdout);
-    if(fgets(input, 1024, stdin) == NULL)
+    //memset(input, 0, sizeof(input)); // reset input every iteration
+    //printf("> ");
+    input = linenoise("> ");
+    //fflush(stdout);
+    //if(fgets(input, 1024, stdin) == NULL)
+    if(input == NULL)
     {
       puts("");
       if(debug_mode)
@@ -388,6 +721,7 @@ void interactive_mode(void)
         debug_print("ctrl+d (EOT) detected.");
 #endif // _WIN32
       }
+      free(input);
       clean_exit(EXIT_SUCCESS); // ctrl+d (Unix) or ctrl+z (Windows) EOT detected
     }
 
@@ -412,6 +746,11 @@ void interactive_mode(void)
       continue;
 
     // Check for valid commands
+    if(compare_input(input, "clear"))
+    {
+      linenoiseClearScreen();
+      continue;
+    }
     if(compare_input(input, "license"))
     {
       print_license();
@@ -425,8 +764,10 @@ void interactive_mode(void)
       continue;
     }
 
+    linenoiseHistoryAdd(input);
     lex_string(input);
     parse_string(input);
+    free(input);
   }
   return;
 }
