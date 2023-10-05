@@ -25,31 +25,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CONCOCT_H
-#define CONCOCT_H
+#ifndef QUEUE_H
+#define QUEUE_H
 
 #include <stdbool.h> // bool
+#include <stddef.h>  // size_t
 
-#ifdef _WIN32
-static const char ARG_PREFIX = '/';
-#else
-static const char ARG_PREFIX = '-';
-#endif
+#define MAX_QUEUE_CAPACITY ((size_t)256)
 
-// Used to flag unused variables and silence compiler warnings
-#define UNUSED(x) (void)(x)
+typedef struct queue
+{
+  int front;
+  int back;
+  size_t count;
+  void* objects[MAX_QUEUE_CAPACITY];
+} Queue;
 
-void clean_exit(int status);
-void lex_file(const char* file_name);
-void lex_string(const char* input_string);
-void parse_file(const char* file_name);
-void parse_string(const char* input_string);
-void handle_options(int argc, char *argv[]);
-bool compare_input(const char* input, const char* command);
-void print_license(void);
-void print_usage(void);
-void print_version(void);
-void handle_sigint(int sig);
-void interactive_mode(void);
+// Initializes queue
+void init_queue(Queue* queue);
 
-#endif // CONCOCT_H
+// Returns true if queue is empty
+bool is_empty(const Queue* queue);
+
+// Returns true if queue is full
+bool is_full(const Queue* queue);
+
+// Returns size of queue
+size_t size(const Queue* queue);
+
+// Returns object at the back of queue
+void* back(const Queue* queue);
+
+// Returns object at the front of queue
+void* front(const Queue* queue);
+
+// Returns and removes next object from queue
+void dequeue(Queue* queue, void** object);
+
+// Inserts new object into queue
+void enqueue(Queue* queue, void* object);
+
+#endif // QUEUE_H

@@ -56,37 +56,37 @@ typedef struct objstore
 extern ObjectStore object_store;
 
 // Initializes object store
-void init_store();
+void init_store(void);
 
 // Reallocates memory for object store
 void realloc_store(size_t new_size);
 
 // Frees object store
-void free_store();
+void free_store(void);
 
 // Returns size of object store
-static inline size_t get_store_capacity() { return object_store.capacity; }
+static inline size_t get_store_capacity(void) { return object_store.capacity; }
 
 // Returns free slots of object store
-size_t get_store_free_slots();
+size_t get_store_free_slots(void);
 
 // Returns used slots of object store
-size_t get_store_used_slots();
+size_t get_store_used_slots(void);
 
 // Returns size of object in bytes
 size_t get_object_size(const Object* object);
 
 // Returns total size of objects in object store in bytes
-size_t get_store_objects_size();
+size_t get_store_objects_size(void);
 
 // Returns total size of object store in bytes
-static inline size_t get_store_total_size() { return get_store_objects_size() + sizeof(ObjectStore) + sizeof(Object *) * get_store_capacity(); }
+static inline size_t get_store_total_size(void) { return get_store_objects_size() + sizeof(ObjectStore) + sizeof(Object *) * get_store_capacity(); }
 
 // Prints total size of objects in object store
-void print_store_objects_size();
+void print_store_objects_size(void);
 
 // Prints total size of object store
-void print_store_total_size();
+void print_store_total_size(void);
 
 // Converts bytes to kilobytes
 size_t convert_kilobytes(size_t bytes);
@@ -134,6 +134,6 @@ void stringify(char** str, void* data, DataType datatype);
 size_t flag_objects(Stack* stack);
 
 // Collects garbage and returns number of objects collected
-size_t collect_garbage();
+size_t collect_garbage(void);
 
 #endif // MEMORY_H

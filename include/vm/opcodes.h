@@ -49,7 +49,6 @@ typedef enum opcode
   OP_ENT, // entry point
   OP_EQL, // equal to (==)
   OP_EXT, // exit
-  OP_FLS, // false
   OP_GT,  // greater than (>)
   OP_GTE, // greater than or equal to (>=)
   OP_HLT, // halt
@@ -86,7 +85,6 @@ typedef enum opcode
   OP_STR, // store (to memory from register)
   OP_SUB, // subtract (-)
   OP_SYS, // system
-  OP_TRU, // true
   OP_TST, // test
   OP_XCG, // exchange/swap
   OP_XOR  // bitwise exclusive or (^)

@@ -291,7 +291,7 @@ void handle_options(int argc, char *argv[])
 }
 
 // Displays license
-void print_license()
+void print_license(void)
 {
   puts("BSD 2-Clause License\n");
   puts("Copyright (c) 2020-2023 BlakeTheBlock and Lloyd Dilley");
@@ -318,7 +318,7 @@ void print_license()
 }
 
 // Displays usage
-void print_usage()
+void print_usage(void)
 {
   print_version();
   printf("Usage: concoct [%c<option>] [file]\n", ARG_PREFIX);
@@ -331,7 +331,7 @@ void print_usage()
 }
 
 // Displays version
-void print_version()
+void print_version(void)
 {
   if(strlen(GIT_REV) == 0) // git not detected in path
     printf("Concoct v%s (%s %s) (%s) built at %s on %s\n", VERSION, BITNESS, PLATFORM, BUILD_TYPE, BUILD_TIME, BUILD_DATE);
@@ -367,7 +367,7 @@ void handle_sigint(int sig)
 }
 
 // Interactive mode
-void interactive_mode()
+void interactive_mode(void)
 {
   signal(SIGINT, handle_sigint);
   char input[1024];

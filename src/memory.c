@@ -38,7 +38,7 @@
 ObjectStore object_store;
 
 // Initializes object store
-void init_store()
+void init_store(void)
 {
   // Ensure initial store capacity is >0 when using user input.
   object_store.objects = (Object **)calloc(INITIAL_STORE_CAPACITY, sizeof(Object *));
@@ -73,7 +73,7 @@ void realloc_store(size_t new_size)
 }
 
 // Frees object store
-void free_store()
+void free_store(void)
 {
   for(size_t slot = 0; slot < get_store_capacity(); slot++)
   {
@@ -86,7 +86,7 @@ void free_store()
 }
 
 // Returns free slots of object store
-size_t get_store_free_slots()
+size_t get_store_free_slots(void)
 {
   size_t free_slots = 0;
   for(size_t slot = 0; slot < get_store_capacity(); slot++)
@@ -98,7 +98,7 @@ size_t get_store_free_slots()
 }
 
 // Returns used slots of object store
-size_t get_store_used_slots()
+size_t get_store_used_slots(void)
 {
   size_t used_slots = 0;
   for(size_t slot = 0; slot < get_store_capacity(); slot++)
@@ -122,7 +122,7 @@ size_t get_object_size(const Object* object)
 }
 
 // Returns total size of objects in object store in bytes
-size_t get_store_objects_size()
+size_t get_store_objects_size(void)
 {
   size_t total_size = 0;
   for(size_t slot = 0; slot < get_store_capacity(); slot++)
@@ -134,7 +134,7 @@ size_t get_store_objects_size()
 }
 
 // Prints total size of objects in object store
-void print_store_objects_size()
+void print_store_objects_size(void)
 {
   size_t total_size = get_store_objects_size();
   printf("Total objects size in store: ");
@@ -150,7 +150,7 @@ void print_store_objects_size()
 }
 
 // Prints total size of object store
-void print_store_total_size()
+void print_store_total_size(void)
 {
   size_t total_size = get_store_total_size();
   printf("Object store total size: ");
@@ -519,7 +519,7 @@ size_t flag_objects(Stack* stack)
 }
 
 // Collects garbage and returns number of objects collected
-size_t collect_garbage()
+size_t collect_garbage(void)
 {
   size_t collect_count = 0;
   size_t old_store_size = get_store_objects_size();

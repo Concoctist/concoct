@@ -30,7 +30,7 @@
 #include "memory.h"
 #include "vm/vm.h"
 
-int main()
+int main(void)
 {
   Object* object = NULL;
   void* vptr = NULL;
@@ -39,31 +39,30 @@ int main()
   debug_mode = true;
   init_vm();
 
-  vm.instructions[15] = OP_XCG;
-  vm.instructions[14] = OP_LOD;
-  vm.instructions[13] = OP_STR;
-  vm.instructions[12] = OP_MOV;
+  vm.instructions[14] = OP_XCG;
+  vm.instructions[13] = OP_LOD;
+  vm.instructions[12] = OP_STR;
+  vm.instructions[11] = OP_MOV;
   vptr = &numval;
   object = new_object_by_type(vptr, CCT_TYPE_BIGNUM);
   vm.rp[R1] = object;
   vm.rp[RS] = object;
-  vm.instructions[11] = OP_RET;
+  vm.instructions[10] = OP_RET;
   numval = -5552424;
   vptr = &numval;
   push(vm.sp, new_object_by_type(vptr, CCT_TYPE_BIGNUM));
-  vm.instructions[10] = OP_BNT;
+  vm.instructions[9] = OP_BNT;
   push(vm.sp, new_object("217"));
   push(vm.sp, new_object("107"));
   push(vm.sp, new_object("32"));
-  vm.instructions[9] = OP_XOR;
+  vm.instructions[8] = OP_XOR;
   push(vm.sp, new_object("32"));
   push(vm.sp, new_object("8"));
-  vm.instructions[8] = OP_AND;
+  vm.instructions[7] = OP_AND;
   push(vm.sp, new_object("true"));
   push(vm.sp, new_object("true"));
-  vm.instructions[7] = OP_NEG;
+  vm.instructions[6] = OP_NEG;
   push(vm.sp, new_object("35.5"));
-  vm.instructions[6] = OP_FLS;
   vm.instructions[5] = OP_NOP;
   vm.instructions[4] = OP_ADD;
   push(vm.sp, new_object("2"));
@@ -79,9 +78,9 @@ int main()
   vm.instructions[0] = OP_POW;
   push(vm.sp, new_object("5"));
   push(vm.sp, new_object("2"));
-  vm.instructions[16] = OP_CLR;
-  vm.instructions[17] = OP_CLS;
-  vm.instructions[18] = OP_END;
+  vm.instructions[15] = OP_CLR;
+  vm.instructions[16] = OP_CLS;
+  vm.instructions[17] = OP_END;
 
   interpret(map);
   cct_delete_hash_map(map);

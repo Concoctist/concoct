@@ -53,7 +53,7 @@ size_t mark_objects()
   return mark_count;
 }
 
-int main()
+int main(void)
 {
   debug_mode = true;
   uint8_t randnum = 0;

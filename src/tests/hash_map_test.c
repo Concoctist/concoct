@@ -58,7 +58,7 @@ const char* cct_keywords[KEYWORD_COUNT] = {
   "in"
 };
 
-int main()
+int main(void)
 {
   debug_mode = true;
   ConcoctHashMap* map = cct_new_hash_map(HASH_MAP_BUCKET_COUNT);

@@ -77,19 +77,19 @@ typedef enum
 } RunCode;
 
 // Clears instructions
-void clear_instructions();
+void clear_instructions(void);
 
 // Reverses instructions since they should be in a LIFO arrangement
 void reverse_instructions(size_t ic);
 
 // Prints register values
-void print_registers();
+void print_registers(void);
 
 // Initializes virtual machine
-void init_vm();
+void init_vm(void);
 
 // Stops virtual machine
-void stop_vm();
+void stop_vm(void);
 
 // Interprets code
 RunCode interpret(ConcoctHashMap* map);

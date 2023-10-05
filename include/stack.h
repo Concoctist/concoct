@@ -28,7 +28,7 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include <stddef.h> // NULL
+#include <stddef.h> // NULL, size_t
 #include "types.h"
 
 #define MAX_STACK_CAPACITY ((size_t)128)

@@ -29,74 +29,8 @@
 #include "compiler.h"
 #include "debug.h"    // debug_mode, debug_print()
 #include "memory.h"   // new_object(), new_object_by_type()
+#include "queue.h"
 #include "vm/vm.h"    // interpret(), reverse_instructions()
-
-// Initializes queue
-void init_queue(Queue* queue)
-{
-  queue->count = 0;
-  queue->back = MAX_QUEUE_CAPACITY - 1;
-  queue->front = 0;
-  if(debug_mode)
-    debug_print("Queue initialized with %zu slots.", MAX_QUEUE_CAPACITY);
-  return;
-}
-
-// Is queue empty?
-bool is_empty(const Queue* queue)
-{
-  return queue->count == 0;
-}
-
-// Is queue full?
-bool is_full(const Queue* queue)
-{
-  return queue->count == MAX_QUEUE_CAPACITY;
-}
-
-// Returns size of queue
-size_t size(const Queue* queue)
-{
-  return queue->count;
-}
-
-// Returns node at the back of queue
-ConcoctNode* back(const Queue* queue)
-{
-  if(is_empty(queue))
-    return NULL;
-  return queue->nodes[queue->back];
-}
-
-// Returns node at the front of queue
-ConcoctNode* front(const Queue* queue)
-{
-  if(is_empty(queue))
-    return NULL;
-  return queue->nodes[queue->front];
-}
-
-// Returns and removes next node from queue
-void dequeue(Queue* queue, ConcoctNode** node)
-{
-  if(is_empty(queue))
-    return;
-  *node = queue->nodes[queue->front];
-  queue->front = (queue->front + 1) % MAX_QUEUE_CAPACITY;
-  queue->count--;
-  return;
-}
-
-// Inserts new node into queue
-void enqueue(Queue* queue, ConcoctNode* node)
-{
-  if(is_full(queue))
-    return;
-  queue->back = (queue->back + 1) % MAX_QUEUE_CAPACITY;
-  queue->nodes[queue->back] = node;
-  queue->count++;
-  return;
-}
 
 // Swap last 2 stack objects to fix order if first instruction is a binary operation
 void swap_last_operands(Opcode oc)
@@ -131,7 +65,7 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
   while(!is_empty(pqueue))
   {
     ConcoctNode* current = NULL;
-    dequeue(pqueue, &current);
+    dequeue(pqueue, (void **)&current);
     // ToDo: Add remaining cases
     switch(current->token.type)
     {
@@ -191,8 +125,7 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
         // OP_POW + OP_ASN
         break;
       case CCT_TOKEN_FALSE:
-        vm.instructions[ic] = OP_FLS;
-        ic++;
+        push(vm.sp, new_object("false"));
         break;
       case CCT_TOKEN_FLOAT:
         push(vm.sp, new_object_by_type(current->text, CCT_TYPE_DECIMAL));
@@ -289,8 +222,7 @@ void compile(ConcoctNodeTree* tree, ConcoctHashMap* map)
         // OP_SUB + OP_ASN
         break;
       case CCT_TOKEN_TRUE:
-        vm.instructions[ic] = OP_TRU;
-        ic++;
+        push(vm.sp, new_object("true"));
         break;
       case CCT_TOKEN_UNARY_MINUS:
         vm.instructions[ic] = OP_NEG;

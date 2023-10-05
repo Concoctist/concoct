@@ -25,31 +25,72 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CONCOCT_H
-#define CONCOCT_H
+#include "debug.h"
+#include "queue.h"
 
-#include <stdbool.h> // bool
+// Initializes queue
+void init_queue(Queue* queue)
+{
+  queue->count = 0;
+  queue->back = MAX_QUEUE_CAPACITY - 1;
+  queue->front = 0;
+  if(debug_mode)
+    debug_print("Queue initialized with %zu slots.", MAX_QUEUE_CAPACITY);
+  return;
+}
 
-#ifdef _WIN32
-static const char ARG_PREFIX = '/';
-#else
-static const char ARG_PREFIX = '-';
-#endif
+// Returns true if queue is empty
+bool is_empty(const Queue* queue)
+{
+  return queue->count == 0;
+}
 
-// Used to flag unused variables and silence compiler warnings
-#define UNUSED(x) (void)(x)
+// Returns true if queue is full
+bool is_full(const Queue* queue)
+{
+  return queue->count == MAX_QUEUE_CAPACITY;
+}
 
-void clean_exit(int status);
-void lex_file(const char* file_name);
-void lex_string(const char* input_string);
-void parse_file(const char* file_name);
-void parse_string(const char* input_string);
-void handle_options(int argc, char *argv[]);
-bool compare_input(const char* input, const char* command);
-void print_license(void);
-void print_usage(void);
-void print_version(void);
-void handle_sigint(int sig);
-void interactive_mode(void);
+// Returns size of queue
+size_t size(const Queue* queue)
+{
+  return queue->count;
+}
 
-#endif // CONCOCT_H
+// Returns object at the back of queue
+void* back(const Queue* queue)
+{
+  if(is_empty(queue))
+    return NULL;
+  return queue->objects[queue->back];
+}
+
+// Returns object at the front of queue
+void* front(const Queue* queue)
+{
+  if(is_empty(queue))
+    return NULL;
+  return queue->objects[queue->front];
+}
+
+// Returns and removes next object from queue
+void dequeue(Queue* queue, void** object)
+{
+  if(is_empty(queue))
+    return;
+  *object = queue->objects[queue->front];
+  queue->front = (queue->front + 1) % MAX_QUEUE_CAPACITY;
+  queue->count--;
+  return;
+}
+
+// Inserts new object into queue
+void enqueue(Queue* queue, void* object)
+{
+  if(is_full(queue))
+    return;
+  queue->back = (queue->back + 1) % MAX_QUEUE_CAPACITY;
+  queue->objects[queue->back] = object;
+  queue->count++;
+  return;
+}
