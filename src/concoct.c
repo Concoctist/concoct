@@ -341,15 +341,15 @@ void print_version(void)
   return;
 }
 
-// Compares command input
-bool compare_input(const char* input, const char* command)
+// Compares two strings ignoring case
+bool case_compare(const char* str1, const char* str2)
 {
   bool is_match = false;
 #ifdef _WIN32
-  if(_stricmp(input, command) == 0)
+  if(_stricmp(str1, str2) == 0)
     is_match = true;
 #else
-  if(strcasecmp(input, command) == 0)
+  if(strcasecmp(str1, str2) == 0)
     is_match = true;
 #endif
   return is_match;
@@ -372,102 +372,118 @@ void completion(const char *buf, linenoiseCompletions *lc)
   switch(buf[0])
   {
     case 'b':
+    case 'B':
       linenoiseAddCompletion(lc, "break");
       break;
     case 'c':
+    case 'C':
       if(strlen(buf) >= 2)
       {
-        if(buf[1] == 'a')
+        if(buf[1] == 'a' || buf[1] == 'A')
           linenoiseAddCompletion(lc, "case");
         if(strlen(buf) >= 3)
         {
-          if(buf[1] == 'l' && buf[2] == 'a')
+          if((buf[1] == 'l' || buf[1] == 'L') && (buf[2] == 'a' || buf[2] == 'A'))
             linenoiseAddCompletion(lc, "class");
-          if(buf[1] == 'l' && buf[2] == 'e')
+          if((buf[1] == 'l' || buf[1] == 'L') && (buf[2] == 'e' || buf[2] == 'E'))
             linenoiseAddCompletion(lc, "clear");
         }
-        if(buf[1] == 'o')
+        if(buf[1] == 'o' || buf[1] == 'O')
           linenoiseAddCompletion(lc, "continue");
       }
       break;
     case 'd':
+    case 'D':
       if(strlen(buf) >= 2)
       {
-        if(buf[1] == 'e')
+        if(buf[1] == 'e' || buf[1] == 'E')
           linenoiseAddCompletion(lc, "default");
-        if(buf[1] == 'o')
+        if(buf[1] == 'o' || buf[1] == 'O')
           linenoiseAddCompletion(lc, "do");
       }
       break;
     case 'e':
+    case 'E':
       if(strlen(buf) >= 2)
       {
-        if(buf[1] == 'l')
+        if(buf[1] == 'l' || buf[1] == 'L')
           linenoiseAddCompletion(lc, "else");
-        if(buf[1] == 'n')
+        if(buf[1] == 'n' || buf[1] == 'N')
           linenoiseAddCompletion(lc, "enum");
       }
       break;
     case 'f':
+    case 'F':
       if(strlen(buf) >= 2)
       {
-        if(buf[1] == 'a')
+        if(buf[1] == 'a' || buf[1] == 'A')
           linenoiseAddCompletion(lc, "false");
-        if(buf[1] == 'o')
+        if(buf[1] == 'o' || buf[1] == 'O')
           linenoiseAddCompletion(lc, "for");
-        if(buf[1] == 'u')
+        if(buf[1] == 'u' || buf[1] == 'U')
           linenoiseAddCompletion(lc, "func");
       }
       break;
     case 'g':
+    case 'G':
       linenoiseAddCompletion(lc, "goto");
       break;
     case 'i':
+    case 'I':
       linenoiseAddCompletion(lc, "if");
       break;
     case 'l':
+    case 'L':
       linenoiseAddCompletion(lc, "license");
       break;
     case 'n':
+    case 'N':
       if(strlen(buf) >= 2)
       {
-        if(buf[1] == 'a')
+        if(buf[1] == 'a' || buf[1] == 'A')
           linenoiseAddCompletion(lc, "namespace");
-        if(buf[1] == 'u')
+        if(buf[1] == 'u' || buf[1] == 'U')
           linenoiseAddCompletion(lc, "null");
       }
       break;
     case 'q':
+    case 'Q':
       linenoiseAddCompletion(lc, "quit");
       break;
     case 'r':
+    case 'R':
       linenoiseAddCompletion(lc, "return");
       break;
     case 's':
+    case 'S':
       if(strlen(buf) >= 2)
       {
-        if(buf[1] == 'u')
+        if(buf[1] == 'u' || buf[1] == 'U')
           linenoiseAddCompletion(lc, "super");
-        if(buf[1] == 'w')
+        if(buf[1] == 'w' || buf[1] == 'W')
           linenoiseAddCompletion(lc, "switch");
       }
       break;
     case 't':
+    case 'T':
       linenoiseAddCompletion(lc, "true");
       break;
     case 'u':
+    case 'U':
       linenoiseAddCompletion(lc, "use");
       break;
     case 'v':
+    case 'V':
       if(strlen(buf) >= 2)
       {
-        if(buf[1] == 'a')
+        if(buf[1] == 'a' || buf[1] == 'A')
           linenoiseAddCompletion(lc, "var");
-        if(buf[1] == 'e')
+        if(buf[1] == 'e' || buf[1] == 'E')
           linenoiseAddCompletion(lc, "version");
       }
       break;
     case 'w':
+    case 'W':
       linenoiseAddCompletion(lc, "while");
       break;
     default:
@@ -482,213 +498,213 @@ char* hints(const char* buf, int* color, int* bold)
   *bold = 1;
 
   // break
-  if(!strcasecmp(buf, "b"))
+  if(case_compare(buf, "b"))
     return "reak";
-  if(!strcasecmp(buf, "br"))
+  if(case_compare(buf, "br"))
     return "eak";
-  if(!strcasecmp(buf, "bre"))
+  if(case_compare(buf, "bre"))
     return "ak";
-  if(!strcasecmp(buf, "brea"))
+  if(case_compare(buf, "brea"))
     return "k";
 
   // case
-  if(!strcasecmp(buf, "ca"))
+  if(case_compare(buf, "ca"))
     return "se";
-  if(!strcasecmp(buf, "cas"))
+  if(case_compare(buf, "cas"))
     return "e";
 
   // class
-  if(!strcasecmp(buf, "cla"))
+  if(case_compare(buf, "cla"))
     return "ss";
-  if(!strcasecmp(buf, "clas"))
+  if(case_compare(buf, "clas"))
     return "s";
 
   // clear
-  if(!strcasecmp(buf, "cle"))
+  if(case_compare(buf, "cle"))
     return "ar";
-  if(!strcasecmp(buf, "clea"))
+  if(case_compare(buf, "clea"))
     return "r";
 
   // continue
-  if(!strcasecmp(buf, "co"))
+  if(case_compare(buf, "co"))
     return "ntinue";
-  if(!strcasecmp(buf, "con"))
+  if(case_compare(buf, "con"))
     return "tinue";
-  if(!strcasecmp(buf, "cont"))
+  if(case_compare(buf, "cont"))
     return "inue";
-  if(!strcasecmp(buf, "conti"))
+  if(case_compare(buf, "conti"))
     return "nue";
-  if(!strcasecmp(buf, "contin"))
+  if(case_compare(buf, "contin"))
     return "ue";
-  if(!strcasecmp(buf, "continu"))
+  if(case_compare(buf, "continu"))
     return "e";
 
   // default
-  if(!strcasecmp(buf, "de"))
+  if(case_compare(buf, "de"))
     return "fault";
-  if(!strcasecmp(buf, "def"))
+  if(case_compare(buf, "def"))
     return "ault";
-  if(!strcasecmp(buf, "defa"))
+  if(case_compare(buf, "defa"))
     return "ult";
-  if(!strcasecmp(buf, "defau"))
+  if(case_compare(buf, "defau"))
     return "lt";
-  if(!strcasecmp(buf, "defaul"))
+  if(case_compare(buf, "defaul"))
     return "t";
 
   // else
-  if(!strcasecmp(buf, "el"))
+  if(case_compare(buf, "el"))
     return "se";
-  if(!strcasecmp(buf, "els"))
+  if(case_compare(buf, "els"))
     return "e";
 
   // enum
-  if(!strcasecmp(buf, "en"))
+  if(case_compare(buf, "en"))
     return "um";
-  if(!strcasecmp(buf, "enu"))
+  if(case_compare(buf, "enu"))
     return "m";
 
   // false
-  if(!strcasecmp(buf, "fa"))
+  if(case_compare(buf, "fa"))
     return "lse";
-  if(!strcasecmp(buf, "fal"))
+  if(case_compare(buf, "fal"))
     return "se";
-  if(!strcasecmp(buf, "fals"))
+  if(case_compare(buf, "fals"))
     return "e";
 
   // for
-  if(!strcasecmp(buf, "fo"))
+  if(case_compare(buf, "fo"))
     return "r";
 
   // func
-  if(!strcasecmp(buf, "fu"))
+  if(case_compare(buf, "fu"))
     return "nc";
-  if(!strcasecmp(buf, "fun"))
+  if(case_compare(buf, "fun"))
     return "c";
 
   // goto
-  if(!strcasecmp(buf, "g"))
+  if(case_compare(buf, "g"))
     return "oto";
-  if(!strcasecmp(buf, "go"))
+  if(case_compare(buf, "go"))
     return "to";
-  if(!strcasecmp(buf, "got"))
+  if(case_compare(buf, "got"))
     return "o";
 
   // if
-  if(!strcasecmp(buf, "i"))
+  if(case_compare(buf, "i"))
     return "f";
 
   // license
-  if(!strcasecmp(buf, "l"))
+  if(case_compare(buf, "l"))
     return "icense";
-  if(!strcasecmp(buf, "li"))
+  if(case_compare(buf, "li"))
     return "cense";
-  if(!strcasecmp(buf, "lic"))
+  if(case_compare(buf, "lic"))
     return "ense";
-  if(!strcasecmp(buf, "lice"))
+  if(case_compare(buf, "lice"))
     return "nse";
-  if(!strcasecmp(buf, "licen"))
+  if(case_compare(buf, "licen"))
     return "se";
-  if(!strcasecmp(buf, "licens"))
+  if(case_compare(buf, "licens"))
     return "e";
 
   // namespace
-  if(!strcasecmp(buf, "na"))
+  if(case_compare(buf, "na"))
     return "mespace";
-  if(!strcasecmp(buf, "nam"))
+  if(case_compare(buf, "nam"))
     return "espace";
-  if(!strcasecmp(buf, "name"))
+  if(case_compare(buf, "name"))
     return "space";
-  if(!strcasecmp(buf, "names"))
+  if(case_compare(buf, "names"))
     return "pace";
-  if(!strcasecmp(buf, "namesp"))
+  if(case_compare(buf, "namesp"))
     return "ace";
-  if(!strcasecmp(buf, "namespa"))
+  if(case_compare(buf, "namespa"))
     return "ce";
-  if(!strcasecmp(buf, "namespac"))
+  if(case_compare(buf, "namespac"))
     return "e";
 
   // null
-  if(!strcasecmp(buf, "nu"))
+  if(case_compare(buf, "nu"))
     return "ll";
-  if(!strcasecmp(buf, "nul"))
+  if(case_compare(buf, "nul"))
     return "l";
 
   // quit
-  if(!strcasecmp(buf, "q"))
+  if(case_compare(buf, "q"))
     return "uit";
-  if(!strcasecmp(buf, "qu"))
+  if(case_compare(buf, "qu"))
     return "it";
-  if(!strcasecmp(buf, "qui"))
+  if(case_compare(buf, "qui"))
     return "t";
 
   // return
-  if(!strcasecmp(buf, "r"))
+  if(case_compare(buf, "r"))
     return "eturn";
-  if(!strcasecmp(buf, "re"))
+  if(case_compare(buf, "re"))
     return "turn";
-  if(!strcasecmp(buf, "ret"))
+  if(case_compare(buf, "ret"))
     return "urn";
-  if(!strcasecmp(buf, "retu"))
+  if(case_compare(buf, "retu"))
     return "rn";
-  if(!strcasecmp(buf, "retur"))
+  if(case_compare(buf, "retur"))
     return "n";
 
   // super
-  if(!strcasecmp(buf, "su"))
+  if(case_compare(buf, "su"))
     return "per";
-  if(!strcasecmp(buf, "sup"))
+  if(case_compare(buf, "sup"))
     return "er";
-  if(!strcasecmp(buf, "supe"))
+  if(case_compare(buf, "supe"))
     return "r";
 
   // switch
-  if(!strcasecmp(buf, "sw"))
+  if(case_compare(buf, "sw"))
     return "itch";
-  if(!strcasecmp(buf, "swi"))
+  if(case_compare(buf, "swi"))
     return "tch";
-  if(!strcasecmp(buf, "swit"))
+  if(case_compare(buf, "swit"))
     return "ch";
-  if(!strcasecmp(buf, "switc"))
+  if(case_compare(buf, "switc"))
     return "h";
 
   // true
-  if(!strcasecmp(buf, "t"))
+  if(case_compare(buf, "t"))
     return "rue";
-  if(!strcasecmp(buf, "tr"))
+  if(case_compare(buf, "tr"))
     return "ue";
-  if(!strcasecmp(buf, "tru"))
+  if(case_compare(buf, "tru"))
     return "e";
 
   // use
-  if(!strcasecmp(buf, "u"))
+  if(case_compare(buf, "u"))
     return "se";
-  if(!strcasecmp(buf, "us"))
+  if(case_compare(buf, "us"))
     return "e";
 
   // var
-  if(!strcasecmp(buf, "va"))
+  if(case_compare(buf, "va"))
     return "r";
 
   // version
-  if(!strcasecmp(buf, "ve"))
+  if(case_compare(buf, "ve"))
     return "rsion";
-  if(!strcasecmp(buf, "ver"))
+  if(case_compare(buf, "ver"))
     return "sion";
-  if(!strcasecmp(buf, "vers"))
+  if(case_compare(buf, "vers"))
     return "ion";
-  if(!strcasecmp(buf, "versi"))
+  if(case_compare(buf, "versi"))
     return "on";
-  if(!strcasecmp(buf, "versio"))
+  if(case_compare(buf, "versio"))
     return "n";
 
   // while
-  if(!strcasecmp(buf, "w"))
+  if(case_compare(buf, "w"))
     return "hile";
-  if(!strcasecmp(buf, "wh"))
+  if(case_compare(buf, "wh"))
     return "ile";
-  if(!strcasecmp(buf, "whi"))
+  if(case_compare(buf, "whi"))
     return "le";
-  if(!strcasecmp(buf, "whil"))
+  if(case_compare(buf, "whil"))
     return "e";
 
   return NULL;
@@ -746,19 +762,19 @@ void interactive_mode(void)
       continue;
 
     // Check for valid commands
-    if(compare_input(input, "clear"))
+    if(case_compare(input, "clear"))
     {
       linenoiseClearScreen();
       continue;
     }
-    if(compare_input(input, "license"))
+    if(case_compare(input, "license"))
     {
       print_license();
       continue;
     }
-    if(compare_input(input, "quit"))
+    if(case_compare(input, "quit"))
       clean_exit(EXIT_SUCCESS);
-    if(compare_input(input, "version"))
+    if(case_compare(input, "version"))
     {
       print_version();
       continue;
