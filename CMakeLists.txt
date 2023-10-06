@@ -75,6 +75,13 @@ if(NEED_LINKING_AGAINST_LIBM)
   target_link_libraries(${OBJECT_TEST} m)
   target_link_libraries(${STACK_TEST} m)
   target_link_libraries(${UNIT_TESTS} m)
+else()
+  target_link_libraries(${PROJECT} linenoise)
+  target_link_libraries(${HASH_MAP_TEST})
+  target_link_libraries(${INTERPRET_TEST})
+  target_link_libraries(${OBJECT_TEST})
+  target_link_libraries(${STACK_TEST})
+  target_link_libraries(${UNIT_TESTS})
 endif()
 
 # Strip binary for release builds
