@@ -39,7 +39,9 @@
 #include "debug.h"
 #include "hash_map.h"
 #include "lexer.h"
+#ifndef _WIN32
 #include "linenoise.h"
+#endif // _WIN32
 #include "parser.h"
 #include "types.h"
 #include "version.h"     // VERSION
@@ -367,6 +369,7 @@ void handle_sigint(int sig)
   return;
 }
 
+#ifndef _WIN32
 void completion(const char *buf, linenoiseCompletions *lc)
 {
   switch(buf[0])
@@ -491,7 +494,9 @@ void completion(const char *buf, linenoiseCompletions *lc)
   }
   return;
 }
+#endif // _WIN32
 
+#ifndef _WIN32
 char* hints(const char* buf, int* color, int* bold)
 {
   *color = 35;
@@ -709,23 +714,32 @@ char* hints(const char* buf, int* color, int* bold)
 
   return NULL;
 }
+#endif // _WIN32
 
 // Interactive mode
 void interactive_mode(void)
 {
   signal(SIGINT, handle_sigint);
-  //char input[1024];
+#ifdef _WIN32
+  char input[1024];
+#else
   char* input = NULL;
+#endif // _WIN32
   puts("Warning: Expect things to break.");
+#ifndef _WIN32
   linenoiseSetCompletionCallback(completion);
   linenoiseSetHintsCallback(hints);
+#endif // _WIN32
   while(true)
   {
-    //memset(input, 0, sizeof(input)); // reset input every iteration
-    //printf("> ");
+#ifdef _WIN32
+    memset(input, 0, sizeof(input)); // reset input every iteration
+    printf("> ");
+    fflush(stdout);
+    if(fgets(input, 1024, stdin) == NULL)
+#else
     input = linenoise("> ");
-    //fflush(stdout);
-    //if(fgets(input, 1024, stdin) == NULL)
+#endif // _WIN32
     if(input == NULL)
     {
       puts("");
@@ -737,7 +751,9 @@ void interactive_mode(void)
         debug_print("ctrl+d (EOT) detected.");
 #endif // _WIN32
       }
+#ifndef _WIN32
       free(input);
+#endif // _WIN32
       clean_exit(EXIT_SUCCESS); // ctrl+d (Unix) or ctrl+z (Windows) EOT detected
     }
 
@@ -783,7 +799,9 @@ void interactive_mode(void)
     linenoiseHistoryAdd(input);
     lex_string(input);
     parse_string(input);
+#ifndef _WIN32
     free(input);
+#endif // _WIN32
   }
   return;
 }
