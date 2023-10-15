@@ -778,11 +778,13 @@ void interactive_mode(void)
       continue;
 
     // Check for valid commands
+#ifndef _WIN32
     if(case_compare(input, "clear"))
     {
       linenoiseClearScreen();
       continue;
     }
+#endif // _WIN32
     if(case_compare(input, "license"))
     {
       print_license();
@@ -796,7 +798,9 @@ void interactive_mode(void)
       continue;
     }
 
+#ifndef _WIN32
     linenoiseHistoryAdd(input);
+#endif // _WIN32
     lex_string(input);
     parse_string(input);
 #ifndef _WIN32
