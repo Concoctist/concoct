@@ -35,7 +35,7 @@
 #include "types.h"
 
 // Proof of concept to demonstrate garbage collection
-size_t mark_objects()
+size_t mark_objects(void)
 {
   size_t mark_count = 0;
   if(debug_mode)

@@ -30,7 +30,7 @@
 #include <string.h> // strcmp(), strncpy()
 #include "memory.h" // stringify()
 
-void test_stringify()
+void test_stringify(void)
 {
   char* str = NULL;
 
