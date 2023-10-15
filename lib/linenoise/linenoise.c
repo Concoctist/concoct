@@ -103,8 +103,23 @@
  *
  */
 
+#ifndef _WIN32
 #include <termios.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
+#else
+#include <conio.h>
+#include <windows.h>
+#include <io.h>
+#define STDIN_FILENO 0
+#define STDOUT_FILENO 1
+#define strcasecmp _stricmp
+#define strdup _strdup
+#define isatty _isatty
+#define read _read
+#define write _write
+#endif // _WIN32
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -113,7 +128,6 @@
 #include <ctype.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/ioctl.h>
 #include <unistd.h>
 #include "linenoise.h"
 
@@ -127,7 +141,13 @@ static char *linenoiseNoTTY(void);
 static void refreshLineWithCompletion(struct linenoiseState *ls, linenoiseCompletions *lc, int flags);
 static void refreshLineWithFlags(struct linenoiseState *l, int flags);
 
+#ifdef _WIN32
+static HANDLE console_in, console_out;
+static DWORD oldMode;
+static WORD oldDisplayAttribute;
+#else
 static struct termios orig_termios; /* In order to restore at exit.*/
+#endif // _WIN32
 static int maskmode = 0; /* Show "***" instead of input. For passwords. */
 static int rawmode = 0; /* For atexit() function to check if restore is needed*/
 static int mlmode = 0;  /* Multi line mode. Default is single line. */
@@ -218,6 +238,18 @@ static int isUnsupportedTerm(void) {
 
 /* Raw mode: 1960 magic shit. */
 static int enableRawMode(int fd) {
+#ifdef _WIN32
+    if (!console_in) {
+        console_in = GetStdHandle(STD_INPUT_HANDLE);
+        console_out = GetStdHandle(STD_OUTPUT_HANDLE);
+
+        GetConsoleMode(console_in, &oldMode);
+        SetConsoleMode(console_in, oldMode &
+            ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT |
+                ENABLE_PROCESSED_INPUT));
+    }
+    return 0;
+#else
     struct termios raw;
 
     if (!isatty(STDIN_FILENO)) goto fatal;
@@ -250,12 +282,19 @@ static int enableRawMode(int fd) {
 fatal:
     errno = ENOTTY;
     return -1;
+#endif // _WIN32
 }
 
 static void disableRawMode(int fd) {
+#ifdef _WIN32
+    SetConsoleMode(console_in, oldMode);
+    console_in = 0;
+    console_out = 0;
+#else
     /* Don't even check the return value as it's too late. */
     if (rawmode && tcsetattr(fd,TCSAFLUSH,&orig_termios) != -1)
         rawmode = 0;
+#endif // _WIN32
 }
 
 /* Use the ESC [6n escape sequence to query the horizontal cursor position
@@ -286,11 +325,18 @@ static int getCursorPosition(int ifd, int ofd) {
 /* Try to get the number of columns in the current terminal, or assume 80
  * if it fails. */
 static int getColumns(int ifd, int ofd) {
+    int cols;
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO inf;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &inf);
+    cols = inf.dwSize.X;
+    return cols;
+#else
     struct winsize ws;
 
     if (ioctl(1, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
         /* ioctl() failed. Try to query the terminal itself. */
-        int start, cols;
+        int start;
 
         /* Get the initial position so we can restore it later. */
         start = getCursorPosition(ifd,ofd);
@@ -316,6 +362,7 @@ static int getColumns(int ifd, int ofd) {
 
 failed:
     return 80;
+#endif // _WIN32
 }
 
 /* Clear the screen. Used to handle ctrl+l */
@@ -1310,14 +1357,20 @@ int linenoiseHistorySetMaxLen(int len) {
 /* Save the history in the specified file. On success 0 is returned
  * otherwise -1 is returned. */
 int linenoiseHistorySave(const char *filename) {
+    int j;
+#if _WIN32
+    FILE* fp = fopen(filename, "wt");
+#else
     mode_t old_umask = umask(S_IXUSR|S_IRWXG|S_IRWXO);
     FILE *fp;
-    int j;
 
     fp = fopen(filename,"w");
     umask(old_umask);
+#endif // _WIN32
     if (fp == NULL) return -1;
+#ifndef _WIN32
     chmod(filename,S_IRUSR|S_IWUSR);
+#endif // _WIN32
     for (j = 0; j < history_len; j++)
         fprintf(fp,"%s\n",history[j]);
     fclose(fp);
