@@ -32,7 +32,7 @@
 #include <stddef.h>      // size_t
 #include <stdio.h>       // FILE, fclose(), fflush(), fgets(), fprintf(), printf(), puts(), stdin, stderr, stdout
 #include <stdlib.h>      // exit(), EXIT_FAILURE, EXIT_SUCCESS
-#include <string.h>      // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
+#include <string.h>      // memcpy(), memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
 #include "char_stream.h"
 #include "compiler.h"
 #include "concoct.h"
@@ -499,218 +499,53 @@ void completion(const char *buf, linenoiseCompletions *lc)
 #ifndef _WIN32
 char* hints(const char* buf, int* color, int* bold)
 {
-  *color = 35;
-  *bold = 1;
+  *color = 35; // magenta
+  *bold = 1;   // bold
+  static char tmp[KEYWORD_LENGTH];
 
-  // break
-  if(case_compare(buf, "b"))
-    return "reak";
-  if(case_compare(buf, "br"))
-    return "eak";
-  if(case_compare(buf, "bre"))
-    return "ak";
-  if(case_compare(buf, "brea"))
-    return "k";
+  const char keywords[KEYWORD_AMOUNT][KEYWORD_LENGTH] =
+  {
+    "break",
+    "case",
+    "class",
+    "clear",
+    "continue",
+    "default",
+    "else",
+    "enum",
+    "false",
+    "for",
+    "func",
+    "goto",
+    "if",
+    "license",
+    "namespace",
+    "null",
+    "quit",
+    "return",
+    "super",
+    "switch",
+    "true",
+    "use",
+    "while",
+    "version",
+    "var"
+  };
 
-  // case
-  if(case_compare(buf, "ca"))
-    return "se";
-  if(case_compare(buf, "cas"))
-    return "e";
-
-  // class
-  if(case_compare(buf, "cla"))
-    return "ss";
-  if(case_compare(buf, "clas"))
-    return "s";
-
-  // clear
-  if(case_compare(buf, "cle"))
-    return "ar";
-  if(case_compare(buf, "clea"))
-    return "r";
-
-  // continue
-  if(case_compare(buf, "co"))
-    return "ntinue";
-  if(case_compare(buf, "con"))
-    return "tinue";
-  if(case_compare(buf, "cont"))
-    return "inue";
-  if(case_compare(buf, "conti"))
-    return "nue";
-  if(case_compare(buf, "contin"))
-    return "ue";
-  if(case_compare(buf, "continu"))
-    return "e";
-
-  // default
-  if(case_compare(buf, "de"))
-    return "fault";
-  if(case_compare(buf, "def"))
-    return "ault";
-  if(case_compare(buf, "defa"))
-    return "ult";
-  if(case_compare(buf, "defau"))
-    return "lt";
-  if(case_compare(buf, "defaul"))
-    return "t";
-
-  // else
-  if(case_compare(buf, "el"))
-    return "se";
-  if(case_compare(buf, "els"))
-    return "e";
-
-  // enum
-  if(case_compare(buf, "en"))
-    return "um";
-  if(case_compare(buf, "enu"))
-    return "m";
-
-  // false
-  if(case_compare(buf, "fa"))
-    return "lse";
-  if(case_compare(buf, "fal"))
-    return "se";
-  if(case_compare(buf, "fals"))
-    return "e";
-
-  // for
-  if(case_compare(buf, "fo"))
-    return "r";
-
-  // func
-  if(case_compare(buf, "fu"))
-    return "nc";
-  if(case_compare(buf, "fun"))
-    return "c";
-
-  // goto
-  if(case_compare(buf, "g"))
-    return "oto";
-  if(case_compare(buf, "go"))
-    return "to";
-  if(case_compare(buf, "got"))
-    return "o";
-
-  // if
-  if(case_compare(buf, "i"))
-    return "f";
-
-  // license
-  if(case_compare(buf, "l"))
-    return "icense";
-  if(case_compare(buf, "li"))
-    return "cense";
-  if(case_compare(buf, "lic"))
-    return "ense";
-  if(case_compare(buf, "lice"))
-    return "nse";
-  if(case_compare(buf, "licen"))
-    return "se";
-  if(case_compare(buf, "licens"))
-    return "e";
-
-  // namespace
-  if(case_compare(buf, "na"))
-    return "mespace";
-  if(case_compare(buf, "nam"))
-    return "espace";
-  if(case_compare(buf, "name"))
-    return "space";
-  if(case_compare(buf, "names"))
-    return "pace";
-  if(case_compare(buf, "namesp"))
-    return "ace";
-  if(case_compare(buf, "namespa"))
-    return "ce";
-  if(case_compare(buf, "namespac"))
-    return "e";
-
-  // null
-  if(case_compare(buf, "nu"))
-    return "ll";
-  if(case_compare(buf, "nul"))
-    return "l";
-
-  // quit
-  if(case_compare(buf, "q"))
-    return "uit";
-  if(case_compare(buf, "qu"))
-    return "it";
-  if(case_compare(buf, "qui"))
-    return "t";
-
-  // return
-  if(case_compare(buf, "r"))
-    return "eturn";
-  if(case_compare(buf, "re"))
-    return "turn";
-  if(case_compare(buf, "ret"))
-    return "urn";
-  if(case_compare(buf, "retu"))
-    return "rn";
-  if(case_compare(buf, "retur"))
-    return "n";
-
-  // super
-  if(case_compare(buf, "su"))
-    return "per";
-  if(case_compare(buf, "sup"))
-    return "er";
-  if(case_compare(buf, "supe"))
-    return "r";
-
-  // switch
-  if(case_compare(buf, "sw"))
-    return "itch";
-  if(case_compare(buf, "swi"))
-    return "tch";
-  if(case_compare(buf, "swit"))
-    return "ch";
-  if(case_compare(buf, "switc"))
-    return "h";
-
-  // true
-  if(case_compare(buf, "t"))
-    return "rue";
-  if(case_compare(buf, "tr"))
-    return "ue";
-  if(case_compare(buf, "tru"))
-    return "e";
-
-  // use
-  if(case_compare(buf, "u"))
-    return "se";
-  if(case_compare(buf, "us"))
-    return "e";
-
-  // var
-  if(case_compare(buf, "va"))
-    return "r";
-
-  // version
-  if(case_compare(buf, "ve"))
-    return "rsion";
-  if(case_compare(buf, "ver"))
-    return "sion";
-  if(case_compare(buf, "vers"))
-    return "ion";
-  if(case_compare(buf, "versi"))
-    return "on";
-  if(case_compare(buf, "versio"))
-    return "n";
-
-  // while
-  if(case_compare(buf, "w"))
-    return "hile";
-  if(case_compare(buf, "wh"))
-    return "ile";
-  if(case_compare(buf, "whi"))
-    return "le";
-  if(case_compare(buf, "whil"))
-    return "e";
+  // compare and return substrings
+  for(size_t i = 0; i < KEYWORD_AMOUNT; i++)
+  {
+    for(size_t j = 1; j < strlen(keywords[i]); j++)
+    {
+      memset(tmp, 0, sizeof(tmp));
+      memcpy(tmp, keywords[i], j);
+      if(case_compare(buf, tmp))
+      {
+        strcpy(tmp, &keywords[i][j]);
+        return tmp;
+      }
+    }
+  }
 
   return NULL;
 }

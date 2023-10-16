@@ -30,6 +30,9 @@
 
 #include <stdbool.h> // bool
 
+#define KEYWORD_AMOUNT ((uint8_t)25)
+#define KEYWORD_LENGTH ((uint8_t)32)
+
 #ifdef _WIN32
 static const char ARG_PREFIX = '/';
 #else
