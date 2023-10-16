@@ -1,5 +1,5 @@
 # Concoct CMake Configuration
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.1...3.5)
 set(PROJECT concoct)
 set(HASH_MAP_TEST hash_map_test)
 set(INTERPRET_TEST interpret_test)
