@@ -30,6 +30,9 @@
 
 #include <stdbool.h> // bool
 
+#define KEYWORD_AMOUNT ((uint8_t)25)
+#define KEYWORD_LENGTH ((uint8_t)32)
+
 #ifdef _WIN32
 static const char ARG_PREFIX = '/';
 #else
@@ -45,7 +48,7 @@ void lex_string(const char* input_string);
 void parse_file(const char* file_name);
 void parse_string(const char* input_string);
 void handle_options(int argc, char *argv[]);
-bool compare_input(const char* input, const char* command);
+bool case_compare(const char* str1, const char* str2);
 void print_license(void);
 void print_usage(void);
 void print_version(void);

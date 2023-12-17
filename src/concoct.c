@@ -32,13 +32,16 @@
 #include <stddef.h>      // size_t
 #include <stdio.h>       // FILE, fclose(), fflush(), fgets(), fprintf(), printf(), puts(), stdin, stderr, stdout
 #include <stdlib.h>      // exit(), EXIT_FAILURE, EXIT_SUCCESS
-#include <string.h>      // memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
+#include <string.h>      // memcpy(), memset(), strcasecmp()/stricmp(), strcspn(), strerror(), strlen()
 #include "char_stream.h"
 #include "compiler.h"
 #include "concoct.h"
 #include "debug.h"
 #include "hash_map.h"
 #include "lexer.h"
+#ifndef _WIN32
+#include "linenoise.h"
+#endif // _WIN32
 #include "parser.h"
 #include "types.h"
 #include "version.h"     // VERSION
@@ -340,15 +343,15 @@ void print_version(void)
   return;
 }
 
-// Compares command input
-bool compare_input(const char* input, const char* command)
+// Compares two strings ignoring case
+bool case_compare(const char* str1, const char* str2)
 {
   bool is_match = false;
 #ifdef _WIN32
-  if(_stricmp(input, command) == 0)
+  if(_stricmp(str1, str2) == 0)
     is_match = true;
 #else
-  if(strcasecmp(input, command) == 0)
+  if(strcasecmp(str1, str2) == 0)
     is_match = true;
 #endif
   return is_match;
@@ -366,18 +369,213 @@ void handle_sigint(int sig)
   return;
 }
 
+#ifndef _WIN32
+void completion(const char *buf, linenoiseCompletions *lc)
+{
+  switch(buf[0])
+  {
+    case 'b':
+    case 'B':
+      linenoiseAddCompletion(lc, "break");
+      break;
+    case 'c':
+    case 'C':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'a' || buf[1] == 'A')
+          linenoiseAddCompletion(lc, "case");
+        if(strlen(buf) >= 3)
+        {
+          if((buf[1] == 'l' || buf[1] == 'L') && (buf[2] == 'a' || buf[2] == 'A'))
+            linenoiseAddCompletion(lc, "class");
+          if((buf[1] == 'l' || buf[1] == 'L') && (buf[2] == 'e' || buf[2] == 'E'))
+            linenoiseAddCompletion(lc, "clear");
+        }
+        if(buf[1] == 'o' || buf[1] == 'O')
+          linenoiseAddCompletion(lc, "continue");
+      }
+      break;
+    case 'd':
+    case 'D':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'e' || buf[1] == 'E')
+          linenoiseAddCompletion(lc, "default");
+        if(buf[1] == 'o' || buf[1] == 'O')
+          linenoiseAddCompletion(lc, "do");
+      }
+      break;
+    case 'e':
+    case 'E':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'l' || buf[1] == 'L')
+          linenoiseAddCompletion(lc, "else");
+        if(buf[1] == 'n' || buf[1] == 'N')
+          linenoiseAddCompletion(lc, "enum");
+      }
+      break;
+    case 'f':
+    case 'F':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'a' || buf[1] == 'A')
+          linenoiseAddCompletion(lc, "false");
+        if(buf[1] == 'o' || buf[1] == 'O')
+          linenoiseAddCompletion(lc, "for");
+        if(buf[1] == 'u' || buf[1] == 'U')
+          linenoiseAddCompletion(lc, "func");
+      }
+      break;
+    case 'g':
+    case 'G':
+      linenoiseAddCompletion(lc, "goto");
+      break;
+    case 'i':
+    case 'I':
+      linenoiseAddCompletion(lc, "if");
+      break;
+    case 'l':
+    case 'L':
+      linenoiseAddCompletion(lc, "license");
+      break;
+    case 'n':
+    case 'N':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'a' || buf[1] == 'A')
+          linenoiseAddCompletion(lc, "namespace");
+        if(buf[1] == 'u' || buf[1] == 'U')
+          linenoiseAddCompletion(lc, "null");
+      }
+      break;
+    case 'q':
+    case 'Q':
+      linenoiseAddCompletion(lc, "quit");
+      break;
+    case 'r':
+    case 'R':
+      linenoiseAddCompletion(lc, "return");
+      break;
+    case 's':
+    case 'S':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'u' || buf[1] == 'U')
+          linenoiseAddCompletion(lc, "super");
+        if(buf[1] == 'w' || buf[1] == 'W')
+          linenoiseAddCompletion(lc, "switch");
+      }
+      break;
+    case 't':
+    case 'T':
+      linenoiseAddCompletion(lc, "true");
+      break;
+    case 'u':
+    case 'U':
+      linenoiseAddCompletion(lc, "use");
+      break;
+    case 'v':
+    case 'V':
+      if(strlen(buf) >= 2)
+      {
+        if(buf[1] == 'a' || buf[1] == 'A')
+          linenoiseAddCompletion(lc, "var");
+        if(buf[1] == 'e' || buf[1] == 'E')
+          linenoiseAddCompletion(lc, "version");
+      }
+      break;
+    case 'w':
+    case 'W':
+      linenoiseAddCompletion(lc, "while");
+      break;
+    default:
+      break;
+  }
+  return;
+}
+#endif // _WIN32
+
+#ifndef _WIN32
+char* hints(const char* buf, int* color, int* bold)
+{
+  *color = 35; // magenta
+  *bold = 1;   // bold
+  static char tmp[KEYWORD_LENGTH];
+
+  const char keywords[KEYWORD_AMOUNT][KEYWORD_LENGTH] =
+  {
+    "break",
+    "case",
+    "class",
+    "clear",
+    "continue",
+    "default",
+    "else",
+    "enum",
+    "false",
+    "for",
+    "func",
+    "goto",
+    "if",
+    "license",
+    "namespace",
+    "null",
+    "quit",
+    "return",
+    "super",
+    "switch",
+    "true",
+    "use",
+    "while",
+    "version",
+    "var"
+  };
+
+  // compare and return substrings
+  for(size_t i = 0; i < KEYWORD_AMOUNT; i++)
+  {
+    for(size_t j = 1; j < strlen(keywords[i]); j++)
+    {
+      memset(tmp, 0, sizeof(tmp));
+      memcpy(tmp, keywords[i], j);
+      if(case_compare(buf, tmp))
+      {
+        strcpy(tmp, &keywords[i][j]);
+        return tmp;
+      }
+    }
+  }
+
+  return NULL;
+}
+#endif // _WIN32
+
 // Interactive mode
 void interactive_mode(void)
 {
   signal(SIGINT, handle_sigint);
+#ifdef _WIN32
   char input[1024];
+#else
+  char* input = NULL;
+#endif // _WIN32
   puts("Warning: Expect things to break.");
+#ifndef _WIN32
+  linenoiseSetCompletionCallback(completion);
+  linenoiseSetHintsCallback(hints);
+#endif // _WIN32
   while(true)
   {
+#ifdef _WIN32
     memset(input, 0, sizeof(input)); // reset input every iteration
     printf("> ");
     fflush(stdout);
     if(fgets(input, 1024, stdin) == NULL)
+#else
+    input = linenoise("> ");
+#endif // _WIN32
+    if(input == NULL)
     {
       puts("");
       if(debug_mode)
@@ -388,6 +586,9 @@ void interactive_mode(void)
         debug_print("ctrl+d (EOT) detected.");
 #endif // _WIN32
       }
+#ifndef _WIN32
+      free(input);
+#endif // _WIN32
       clean_exit(EXIT_SUCCESS); // ctrl+d (Unix) or ctrl+z (Windows) EOT detected
     }
 
@@ -412,21 +613,34 @@ void interactive_mode(void)
       continue;
 
     // Check for valid commands
-    if(compare_input(input, "license"))
+#ifndef _WIN32
+    if(case_compare(input, "clear"))
+    {
+      linenoiseClearScreen();
+      continue;
+    }
+#endif // _WIN32
+    if(case_compare(input, "license"))
     {
       print_license();
       continue;
     }
-    if(compare_input(input, "quit"))
+    if(case_compare(input, "quit"))
       clean_exit(EXIT_SUCCESS);
-    if(compare_input(input, "version"))
+    if(case_compare(input, "version"))
     {
       print_version();
       continue;
     }
 
+#ifndef _WIN32
+    linenoiseHistoryAdd(input);
+#endif // _WIN32
     lex_string(input);
     parse_string(input);
+#ifndef _WIN32
+    free(input);
+#endif // _WIN32
   }
   return;
 }
