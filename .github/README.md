@@ -102,7 +102,7 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 
 ### Contributing and Support :octocat:
 Feel free to [submit an issue](https://github.com/Concoctist/concoct/issues/new) if you require assistance or would like to
-make a feature request. You are also welcome to join our Matrix server at https://matrix.concoct.ist/. Any contributions such as build testing, creating bug reports
+make a feature request. You are also welcome to join us on Matrix at https://matrix.concoct.ist/. Any contributions such as build testing, creating bug reports
 or feature requests, and submitting pull requests are appreciated. Our code style guidelines can be found in the "Coding Convention" section of
 [CONTRIBUTING.md](https://github.com/Concoctist/concoct/blob/master/.github/CONTRIBUTING.md). Please see the
 [fork and pull guide](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork)
