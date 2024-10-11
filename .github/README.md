@@ -1,6 +1,6 @@
 [![AppVeyor build status](https://img.shields.io/appveyor/ci/ldilley/concoct?label=AppVeyor%20build%20status)](https://ci.appveyor.com/project/ldilley/concoct)
 [![CodeFactor grade](https://img.shields.io/codefactor/grade/github/Concoctist/concoct?label=CodeFactor%20quality)](https://www.codefactor.io/repository/github/Concoctist/concoct)
-[![Discord](https://img.shields.io/discord/540333638479380487?label=Discord)](https://discord.concoct.ist/)
+[![Matrix](https://img.shields.io/matrix/concoct%3Amatrix.org?label=Matrix)](https://matrix.concoct.ist/)
 
 Concoct 🧪
 =======
@@ -102,7 +102,7 @@ For more information about Concoct, please see the [wiki](https://github.com/Con
 
 ### Contributing and Support :octocat:
 Feel free to [submit an issue](https://github.com/Concoctist/concoct/issues/new) if you require assistance or would like to
-make a feature request. You are also welcome to join our Discord server at https://discord.concoct.ist/. Any contributions such as build testing, creating bug reports
+make a feature request. You are also welcome to join our Matrix server at https://matrix.concoct.ist/. Any contributions such as build testing, creating bug reports
 or feature requests, and submitting pull requests are appreciated. Our code style guidelines can be found in the "Coding Convention" section of
 [CONTRIBUTING.md](https://github.com/Concoctist/concoct/blob/master/.github/CONTRIBUTING.md). Please see the
 [fork and pull guide](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork)
