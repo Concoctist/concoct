@@ -4,9 +4,13 @@
 
 https://github.com/Concoctist/concoct/issues
 
-## Discord
+## IRC
 
-https://discord.concoct.ist/
+irc://irc.concoct.ist:6697/concoct
+
+## Matrix
+
+https://matrix.concoct.ist/
 
 ## Wiki
 
